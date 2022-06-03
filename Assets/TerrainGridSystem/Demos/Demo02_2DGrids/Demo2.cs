@@ -2,6 +2,8 @@
 using System.Text;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using UniRx;
+using System.Linq;
 
 using stproj;
 
@@ -144,29 +146,62 @@ namespace TGS {
 		[SerializeField]
 		private List<List<BoxCollider>> currentBoxCollider = new List<List<BoxCollider>>();
 
-		public void InitCells(BoxCollider collider) {
 
-			// Initialize Cell list
-			List<int> cellsUnderBoxCollider = new List<int>();
-			// Use CellGetInArea with box collider to get cells under it
-			tgs.CellGetInArea(collider, cellsUnderBoxCollider, resolution, padding, offset);
 
-			// If we have more than one cell
-			if (cellsUnderBoxCollider != null) {
-				// Color the cells under the box colllider
-				for (int k = 0; k < cellsUnderBoxCollider.Count; k++) {
-					//tgs.CellSetColor(cellsUnderBoxCollider[k], Color.red);
-
-					var cell = tgs.cells[cellsUnderBoxCollider[k]];
-
-					Demo2.DeleteTerritory(cell.territoryIndex);
-				}
-			}
+		public enum eScenePhase { 
+			
 		}
 
 
+
+		/// <summary>
+		/// セルの初期化
+		/// コリダーに触れている領域のセルをすべて非表示にする
+		/// </summary>
+		/// <param name="collider"></param>
+		public void InitCells(BoxCollider collider) {
+
+			// コリダーにふれているセルのリストを取得
+			List<int> cellsUnderBoxCollider = new List<int>();
+			tgs.CellGetInArea(collider, cellsUnderBoxCollider, resolution, padding, offset);
+
+			// セルが属している領域のセルをすべて非表示にしていく
+			if (cellsUnderBoxCollider != null) {
+				for (int k = 0; k < cellsUnderBoxCollider.Count; k++) {
+					var cell = tgs.cells[cellsUnderBoxCollider[k]];
+					Demo2.DeleteTerritory(cell.territoryIndex);
+				}
+			}
+
+			
+
+
+		}
+
+		/// <summary>
+		/// 国の作成
+		/// </summary>
+		public void CreateKingdom() {
+			// 表示している領域をリスト
+			var dispTerritoryList = tgs.territories.Where(t => t.visible == true).ToList();
+
+			// 表示されている領域の数
+			int dispTerritoryCount = dispTerritoryList.Count;
+
+			// ランダムに国を決定
+			var kingdom = dispTerritoryList[Random.Range(0, dispTerritoryCount)];
+
+			// 国の色を設定
+			foreach (var cell in kingdom.cells)
+				tgs.CellSetColor(cell, ConfigController.Instance.CountryColor);
+		}
+
+		// 合計時間
 		float m_totalTime = 0.0f;
 
+		/// <summary>
+		/// 更新処理
+		/// </summary>
         private void Update() {
 
 			if (m_isInit == false)
