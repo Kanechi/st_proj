@@ -17,64 +17,52 @@ namespace TGS {
 		string message = "";
 
 		private bool m_isInit = false;
-		private bool m_isInitCells = false;
 
 		void Start () {
-			tgs = TerrainGridSystem.instance;
-
-			tgs.seed = Random.Range(0, 10001);
 
 			// setup GUI styles
-			labelStyle = new GUIStyle ();
+			labelStyle = new GUIStyle();
 			labelStyle.alignment = TextAnchor.UpperLeft;
 			labelStyle.normal.textColor = Color.black;
 
-			// Events
-			// OnCellMouseDown occurs when user presses the mouse button on a cell
+			// TGS の初期化
+			InitializeTgs();
+
+			m_isInit = true;
+		}
+
+		/// <summary>
+		/// TGS の初期化
+		/// </summary>
+		private void InitializeTgs() {
+
+			tgs = TerrainGridSystem.instance;
+
+			// シード設定
+			tgs.seed = Random.Range(0, 10001);
+
+			// セルタッチイベント
 			tgs.OnCellMouseDown += OnCellMouseDown;
-			// OnCellMouseUp occurs when user releases the mouse button on a cell even after a drag
 			tgs.OnCellMouseUp += OnCellMouseUp;
-			// OnCellClick occurs when user presses and releases the mouse button as in a normal click
 			tgs.OnCellClick += OnCellClick;
 
-			// Draw disputing frontier between territories 0 and 3 in yellow
-			tgs.TerritoryDrawFrontier(0, 3, null, Color.yellow);
-
-#if true
+			// 領域タッチイベント
 			tgs.OnTerritoryMouseDown += OnTerritoryMouseDown;
 			tgs.OnTerritoryMouseUp += OnTerritoryMouseUp;
 			tgs.OnTerritoryClick += OnTerritoryClick;
-#endif
 
-
-			// 開始時に端に隣接しているセルを列挙
-			Cell cell = tgs.CellGetAtPosition(0, 0);
-			AddMessage("cell index : " + cell.index);
-
-			//tgs.();
-
-			m_isInit = true;
-
+			// Draw disputing frontier between territories 0 and 3 in yellow
+			tgs.TerritoryDrawFrontier(0, 3, null, Color.yellow);
 		}
 
-        void OnCellMouseDown (TerrainGridSystem grid, int cellIndex, int buttonIndex) {
-			//AddMessage("cell index : " + cellIndex);
+        void OnCellMouseDown(TerrainGridSystem grid, int cellIndex, int buttonIndex) {
 		}
 
 		void OnCellMouseUp(TerrainGridSystem grid, int cellIndex, int buttonIndex) {
-			//AddMessage("cell index : " + cellIndex);
 		}
 
-		void OnCellClick (TerrainGridSystem grid, int cellIndex, int buttonIndex) {
-
-			int row = tgs.CellGetRow(cellIndex);
-			int column = tgs.CellGetColumn(cellIndex);
-			
-			AddMessage("cell index : " + cellIndex);
-			AddMessage("column row : " + column + ", " + row );
-
+		void OnCellClick(TerrainGridSystem grid, int cellIndex, int buttonIndex) {
 		}
-
 
 		void OnTerritoryMouseDown(TerrainGridSystem sender, int territoryIndex, int buttonIndex) { 
 		}
@@ -82,57 +70,7 @@ namespace TGS {
 		void OnTerritoryMouseUp(TerrainGridSystem sender, int territoryIndex, int buttonIndex) { 
 		}
 
-		void OnTerritoryClick(TerrainGridSystem sender, int territoryIndex, int buttonIndex)
-		{
-#if false
-			// タッチしたテリトリの色を変更
-			foreach (var cell in sender.territories[territoryIndex].cells)
-			{
-				tgs.CellSetColor(cell.index, Color.red);
-				tgs.CellSetVisible(cell.index, false);
-			}
-			tgs.TerritorySetVisible(territoryIndex, false);
-#endif
-
-			//DeleteTerritory(territoryIndex);
-		}
-
-		/// <summary>
-		/// 土地を非表示
-		/// 領域と領域内のセルの非表示
-		/// 
-		/// マップを作成する際のマップ端と海を作る際に利用
-		/// </summary>
-		/// <param name="territoryIndex"></param>
-		static public void DeleteTerritory(int territoryIndex) {
-
-			var tgs = TerrainGridSystem.instance;
-
-			foreach (var cell in tgs.territories[territoryIndex].cells)
-			{
-				// タッチしたテリトリの色を変更
-				//tgs.CellSetColor(cell.index, Color.red);
-
-				// タッチしたテリトリのセルを非表示
-				tgs.CellSetVisible(cell.index, false);
-			}
-			// タッチしたテリトリを非表示
-			tgs.TerritorySetVisible(territoryIndex, false);
-		}
-
-		/// <summary>
-		/// 土地の色を変更
-		/// </summary>
-		/// <param name="territoryIndex"></param>
-		/// <param name="color"></param>
-		static public void ChangeColorTerritory(int territoryIndex, Color color) {
-			var tgs = TerrainGridSystem.instance;
-
-			foreach (var cell in tgs.territories[territoryIndex].cells)
-			{
-				// テリトリの色を変更
-				tgs.CellSetColor(cell.index, color);
-			}
+		void OnTerritoryClick(TerrainGridSystem sender, int territoryIndex, int buttonIndex){
 		}
 
 		// Parameters to pass through to our new method
@@ -146,13 +84,47 @@ namespace TGS {
 		[SerializeField]
 		private List<List<BoxCollider>> currentBoxCollider = new List<List<BoxCollider>>();
 
+		public enum eScenePhase {
+			None = -1,
+			SettingCellColor,
+			CreateTerritory,
+			CreateKingdom,
+		}
+		public eScenePhase m_scenePhase = 0;
 
+		/// <summary>
+		/// 土地の色を変更
+		/// </summary>
+		/// <param name="territoryIndex"></param>
+		/// <param name="color"></param>
+		public void ChangeColorTerritory(int territoryIndex, Color color)
+		{
+			var tgs = TerrainGridSystem.instance;
 
-		public enum eScenePhase { 
-			
+			foreach (var cell in tgs.territories[territoryIndex].cells)
+			{
+				// テリトリの色を変更
+				tgs.CellSetColor(cell.index, color);
+			}
 		}
 
-
+		/// <summary>
+		/// 土地を非表示
+		/// 領域と領域内のセルの非表示
+		/// 
+		/// マップを作成する際のマップ端と海を作る際に利用
+		/// </summary>
+		/// <param name="territoryIndex"></param>
+		public void DeleteTerritory(int territoryIndex)
+		{
+			foreach (var cell in tgs.territories[territoryIndex].cells)
+			{
+				// タッチしたテリトリのセルを非表示
+				tgs.CellSetVisible(cell.index, false);
+			}
+			// タッチしたテリトリを非表示
+			tgs.TerritorySetVisible(territoryIndex, false);
+		}
 
 		/// <summary>
 		/// セルの初期化
@@ -169,19 +141,20 @@ namespace TGS {
 			if (cellsUnderBoxCollider != null) {
 				for (int k = 0; k < cellsUnderBoxCollider.Count; k++) {
 					var cell = tgs.cells[cellsUnderBoxCollider[k]];
-					Demo2.DeleteTerritory(cell.territoryIndex);
+					DeleteTerritory(cell.territoryIndex);
 				}
 			}
-
-			
-
-
 		}
+
+
 
 		/// <summary>
 		/// 国の作成
 		/// </summary>
 		public void CreateKingdom() {
+
+
+
 			// 表示している領域をリスト
 			var dispTerritoryList = tgs.territories.Where(t => t.visible == true).ToList();
 
@@ -193,7 +166,7 @@ namespace TGS {
 
 			// 国の色を設定
 			foreach (var cell in kingdom.cells)
-				tgs.CellSetColor(cell, ConfigController.Instance.CountryColor);
+				tgs.CellSetColor(cell, ConfigController.Instance.KingdomColor);
 		}
 
 		// 合計時間
@@ -207,18 +180,49 @@ namespace TGS {
 			if (m_isInit == false)
 				return;
 
-			if (m_isInitCells == true)
-				return;
+			switch (m_scenePhase) {
+				case eScenePhase.SettingCellColor:
+					{
+						var list = tgs.cells.ToList();
 
-			foreach (var collider in currentBoxCollider[(int)ConfigController.Instance.LandType]) {
-				InitCells(collider);
-			}
+						foreach (var cell in list)
+						{
+							tgs.CellSetColor(cell, ConfigController.Instance.LandColor);
+						}
 
-			m_totalTime += Time.deltaTime;
-			if (m_totalTime >= 1.0f) {
-				m_isInitCells = true;
+						m_scenePhase = eScenePhase.CreateTerritory;
+					}
+					break;
+				case eScenePhase.CreateTerritory:
+					{
+						foreach (var collider in currentBoxCollider[(int)ConfigController.Instance.LandType])
+						{
+							InitCells(collider);
+						}
+
+						m_totalTime += Time.deltaTime;
+						if (m_totalTime >= 0.1f)
+						{
+							m_scenePhase = eScenePhase.CreateKingdom;
+						}
+					}
+					break;
+				case eScenePhase.CreateKingdom:
+					{
+						CreateKingdom();
+						m_scenePhase = eScenePhase.None;
+					}
+					break;
+				default:
+					break;
 			}
 		}
+
+
+
+
+
+
 
 
         void OnGUI () {

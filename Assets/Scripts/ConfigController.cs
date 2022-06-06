@@ -26,8 +26,8 @@ namespace stproj {
         // 組織の数の方が良いかも
         // 最大数は大陸の大きさで変化させる必要がある
         [SerializeField, Range(2, 20)]
-        private int m_countryCount = 2;
-        public int CountryCount => m_countryCount;
+        private int m_kingdomCount = 2;
+        public int KingdomCount => m_kingdomCount;
 
         // 初期の領域の数
         [SerializeField, Range(1, 3)]
@@ -36,13 +36,13 @@ namespace stproj {
 
         // 国の名前
         [SerializeField]
-        private string m_countryName = "";
-        public string CountryName => m_countryName;
+        private string m_kingdomName = "";
+        public string KingdomName => m_kingdomName;
 
-        // 国の色
+        // 王国の色
         [SerializeField]
-        private Color m_countryColor;
-        public Color CountryColor => m_countryColor;
+        private Color m_kingdomColor;
+        public Color KingdomColor => m_kingdomColor;
 
         // リーダーの髪型
         // リーダーの髪色
@@ -58,6 +58,14 @@ namespace stproj {
         [SerializeField]
         private int m_gameFinishYear = 100;
         public int GameFinishYear => m_gameFinishYear;
+
+
+        /// <summary>
+        /// 国以外の土地の色
+        /// </summary>
+        [SerializeField]
+        private Color m_landColor;
+        public Color LandColor => m_landColor;
 
     }
 }
