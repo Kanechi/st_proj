@@ -146,7 +146,12 @@ namespace TGS {
 			}
 		}
 
-
+		/// <summary>
+		/// 領域の作成
+		/// </summary>
+		public void CreateStTerritory() { 
+		
+		}
 
 		/// <summary>
 		/// 国の作成
@@ -161,12 +166,28 @@ namespace TGS {
 			// 表示されている領域の数
 			int dispTerritoryCount = dispTerritoryList.Count;
 
-			// ランダムに国を決定
-			var kingdom = dispTerritoryList[Random.Range(0, dispTerritoryCount)];
+			// 最大王国数だけランダムに領域を作成
+			for (int i = 0; i < ConfigController.Instance.KingdomCount; ++i)
+			{
+				// ランダムに領土を領域に選定
+				Territory kingdom = dispTerritoryList[Random.Range(0, dispTerritoryCount)];
 
-			// 国の色を設定
-			foreach (var cell in kingdom.cells)
-				tgs.CellSetColor(cell, ConfigController.Instance.KingdomColor);
+				// 自身の王国のみ設定した色を使用
+				Color color = i == 0 ? ConfigController.Instance.KingdomColor : Random.ColorHSV();
+				color.a = 0.4f;
+
+				// 王国の色を設定
+				foreach (var cell in kingdom.cells)
+					tgs.CellSetColor(cell, color);
+
+				// 王国にした領土を territoryList から外す
+				dispTerritoryList.Remove(kingdom);
+				// 領域数を更新
+				dispTerritoryCount = dispTerritoryList.Count;
+
+				// 王国データを設定
+				KingdomData kingdomData = new KingdomData();
+			}
 		}
 
 		// 合計時間
@@ -199,6 +220,8 @@ namespace TGS {
 						{
 							InitCells(collider);
 						}
+
+						// 一回だけ領域の作成を行う
 
 						m_totalTime += Time.deltaTime;
 						if (m_totalTime >= 0.1f)

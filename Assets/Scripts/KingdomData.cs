@@ -133,10 +133,10 @@ namespace stproj
     public class KingdomData
     {
         // 王国 ID
-        private uint m_id = 0;
+        public uint m_id = 0;
 
         // 王国領地リスト
-        private List<DominionData> m_kingdomDominionDataList = new List<DominionData>();
+        public List<DominionData> m_kingdomDominionDataList = new List<DominionData>();
     }
 
     public class KingdomDataManager : Singleton<KingdomDataManager>
@@ -144,5 +144,18 @@ namespace stproj
         private List<KingdomData> m_kingdomDataList = new List<KingdomData>();
         public List<KingdomData> KingdomDataList => m_kingdomDataList;
 
+    }
+
+    /// <summary>
+    /// 王国データ工場
+    /// </summary>
+    public class KingdomDataFactory {
+
+        public KingdomData Create(int territoryIndex, Color color) {
+
+            var kingdomData = new KingdomData();
+
+            return kingdomData;
+        }
     }
 }
