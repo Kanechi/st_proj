@@ -151,6 +151,5 @@ namespace stproj
         private List<KingdomData> m_kingdomDataList = new List<KingdomData>();
         public List<KingdomData> KingdomDataList => m_kingdomDataList;
 
-        //public 
     }
 }
