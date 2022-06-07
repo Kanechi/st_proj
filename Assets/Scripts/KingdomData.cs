@@ -5,42 +5,74 @@ using UnityEngine;
 namespace stproj
 {
     /// <summary>
-    /// ゾーンタイプ
+    /// 区域タイプ
     /// </summary>
     public enum eZoneType {
-        None,
-        // 城
-        Castle          = 1000,
-        // 領主の城
-        CastleOfLord    = 1001,
+        None = -1,
 
-        // 伐採場
-        LoggingArea     = 2000,
+        /// <summary>
+        /// 農業区
+        /// 平地に隣接していれば建設可能
+        /// 食料が資源が増える
+        /// </summary>
+        Agriculture     = 1000,
 
-        // 採掘所
-        Quarry          = 3000,
+        /// <summary>
+        /// 商業区
+        /// さまざまなアイテムをトレード可能になる
+        /// 町の特産品なども増える
+        /// </summary>
+        Commercial      = 2000,
 
-        // ハンター小屋
-        HunterHut       = 4000,
+        /// <summary>
+        /// 鉱業区
+        /// 山に隣接していれば建設可能
+        /// 鉱物資源が増える
+        /// </summary>
+        MiningIndustry  = 3000,
 
-        // 漁港
-        FishingPort     = 5000,
-        // 貿易港
-        TradePort       = 5001,
+        /// <summary>
+        /// 伐採地
+        /// 森に隣接していれば建設可能
+        /// 材木資源が増える
+        /// </summary>
+        LoggingArea     = 4000,
 
-        // マーケット
-        Market          = 6000,
+        /// <summary>
+        /// 魔導区
+        /// 魔導系のアイテムクラフトを生成可能になる
+        /// 魔法防御力をを上げる事も可能
+        /// </summary>
+        Witchcrafty     = 5000,
+
+        /// <summary>
+        /// 城塞区
+        /// 町の一区画の防御力を上げることが可能
+        /// 壁とは違う
+        /// 壁はまた別途城壁として建設可能
+        /// </summary>
+        Citadel     = 6000,
     }
 
     /// <summary>
     /// 区域データ
+    /// 地域に設定する情報
+    /// この情報を細かく設定することでその地域から得られる資源が変化する
     /// </summary>
     public class ZoneData
     {
         private uint m_id = 0;
 
         private eZoneType m_zoneType = eZoneType.None;
+
+        // ゾーンタイプの設定
+        public void SetZone(eZoneType zoneType) => m_zoneType = zoneType;
     }
+
+
+
+
+
 
     /// <summary>
     /// 地域データ
@@ -54,6 +86,9 @@ namespace stproj
 
         // 区域データリスト
         private List<ZoneData> m_zoneDataList = new List<ZoneData>();
+
+        // true...レメゲトンポリス
+        private bool m_lemegetonPorisFlag = false;
     }
 
     /// <summary>
@@ -69,6 +104,9 @@ namespace stproj
 
         // true...首都
         private bool m_capitalFlag = false;
+
+        // true...平地に隣接
+        private bool m_adjacentPlaneFlag = false;
 
         // true...森に隣接
         private bool m_adjacentForestFlag = false;

@@ -39,7 +39,7 @@ namespace TGS {
 			tgs = TerrainGridSystem.instance;
 
 			// シード設定
-			tgs.seed = Random.Range(0, 10001);
+			//tgs.seed = Random.Range(0, 10001);
 
 			// セルタッチイベント
 			tgs.OnCellMouseDown += OnCellMouseDown;
