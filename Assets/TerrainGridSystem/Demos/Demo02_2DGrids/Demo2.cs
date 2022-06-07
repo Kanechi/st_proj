@@ -5,7 +5,7 @@ using Sirenix.OdinInspector;
 using UniRx;
 using System.Linq;
 
-using stproj;
+using sfproj;
 
 namespace TGS {
 	
@@ -137,7 +137,7 @@ namespace TGS {
 			List<int> cellsUnderBoxCollider = new List<int>();
 			tgs.CellGetInArea(collider, cellsUnderBoxCollider, resolution, padding, offset);
 
-			// セルが属している領域のセルをすべて非表示にしていく
+			// セルが属しているテリトリのセルをすべて非表示にしていく
 			if (cellsUnderBoxCollider != null) {
 				for (int k = 0; k < cellsUnderBoxCollider.Count; k++) {
 					var cell = tgs.cells[cellsUnderBoxCollider[k]];
@@ -148,8 +148,9 @@ namespace TGS {
 
 		/// <summary>
 		/// 領域の作成
+		/// テリトリを SfDominion に設定して管理
 		/// </summary>
-		public void CreateStTerritory() { 
+		public void CreateSfDominion() { 
 		
 		}
 
@@ -157,8 +158,6 @@ namespace TGS {
 		/// 国の作成
 		/// </summary>
 		public void CreateKingdom() {
-
-
 
 			// 表示している領域をリスト
 			var dispTerritoryList = tgs.territories.Where(t => t.visible == true).ToList();
@@ -187,6 +186,8 @@ namespace TGS {
 
 				// 王国データを設定
 				KingdomData kingdomData = new KingdomData();
+
+				// 王国データにテリトリーインデックスを設定
 			}
 		}
 

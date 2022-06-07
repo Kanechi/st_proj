@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace stproj
+namespace sfproj
 {
     /// <summary>
     /// 区域タイプ
@@ -154,6 +154,10 @@ namespace stproj
         public KingdomData Create(int territoryIndex, Color color) {
 
             var kingdomData = new KingdomData();
+
+            // 名前の設定
+
+            // 
 
             return kingdomData;
         }

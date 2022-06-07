@@ -8,7 +8,7 @@ using UnityEditor;
 
 using Sirenix.OdinInspector;
 
-namespace stproj {
+namespace sfproj {
 
     /// <summary>
     /// ƒQ[ƒ€ƒvƒŒƒCÚ×
@@ -78,19 +78,6 @@ namespace stproj {
             public List<uint> m_areaIdList = new List<uint>();
         }
 
-        public enum eAdjacentTerrainType : uint
-        {
-            // •½’n‚É—×Ú
-            Plane = 1u << 0,
-            // X‚É—×Ú
-            Forest = 1u << 1,
-            // ŠC‚É—×Ú
-            Ocean = 1u << 2,
-            // R‚É—×Ú
-            Mountain = 1u << 3,
-            // ì‚É—×Ú
-            River = 1u << 4,
-        }
 
         /// <summary>
         /// —Ì“yÚ×

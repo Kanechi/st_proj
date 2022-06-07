@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
 
-namespace stproj {
+namespace sfproj {
     public class ConfigController : SingletonMonoBehaviour<ConfigController> {
 
         // ‘å—¤‚Ìƒ^ƒCƒv

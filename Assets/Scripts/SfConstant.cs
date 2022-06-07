@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace stproj {
+namespace sfproj {
 
     /// <summary>
     /// ‘å—¤ƒ^ƒCƒv
@@ -13,7 +13,10 @@ namespace stproj {
         FourLand,
     };
 
-    public class StConstant {
+    /// <summary>
+    /// Spectral Force Constant
+    /// </summary>
+    public class SfConstant {
 
 
     }
