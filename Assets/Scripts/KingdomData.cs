@@ -51,28 +51,28 @@ namespace stproj
         /// 壁とは違う
         /// 壁はまた別途城壁として建設可能
         /// </summary>
-        Citadel     = 6000,
+        Citadel         = 6000,
     }
 
     /// <summary>
-    /// 区域データ
-    /// 地域に設定する情報
-    /// この情報を細かく設定することでその地域から得られる資源が変化する
+    /// 地域タイプ
     /// </summary>
-    public class ZoneData
-    {
-        private uint m_id = 0;
+    public enum eAreaType
+    { 
+        None = -1,
 
-        private eZoneType m_zoneType = eZoneType.None;
+        // 町
+        Town,
 
-        // ゾーンタイプの設定
-        public void SetZone(eZoneType zoneType) => m_zoneType = zoneType;
+        // 城
+        Castle,
+
+        // 要塞
+        StrongHold,
+
+        // レメゲトンポリス
+        LemegetonPoris,
     }
-
-
-
-
-
 
     /// <summary>
     /// 地域データ
@@ -84,41 +84,50 @@ namespace stproj
         // 最大区域数
         private int m_maxZoneCount = 0;
 
-        // 区域データリスト
-        private List<ZoneData> m_zoneDataList = new List<ZoneData>();
+        // 地域タイプ
+        private eAreaType m_areaType = eAreaType.None;
 
-        // true...レメゲトンポリス
-        private bool m_lemegetonPorisFlag = false;
+        // 区域タイプリスト
+        private List<eZoneType> m_zoneTypeList = new List<eZoneType>();
+    }
+
+    public enum eAdjacentType : uint {
+        // 平地に隣接
+        Plane       = 1u << 0,
+        // 森に隣接
+        Forest      = 1u << 1,
+        // 海に隣接
+        Ocean       = 1u << 2,
+        // 山に隣接
+        Mountain    = 1u << 3,
+        // 川に隣接
+        River       = 1u << 4,
     }
 
     /// <summary>
     /// 領域データ
+    /// tgs の領域をタッチした際の情報
     /// </summary>
     public class DominionData
     {
-        // 地域 ID
+        // 領域 ID
         private uint m_id = 0;
 
-        // 地域名
+        // 領域名
         private string m_regionName = "";
 
-        // true...首都
+        // true...探索済み  false...未探索
+        private bool m_exploredFlag = false;
+
+        // true...統治済み  false...未統治
+        private bool m_ruleFlag = false;
+
+        // true...首都(本拠地、城)
         private bool m_capitalFlag = false;
 
-        // true...平地に隣接
-        private bool m_adjacentPlaneFlag = false;
+        // true...隣接
+        private uint m_adjacentFlag = 0;
 
-        // true...森に隣接
-        private bool m_adjacentForestFlag = false;
-
-        // true...海に隣接
-        private bool m_adjacentSeaFlag = false;
-
-        // true...山に隣接
-        private bool m_adjacentMountainFlag = false;
-
-        // true...川に隣接
-        private bool m_adjacentRiverFlag = false;
 
         // 領地地域データリスト
         private List<AreaData> m_areaDataList = new List<AreaData>();
