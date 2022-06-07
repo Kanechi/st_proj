@@ -61,17 +61,24 @@ namespace stproj
     { 
         None = -1,
 
-        // ’¬
-        Town,
+        // “ss
+        Town            = 1000,
 
-        // é
-        Castle,
+        // ñ“s
+        Capital         = 1100,
 
         // —vÇ
-        StrongHold,
+        StrongHold      = 1200,
 
         // ƒŒƒƒQƒgƒ“ƒ|ƒŠƒX
-        LemegetonPoris,
+        LemegetonPoris  = 1300,
+
+
+        // ˆâÕ
+        Remains         = 2000,
+
+        // “´ŒA
+        Cave            = 3000,
     }
 
     /// <summary>
@@ -91,18 +98,7 @@ namespace stproj
         private List<eZoneType> m_zoneTypeList = new List<eZoneType>();
     }
 
-    public enum eAdjacentType : uint {
-        // •½’n‚É—×Ú
-        Plane       = 1u << 0,
-        // X‚É—×Ú
-        Forest      = 1u << 1,
-        // ŠC‚É—×Ú
-        Ocean       = 1u << 2,
-        // R‚É—×Ú
-        Mountain    = 1u << 3,
-        // ì‚É—×Ú
-        River       = 1u << 4,
-    }
+
 
     /// <summary>
     /// —Ìˆæƒf[ƒ^
@@ -115,9 +111,6 @@ namespace stproj
 
         // —Ìˆæ–¼
         private string m_regionName = "";
-
-        // true...’TõÏ‚İ  false...–¢’Tõ
-        private bool m_exploredFlag = false;
 
         // true...“¡Ï‚İ  false...–¢“¡
         private bool m_ruleFlag = false;
