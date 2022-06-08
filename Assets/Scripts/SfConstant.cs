@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UniRx;
+using System.Linq;
 
 namespace sfproj {
 
@@ -18,6 +20,28 @@ namespace sfproj {
     /// </summary>
     public class SfConstant {
 
+        /// <summary>
+        /// ÉÜÉjÅ[ÉN ID ÇÃçÏê¨
+        /// </summary>
+        /// <param name="uniqueIdList"></param>
+        /// <returns></returns>
+        static public uint CreateUniqueId(ref HashSet<uint> uniqueIdList)
+        {
+            uint id = 0;
 
+            if (uniqueIdList.Count > 0)
+            {
+                id = uniqueIdList.Max();
+                id++;
+            }
+            else
+            {
+                id = 1;
+            }
+
+            uniqueIdList.Add(id);
+
+            return id;
+        }
     }
 }

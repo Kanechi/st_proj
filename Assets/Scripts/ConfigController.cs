@@ -6,6 +6,10 @@ using Sirenix.OdinInspector;
 namespace sfproj {
     public class ConfigController : SingletonMonoBehaviour<ConfigController> {
 
+        [Title("ゲーム上で設定可能", horizontalLine: false)]
+
+        [Title("プレイ設定")]
+
         // 大陸のタイプ
         [SerializeField]
         private eLandType m_landType = eLandType.OneLand;
@@ -59,10 +63,49 @@ namespace sfproj {
         private int m_gameFinishYear = 100;
         public int GameFinishYear => m_gameFinishYear;
 
+        [Title("ゲーム上で設定可能", horizontalLine: false)]
 
-        /// <summary>
-        /// 国以外の土地の色
-        /// </summary>
+        [Title("バランス設定")]
+
+        // 領域に出現する地域の最低値
+        [SerializeField]
+        private int m_minAreaValue = 1;
+        public int MinAreaValue => m_minAreaValue;
+
+        // 領域に出現する地域の最大値
+        [SerializeField]
+        private int m_maxAreaValue = 9;
+        public int MaxAreaValue => m_maxAreaValue;
+
+        [Title("町と遺跡と洞窟、合わせて100%", horizontalLine: false)]
+        // 領域の地域に設定される町の割合
+        [SerializeField]
+        private int m_areaTownRate = 80;
+        public int AreaTownRate => m_areaTownRate;
+
+        // 領域の地域に設定される遺跡の割合
+        [SerializeField]
+        private int m_areaRemainsRate = 10;
+        public int AreaRemainsRate => m_areaRemainsRate;
+
+        // 領域の地域に設定される洞窟の割合
+        [SerializeField]
+        private int m_areaCaveRate = 10;
+        public int AreaCaveRate => m_areaCaveRate;
+
+        // 地域に設定される区域の最低値
+        [SerializeField, Range(1, 5)]
+        private int m_minZoneValue = 2;
+        public int MinZoneValue => m_minZoneValue;
+
+        // 地域に設定される区域の最大値
+        [SerializeField, Range(5, 10)]
+        private int m_maxZoneValue = 5;
+        public int MaxZoneValue => m_maxZoneValue;
+
+        [Title("ゲーム上で設定不可")]
+
+        // 国以外の土地の色
         [SerializeField]
         private Color m_landColor;
         public Color LandColor => m_landColor;

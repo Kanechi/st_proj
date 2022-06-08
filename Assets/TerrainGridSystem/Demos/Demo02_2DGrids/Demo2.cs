@@ -148,21 +148,63 @@ namespace TGS {
 
 		/// <summary>
 		/// 領域の作成
+		/// SfDominion を作成
 		/// テリトリを SfDominion に設定して管理
+		/// SfArea を作成
+		/// SfArea を SfDominion に紐づけ
 		/// </summary>
-		public void CreateSfDominion() { 
-		
+		public void CreateWorld() {
+
+			// 表示しているテリトリリストを取得
+			List<Territory> dispTerritoryList = tgs.territories.Where(t => t.visible == true).ToList();
+
+			// 表示されているテリトリの数
+			int dispTerritoryCount = dispTerritoryList.Count;
+
+			// 表示されているテリトリの数だけ領域を作成
+			for (int i = 0; i < dispTerritoryCount; ++i) {
+
+				// 領域を作成しテリトリリストのテリトリインデックスを生成した領域に紐づけ
+				var dominionRecord = SfDominionFactoryManager.Instance.Create(tgs.TerritoryGetIndex(dispTerritoryList[i]));
+
+				// 生成した領域を領域管理にとりつけ
+				SfDominionManager.Instance.DominionRecordList.Add(dominionRecord);
+			}
+
+			// 領域数
+			int dominionCount = SfDominionManager.Instance.DominionRecordList.Count;
+
+			// 生成した領域数分地域をランダムに生成
+			for (int i = 0; i < dominionCount; ++i)
+			{
+				// 領域を取得
+				var dominion = SfDominionManager.Instance.DominionRecordList[i];
+
+				// ランダムな数を設定して地域を生成(最低値は設定可能で１以下は無し、最大値は設定可能)
+				int areaCount = Random.Range(ConfigController.Instance.MinAreaValue, ConfigController.Instance.MaxAreaValue + 1);
+
+				for (int j = 0; j < areaCount; ++j)
+				{
+					// 地域を生成
+
+					// 生成した地域を領域に設定していく
+				}
+			}
+
+
+
 		}
 
 		/// <summary>
 		/// 国の作成
+		/// SfDominion からランダムに国を選定
 		/// </summary>
 		public void CreateKingdom() {
 
-			// 表示している領域をリスト
+			// 表示しているテリトリのリストを取得
 			var dispTerritoryList = tgs.territories.Where(t => t.visible == true).ToList();
 
-			// 表示されている領域の数
+			// 表示されているテリトリの数
 			int dispTerritoryCount = dispTerritoryList.Count;
 
 			// 最大王国数だけランダムに領域を作成
@@ -185,7 +227,7 @@ namespace TGS {
 				dispTerritoryCount = dispTerritoryList.Count;
 
 				// 王国データを設定
-				KingdomData kingdomData = new KingdomData();
+				
 
 				// 王国データにテリトリーインデックスを設定
 			}
