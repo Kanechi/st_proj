@@ -6,6 +6,8 @@ using UnityEngine.Events;
 
 /// <summary>
 /// ポップアップウィンドウ基底
+/// 
+/// ちょい古いので使用は無しで
 /// </summary>
 public class BasePopupWindow : MonoBehaviour
 {

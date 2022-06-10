@@ -1,8 +1,4 @@
-﻿using Framework.CommonUI;
-using Framework;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Framework {
 
