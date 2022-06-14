@@ -4,11 +4,75 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UniRx;
 using System.Linq;
+using Cysharp.Threading.Tasks;
 
 using sfproj;
 
 namespace TGS {
-	
+
+	/// <summary>
+	/// リソース読み込み
+	/// 読み込んだリソースの破棄はまだ未実装
+	/// </summary>
+	public abstract class ResourceLoader
+	{
+		/// <summary>
+		/// リソースローディング
+		/// </summary>
+		private int m_loadingCt = 0;
+		private int m_maxLoadingCt = 0;
+
+		public async UniTask LoadResource<Ty>(string id) where Ty : UnityEngine.Object
+		{
+			m_maxLoadingCt++;
+			await AssetManager.Instance.LoadAsync<Ty>(id, prefab => m_loadingCt++);
+		}
+
+		public bool CheckCompleteResourceLoading() => m_maxLoadingCt == m_loadingCt;
+
+		public void ResetLoadingCount()
+		{
+			m_loadingCt = 0;
+			m_maxLoadingCt = 0;
+		}
+
+		public abstract UniTask OnResourceLoading(List<string> resourceFileNameList);
+	}
+
+	/// <summary>
+	/// テクスチャ2D 用読み込み
+	/// </summary>
+	public class Tex2DResourceLoader : ResourceLoader {
+
+		public override async UniTask OnResourceLoading(List<string> resourceFileNameList)
+		{
+			foreach (string n in resourceFileNameList)
+			{
+				await LoadResource<Texture2D>(n);
+			}
+		}
+
+		static public async UniTask Loading(List<string> resourceFileNameList) {
+
+			var loader = new Tex2DResourceLoader();
+
+			// リソース読み込み
+			await loader.OnResourceLoading(resourceFileNameList);
+
+			// 全てのリソースを読み込んだかチェック
+			while (true)
+			{
+				if (loader.CheckCompleteResourceLoading())
+					break;
+			}
+
+			// 読み込み数をリセット
+			loader.ResetLoadingCount();
+		}
+	}
+
+
+
 	public class Demo2 : SerializedMonoBehaviour {
 
 		TerrainGridSystem tgs;
@@ -18,7 +82,11 @@ namespace TGS {
 
 		private bool m_isInit = false;
 
-		void Start () {
+		[SerializeField]
+		protected List<string> m_resourceNameList = new List<string>();
+		public List<string> ResourceNameList => m_resourceNameList;
+
+		private async UniTaskVoid Start () {
 
 			// setup GUI styles
 			labelStyle = new GUIStyle();
@@ -27,6 +95,9 @@ namespace TGS {
 
 			// TGS の初期化
 			InitializeTgs();
+
+			// リソース読み込み
+			await Tex2DResourceLoader.Loading(m_resourceNameList);
 
 			m_isInit = true;
 		}
@@ -314,6 +385,5 @@ namespace TGS {
 			tgs.CellMerge (cell1, cell2);
 			tgs.Redraw ();
 		}
-
-    }
+	}
 }

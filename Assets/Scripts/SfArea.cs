@@ -143,58 +143,53 @@ namespace sfproj
     ///     遺跡か洞窟になった地域は破壊することはできない
     ///     遺跡の場合は調査することでバフを得られる
     ///     洞窟の場合は探索することで資源やアイテムを得られる
+    ///     
+    /// 2022/06/14
+    ///     ES3 で保存するなら内部で詳細データにすると保管できないな・・・
+    ///     OdinInspector でリストかして表示する際はクラスを一つかます方が見やすいから Serialized する際は何か考えないとかな
+    /// 
     /// </summary>
     [Serializable]
     public class SfAreaRecord
     {
-        /// <summary>
-        /// 地域詳細
-        /// </summary>
-        [Serializable]
-        public class SfAreaDetail
-        {
-            // 地域 ID
-            public uint m_id = 0;
-            // 地域名
-            public string m_name = "";
-            // 属している領域 ID
-            public uint m_dominionId = 0;
-            // 地域インデックス(スクロールのセル番号)
-            public int m_areaIndex = -1;
-            // 地域開拓状態
-            public eAreaDevelopmentState m_areaDevelopmentState = eAreaDevelopmentState.Not;
-            // 地域タイプ
-            public eAreaType m_areaType = eAreaType.None;
+        // 地域 ID (ユニーク ID)
+        public uint m_id = 0;
+        public uint Id { get => m_id; set => m_id = value; }
 
-            // 最大区域数(設定可能な区域の最大数)
-            public int m_maxZoneCount = -1;
-            // 設定されている区域タイプリスト
-            public List<eZoneType> m_zoneTypeList = new List<eZoneType>();
-        }
-        [SerializeField]
-        private SfAreaDetail m_detail = new SfAreaDetail();
-
-        // 地域 ID
-        public uint Id { get => m_detail.m_id; set => m_detail.m_id = value; }
         // 地域名
-        public string Name { get => m_detail.m_name; set => m_detail.m_name = value; }
-        // 属している地域 ID
-        public uint DominionId { get => m_detail.m_dominionId; set => m_detail.m_dominionId = value; }
+        public string m_name = "";
+        public string Name { get => m_name; set => m_name = value; }
+
+        // 属している領域 ID
+        public uint m_dominionId = 0;
+        public uint DominionId { get => m_dominionId; set => m_dominionId = value; }
+
         // 地域インデックス(スクロールのセル番号)
-        public int AreaIndex { get => m_detail.m_areaIndex; set => m_detail.m_areaIndex = value; }
+        public int m_areaIndex = -1;
+        public int AreaIndex { get => m_areaIndex; set => m_areaIndex = value; }
+
         // 地域開拓状態
-        public eAreaDevelopmentState AreaDevelopmentState { get => m_detail.m_areaDevelopmentState; set => m_detail.m_areaDevelopmentState = value; }
+        public eAreaDevelopmentState m_areaDevelopmentState = eAreaDevelopmentState.Not;
+        public eAreaDevelopmentState AreaDevelopmentState { get => m_areaDevelopmentState; set => m_areaDevelopmentState = value; }
+
         // 地域タイプ
-        public eAreaType AreaType { get => m_detail.m_areaType; set => m_detail.m_areaType = value; }
+        public eAreaType m_areaType = eAreaType.None;
+        public eAreaType AreaType { get => m_areaType; set => m_areaType = value; }
+
 
         // 最大区域数(設定可能な区域の最大数)
-        public int MaxZoneCount { get => m_detail.m_maxZoneCount; set => m_detail.m_maxZoneCount = value; }
+        public int m_maxZoneCount = -1;
+        public int MaxZoneCount { get => m_maxZoneCount; set => m_maxZoneCount = value; }
+
         // 設定されている区域タイプリスト
-        public List<eZoneType> ZoneTypeList { get => m_detail.m_zoneTypeList; set => m_detail.m_zoneTypeList = value; }
+        public List<eZoneType> m_zoneTypeList = new List<eZoneType>();
+        public List<eZoneType> ZoneTypeList { get => m_zoneTypeList; set => m_zoneTypeList = value; }
     }
 
+#if false
     /// <summary>
     /// 地域
+    /// これは地域セルである領域スクロールセルになるから必要ない？
     /// </summary>
     public class SfArea : MonoBehaviour
     {
@@ -210,7 +205,7 @@ namespace sfproj
 
         }
     }
-
+#endif
     /// <summary>
     /// 地域生成 工場 基底
     /// 2022/0608
@@ -221,13 +216,13 @@ namespace sfproj
     {
         public SfAreaRecord Create(uint uniqueId, int areaIndex, uint dominionId)
         {
-            var record = CreateRecord();
+            var record = CreateAreaRecord();
 
             // 地域 ID の設定
             record.Id = uniqueId;
 
             // 地域名を設定
-            record.Name = CreateName();
+            record.Name = CreateRandomAreaName();
 
             // 領域 ID を設定
             record.DominionId = dominionId;
@@ -242,10 +237,22 @@ namespace sfproj
             return record;
         }
 
-        protected abstract SfAreaRecord CreateRecord();
+        /// <summary>
+        /// 地域レコードを生成
+        /// </summary>
+        /// <returns></returns>
+        protected abstract SfAreaRecord CreateAreaRecord();
 
-        protected abstract string CreateName();
+        /// <summary>
+        /// 地域名をランダムに生成
+        /// </summary>
+        /// <returns></returns>
+        protected abstract string CreateRandomAreaName();
 
+        /// <summary>
+        /// 地域タイプを設定 (町、遺跡、洞窟)
+        /// </summary>
+        /// <returns></returns>
         protected abstract eAreaType SettingAreaType();
 
         protected abstract int SettingMaxZoneCount();
@@ -256,7 +263,7 @@ namespace sfproj
     /// </summary>
     public abstract class SfAreaCreateFactory : SfAreaFactoryBase
     {
-        protected override SfAreaRecord CreateRecord()
+        protected override SfAreaRecord CreateAreaRecord()
         {
             return new SfAreaRecord();
         }
@@ -267,7 +274,7 @@ namespace sfproj
     /// </summary>
     public class SfAreaFactoryTown : SfAreaCreateFactory
     {
-        protected override string CreateName() { return "test"; }
+        protected override string CreateRandomAreaName() { return "test"; }
 
         protected override eAreaType SettingAreaType() { return eAreaType.Town; }
 
@@ -279,7 +286,7 @@ namespace sfproj
     /// </summary>
     public class SfAreaFactoryRemains : SfAreaCreateFactory
     {
-        protected override string CreateName() { return "test"; }
+        protected override string CreateRandomAreaName() { return "test"; }
 
         protected override eAreaType SettingAreaType() { return eAreaType.Remains; }
 
@@ -291,7 +298,7 @@ namespace sfproj
     /// </summary>
     public class SfAreaFactoryCave : SfAreaCreateFactory
     {
-        protected override string CreateName() { return "test"; }
+        protected override string CreateRandomAreaName() { return "test"; }
 
         protected override eAreaType SettingAreaType() { return eAreaType.Cave; }
 
@@ -348,12 +355,12 @@ namespace sfproj
 
             if (factoryType == -1)
             {
-                Debug.LogError("factoryType == -1");
+                Debug.LogError("factoryType == -1 !!!");
                 return null;
             }
 
             // ユニーク ID の作成
-            uint uniqueId = SfConstant.CreateUniqueId(ref SfAreaManager.Instance.m_uniqueIdList);
+            uint uniqueId = SfConstant.CreateUniqueId(ref SfAreaRecordTableManager.Instance.m_uniqueIdList);
 
             // 地域レコードを作成
             var record = factoryList[factoryType].Create(uniqueId, areaIndex, dominionId);
@@ -364,14 +371,70 @@ namespace sfproj
 
     /// <summary>
     /// 地域 管理
+    /// プレイ中に生成されているすべての SfAreaRecord
+    /// 保存時は別ファイルの別クラスに実装
     /// </summary>
-    public class SfAreaManager : Singleton<SfAreaManager>
+    public class SfAreaRecordTable : RecordTable<SfAreaRecord>
     {
         // ユニーク ID リスト
         public HashSet<uint> m_uniqueIdList = new HashSet<uint>();
 
-        // 地域リスト
-        private List<SfAreaRecord> m_list = new List<SfAreaRecord>();
-        public List<SfAreaRecord> AreaRecordList => m_list;
+        // 登録
+        public void Regist(SfAreaRecord record) => RecordList.Add(record);
+
+        // 地域レコードの取得
+        public override SfAreaRecord Get(uint id) => RecordList.Find(r => r.Id == id);
+    }
+
+    /// <summary>
+    /// 地域レコードテーブル管理
+    /// </summary>
+    public class SfAreaRecordTableManager : SfAreaRecordTable
+    {
+        private static SfAreaRecordTableManager s_instance = null;
+
+        public static SfAreaRecordTableManager Instance {
+
+            get
+            {
+                if (s_instance != null)
+                    return s_instance;
+
+                s_instance = new SfAreaRecordTableManager();
+
+                s_instance.Load();
+
+                return s_instance;
+            }
+        }
+
+        /// <summary>
+        /// 読み込み処理
+        /// </summary>
+        public void Load() {
+
+            var builder = new ESLoadBuilder<SfAreaRecord, SfAreaRecordTable>("SfAreaRecordTable");
+
+            var director = new RecordTableESDirector<SfAreaRecord>(builder);
+
+            director.Construct();
+
+            if (director.GetResult() != null && director.GetResult().RecordList.Count > 0)
+            {
+                m_recordList.AddRange(director.GetResult().RecordList);
+            }
+        }
+
+        /// <summary>
+        /// 保存処理
+        /// </summary>
+        public void Save() {
+
+            var builder = new ESSaveBuilder<SfAreaRecord>("SfAreaRecordTable", this);
+
+            var director = new RecordTableESDirector<SfAreaRecord>(builder);
+
+            director.Construct();
+        }
     }
 }

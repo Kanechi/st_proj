@@ -1,4 +1,4 @@
-﻿#if false
+﻿
 /// <summary>
 /// リクエスト用レコードテーブル解析用ビルダーインターフェース
 /// </summary>
@@ -32,6 +32,7 @@ public class ESLoadBuilder<RecordT, TableT> : BaseRecordTableESBuilder<RecordT>
 
     public override bool Process() {
 
+#if false
         // キーが存在しなかったら false
         if (ES3.KeyExists(m_saveKey, ES_FILE_PATH) == false)
             return false;
@@ -41,7 +42,8 @@ public class ESLoadBuilder<RecordT, TableT> : BaseRecordTableESBuilder<RecordT>
 
         m_recordTable = new TableT();
         m_recordTable.RecordList.AddRange(array);
-        
+#endif
+
         return true;
     }
 }
@@ -62,7 +64,9 @@ public class ESSaveBuilder<RecordT> : BaseRecordTableESBuilder<RecordT> {
 
     public override bool Process() {
 
+#if false
         ES3.Save<RecordT[]>(m_saveKey, m_recordTable.RecordList.ToArray(), ES_FILE_PATH);
+#endif
 
         return true;
     }
@@ -85,4 +89,3 @@ public class RecordTableESDirector<RecordT> {
         m_builder.Process();
     }
 }
-#endif
