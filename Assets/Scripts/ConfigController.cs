@@ -68,39 +68,39 @@ namespace sfproj {
         [Title("バランス設定")]
 
         // 領域に出現する地域の最低値
-        [SerializeField]
-        private int m_minAreaValue = 1;
+        [SerializeField, Range(1, 9)]
+        private int m_minAreaValue = 2;
         public int MinAreaValue => m_minAreaValue;
 
         // 領域に出現する地域の最大値
-        [SerializeField]
-        private int m_maxAreaValue = 9;
+        [SerializeField, Range(1, 9)]
+        private int m_maxAreaValue = 6;
         public int MaxAreaValue => m_maxAreaValue;
 
         [Title("町と遺跡と洞窟、合わせて100%", horizontalLine: false)]
         // 領域の地域に設定される町の割合
-        [SerializeField]
+        [SerializeField, Range(0, 100)]
         private int m_areaTownRate = 80;
         public int AreaTownRate => m_areaTownRate;
 
         // 領域の地域に設定される遺跡の割合
-        [SerializeField]
+        [SerializeField, Range(0, 100)]
         private int m_areaRemainsRate = 10;
         public int AreaRemainsRate => m_areaRemainsRate;
 
         // 領域の地域に設定される洞窟の割合
-        [SerializeField]
+        [SerializeField, Range(0, 100)]
         private int m_areaCaveRate = 10;
         public int AreaCaveRate => m_areaCaveRate;
 
         // 地域に設定される区域の最低値
-        [SerializeField, Range(1, 5)]
-        private int m_minZoneValue = 2;
+        [SerializeField, Range(1, 20)]
+        private int m_minZoneValue = 5;
         public int MinZoneValue => m_minZoneValue;
 
         // 地域に設定される区域の最大値
-        [SerializeField, Range(5, 10)]
-        private int m_maxZoneValue = 5;
+        [SerializeField, Range(1, 20)]
+        private int m_maxZoneValue = 10;
         public int MaxZoneValue => m_maxZoneValue;
 
         [Title("ゲーム上で設定不可")]

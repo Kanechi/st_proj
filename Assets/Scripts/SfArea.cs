@@ -19,10 +19,14 @@ namespace sfproj
     }
 
     /// <summary>
-    /// 地域タイプ
+    /// 地域のタイプ
+    /// 町系は 1000 番台
+    /// 遺跡系は 2000 番台
+    /// 洞窟系は 3000 番台
     /// </summary>
     public enum eAreaType
     {
+        [EnumString("")]
         None = -1,
 
         /// <summary>
@@ -31,6 +35,7 @@ namespace sfproj
         /// 常用的に資源を得るのが目的
         /// 領域の防衛力を上げるのも目的
         /// </summary>
+        [EnumString("debug_town")]
         Town = 1000,
 
         /// <summary>
@@ -39,6 +44,7 @@ namespace sfproj
         /// 首都のある領域が攻め込まれたらゲームオーバーとなるので、
         /// 首都のある領域の地域群は防衛力を大きく上げておく必要がある
         /// </summary>
+        [EnumString("debug_castle")]
         Capital = 1100,
 
         /// <summary>
@@ -46,6 +52,7 @@ namespace sfproj
         /// 防衛力に特化した地域
         /// 資源収入はほぼないが要塞が一つあるだけで、その領域の防衛力がかなり上がる
         /// </summary>
+        [EnumString("debug_twin_town")]
         StrongHold = 1200,
 
         /// <summary>
@@ -54,6 +61,7 @@ namespace sfproj
         /// 特殊な条件でレメゲトンポリスに変化させることが可能
         /// 資源収入が格段にあがり、防衛力もかなりあがる
         /// </summary>
+        [EnumString("debug_castle")]
         LemegetonPoris = 1300,
 
 
@@ -64,6 +72,7 @@ namespace sfproj
         /// 調査は何段階か存在しており、成功するたびに
         /// 期間、または永続的な領域バフを得られる
         /// </summary>
+        [EnumString("debug_remain")]
         Remains = 2000,
 
         /// <summary>
@@ -73,11 +82,52 @@ namespace sfproj
         /// 探索には将軍１人と兵士が必要
         /// 探索に成功すると熟練度が上がり、資源やアイテムを得られる
         /// </summary>
+        [EnumString("debug_cave")]
         Cave = 3000,
     }
 
+    static class eAreaTypeExtention
+    {
+        static readonly private Dictionary<eAreaType, string> s_dic_ = new Dictionary<eAreaType, string>();
+        static eAreaTypeExtention() => EnumStringUtility.ForeachEnumAttribute<eAreaType, EnumStringAttribute>((e, attr) => { s_dic_.Add(e, attr.Value); });
+        static public string ToEnumString(this eAreaType e) => s_dic_[e];
+    }
+
+    /// <summary>
+    /// 地域種のタイプ
+    /// 町、遺跡、洞窟の3タイプ
+    /// </summary>
+    public enum eAreaGroupType {
+
+        [EnumString("")]
+        None = -1,
+
+        // 町
+        [EnumString("area_town_bg_image")]
+        Town,
+
+        // 遺跡
+        [EnumString("area_remain_bg_image")]
+        Remains,
+
+        // 洞窟
+        [EnumString("area_cave_bg_image")]
+        Cave
+    }
+
+    static class eAreaGroupTypeExtention
+    {
+        static readonly private Dictionary<eAreaGroupType, string> s_dic_ = new Dictionary<eAreaGroupType, string>();
+        static eAreaGroupTypeExtention() => EnumStringUtility.ForeachEnumAttribute<eAreaGroupType, EnumStringAttribute>((e, attr) => { s_dic_.Add(e, attr.Value); });
+        static public string ToEnumString(this eAreaGroupType e) => s_dic_[e];
+    }
+
+
     /// <summary>
     /// 区域タイプ
+    /// stellaris は電気、工業、農業、産業区域を別枠で振り分けれるようになっているが
+    /// それをすべて専門枠として扱うような感じ
+    /// 利用できる土地があってそこに区域を振り分けるという考えかた
     /// </summary>
     public enum eZoneType
     {
@@ -172,10 +222,13 @@ namespace sfproj
         public eAreaDevelopmentState m_areaDevelopmentState = eAreaDevelopmentState.Not;
         public eAreaDevelopmentState AreaDevelopmentState { get => m_areaDevelopmentState; set => m_areaDevelopmentState = value; }
 
+        // 地域種タイプ
+        public eAreaGroupType m_areaGroupType = eAreaGroupType.None;
+        public eAreaGroupType AreaGroupType { get => m_areaGroupType; set => m_areaGroupType = value; }
+
         // 地域タイプ
         public eAreaType m_areaType = eAreaType.None;
         public eAreaType AreaType { get => m_areaType; set => m_areaType = value; }
-
 
         // 最大区域数(設定可能な区域の最大数)
         public int m_maxZoneCount = -1;
@@ -186,26 +239,6 @@ namespace sfproj
         public List<eZoneType> ZoneTypeList { get => m_zoneTypeList; set => m_zoneTypeList = value; }
     }
 
-#if false
-    /// <summary>
-    /// 地域
-    /// これは地域セルである領域スクロールセルになるから必要ない？
-    /// </summary>
-    public class SfArea : MonoBehaviour
-    {
-        // Start is called before the first frame update
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
-    }
-#endif
     /// <summary>
     /// 地域生成 工場 基底
     /// 2022/0608
@@ -230,7 +263,11 @@ namespace sfproj
             // 地域インデックスの設定
             record.AreaIndex = areaIndex;
 
+            // 地域種タイプの設定
+            record.AreaGroupType = SettingRandomAreaGroupType();
+
             // 地域タイプの設定
+            record.AreaType = RandomSettingAreaType();
 
             // 最大区域数の設定
 
@@ -249,11 +286,11 @@ namespace sfproj
         /// <returns></returns>
         protected abstract string CreateRandomAreaName();
 
-        /// <summary>
-        /// 地域タイプを設定 (町、遺跡、洞窟)
-        /// </summary>
-        /// <returns></returns>
-        protected abstract eAreaType SettingAreaType();
+        // 地域種タイプを設定
+        protected abstract eAreaGroupType SettingRandomAreaGroupType();
+
+        // ランダムに地域タイプを設定
+        protected abstract eAreaType RandomSettingAreaType();
 
         protected abstract int SettingMaxZoneCount();
     }
@@ -274,9 +311,13 @@ namespace sfproj
     /// </summary>
     public class SfAreaFactoryTown : SfAreaCreateFactory
     {
-        protected override string CreateRandomAreaName() { return "test"; }
+        protected override string CreateRandomAreaName() { return "test_towm"; }
 
-        protected override eAreaType SettingAreaType() { return eAreaType.Town; }
+        // 地域種タイプを設定
+        protected override eAreaGroupType SettingRandomAreaGroupType() { return eAreaGroupType.Town; }
+
+        // 地域タイプをランダムに設定
+        protected override eAreaType RandomSettingAreaType() { return eAreaType.Town; }
 
         protected override int SettingMaxZoneCount() { return UnityEngine.Random.Range(ConfigController.Instance.MinAreaValue, ConfigController.Instance.MaxAreaValue + 1); }
     }
@@ -286,9 +327,13 @@ namespace sfproj
     /// </summary>
     public class SfAreaFactoryRemains : SfAreaCreateFactory
     {
-        protected override string CreateRandomAreaName() { return "test"; }
+        protected override string CreateRandomAreaName() { return "test_reamins"; }
 
-        protected override eAreaType SettingAreaType() { return eAreaType.Remains; }
+        // 地域種タイプを設定
+        protected override eAreaGroupType SettingRandomAreaGroupType() { return eAreaGroupType.Remains; }
+
+        // 地域タイプをランダムに設定
+        protected override eAreaType RandomSettingAreaType() { return eAreaType.Remains; }
 
         protected override int SettingMaxZoneCount() { return UnityEngine.Random.Range(ConfigController.Instance.MinAreaValue, ConfigController.Instance.MaxAreaValue + 1); }
     }
@@ -298,9 +343,13 @@ namespace sfproj
     /// </summary>
     public class SfAreaFactoryCave : SfAreaCreateFactory
     {
-        protected override string CreateRandomAreaName() { return "test"; }
+        protected override string CreateRandomAreaName() { return "test_cave"; }
 
-        protected override eAreaType SettingAreaType() { return eAreaType.Cave; }
+        // 地域種タイプを設定
+        protected override eAreaGroupType SettingRandomAreaGroupType() { return eAreaGroupType.Cave; }
+
+        // 地域タイプをランダムに設定
+        protected override eAreaType RandomSettingAreaType() { return eAreaType.Cave; }
 
         protected override int SettingMaxZoneCount() { return -1; }
     }
@@ -316,9 +365,9 @@ namespace sfproj
 
             factoryList = new List<SfAreaFactoryBase>()
             {
-                 new SfAreaFactoryCave(),
-                 new SfAreaFactoryRemains(),
-                 new SfAreaFactoryTown()
+                new SfAreaFactoryTown(),
+                new SfAreaFactoryRemains(),
+                new SfAreaFactoryCave(),
             };
         }
 
@@ -328,7 +377,7 @@ namespace sfproj
         /// <param name="areaIndex">地域インデックス(セル番号)</param>
         /// <param name="dominionId">属している領域 ID</param>
         /// <returns></returns>
-        public SfAreaRecord Create(int areaIndex, uint dominionId) 
+        public SfAreaRecord RandomCreate(int areaIndex, uint dominionId) 
         {
             // 町か遺跡か洞窟かをランダム
             // 割合は設定できるようにする
@@ -336,20 +385,21 @@ namespace sfproj
 
             int factoryType = -1;
 
-            if (100.0f > rate && (ConfigController.Instance.AreaTownRate + ConfigController.Instance.AreaRemainsRate) <= rate)
+            // 町 (rate が 80 以下なら町)
+            if (ConfigController.Instance.AreaTownRate > rate)
             {
-                // 洞窟
+                // 町
                 factoryType = 0;
             }
-            else if ((ConfigController.Instance.AreaTownRate + ConfigController.Instance.AreaRemainsRate) > rate &&
-                (ConfigController.Instance.AreaTownRate) <= rate)
-            {
+            // 遺跡 (rate が 80 から 90 なら遺跡)
+            else if (ConfigController.Instance.AreaTownRate <= rate && (ConfigController.Instance.AreaTownRate + ConfigController.Instance.AreaRemainsRate) > rate) {
                 // 遺跡
                 factoryType = 1;
             }
-            else if (ConfigController.Instance.AreaTownRate < rate)
+            // 洞窟 (rate が 90 から 100 なら遺跡)
+            else if ((ConfigController.Instance.AreaTownRate + ConfigController.Instance.AreaRemainsRate) <= rate && (ConfigController.Instance.AreaTownRate + ConfigController.Instance.AreaRemainsRate + ConfigController.Instance.AreaCaveRate) > rate)
             {
-                // 町
+                // 洞窟
                 factoryType = 2;
             }
 

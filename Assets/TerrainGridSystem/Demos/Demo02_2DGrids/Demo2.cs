@@ -48,7 +48,7 @@ namespace TGS {
 		{
 			foreach (string n in resourceFileNameList)
 			{
-				await LoadResource<Texture2D>(n);
+				await LoadResource<Sprite>(n);
 			}
 		}
 
@@ -141,7 +141,49 @@ namespace TGS {
 		void OnTerritoryMouseUp(TerrainGridSystem sender, int territoryIndex, int buttonIndex) { 
 		}
 
+		/// <summary>
+		/// 領土スクロールビュー
+		/// </summary>
+		[SerializeField]
+		private DominionScrollView m_dominionScrollView = null;
+
+		/// <summary>
+		/// 王国ウィンドウ
+		///		国旗
+		///		王国名
+		///		国民数
+		///		
+		///		資源もここで表示するかどうか
+		/// </summary>
+
+		/// <summary>
+		/// 領土ウィンドウ
+		/// </summary>
+
+		/// <summary>
+		/// 地域ウィンドウ
+		/// </summary>
+
+		/// <summary>
+		/// サブペインウィンドウ
+		/// </summary>
+
+
+		/// <summary>
+		/// 領域スクロールを開示
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="territoryIndex"></param>
+		/// <param name="buttonIndex"></param>
 		void OnTerritoryClick(TerrainGridSystem sender, int territoryIndex, int buttonIndex){
+
+			// テリトリインデックスから領域レコードを取得
+			var dominionRecord = SfDominionRecordTableManager.Instance.GetAtTerritoryIndex(territoryIndex);
+
+			if (dominionRecord == null)
+				return;
+
+			m_dominionScrollView.Open(dominionRecord);
 		}
 
 		// Parameters to pass through to our new method
@@ -157,9 +199,17 @@ namespace TGS {
 
 		public enum eScenePhase {
 			None = -1,
+			// セルに色を設定
 			SettingCellColor,
+			// テリトリを作成
 			CreateTerritory,
-			CreateKingdom,
+
+			// 世界に領域を作成
+			CreateDominionInWorld,
+			// 世界に地域を作成
+			CreateAreaInWorld,
+			// 世界に王国を作成
+			CreateKingdomInWorld,
 		}
 		public eScenePhase m_scenePhase = 0;
 
@@ -218,13 +268,11 @@ namespace TGS {
 		}
 
 		/// <summary>
-		/// 領域の作成
+		/// 世界における領域の作成
 		/// SfDominion を作成
 		/// テリトリを SfDominion に設定して管理
-		/// SfArea を作成
-		/// SfArea を SfDominion に紐づけ
 		/// </summary>
-		public void CreateWorld() {
+		public void CreateDominionInWorld() {
 
 			// 表示しているテリトリリストを取得
 			List<Territory> dispTerritoryList = tgs.territories.Where(t => t.visible == true).ToList();
@@ -239,38 +287,49 @@ namespace TGS {
 				var dominionRecord = SfDominionFactoryManager.Instance.Create(tgs.TerritoryGetIndex(dispTerritoryList[i]));
 
 				// 生成した領域を領域管理にとりつけ
-				SfDominionManager.Instance.DominionRecordList.Add(dominionRecord);
+				SfDominionRecordTableManager.Instance.Regist(dominionRecord);
 			}
+		}
+
+		/// <summary>
+		/// 世界における地域を作成
+		/// SfArea を作成
+		/// SfArea を SfDominion に紐づけ
+		/// すべて未開拓状態で作成
+		/// </summary>
+		private void CreateAreaInWorld() {
 
 			// 領域数
-			int dominionCount = SfDominionManager.Instance.DominionRecordList.Count;
+			int dominionRecordCount = SfDominionRecordTableManager.Instance.RecordList.Count;
 
 			// 生成した領域数分地域をランダムに生成
-			for (int i = 0; i < dominionCount; ++i)
+			for (int i = 0; i < dominionRecordCount; ++i)
 			{
 				// 領域を取得
-				var dominion = SfDominionManager.Instance.DominionRecordList[i];
+				var dominionRecord = SfDominionRecordTableManager.Instance.RecordList[i];
 
 				// ランダムな数を設定して地域を生成(最低値は設定可能で１以下は無し、最大値は設定可能)
 				int areaCount = Random.Range(ConfigController.Instance.MinAreaValue, ConfigController.Instance.MaxAreaValue + 1);
 
-				for (int j = 0; j < areaCount; ++j)
+				for (int cellNo = 0; cellNo < areaCount; ++cellNo)
 				{
 					// 地域を生成
+					var areaRecord = SfAreaFactoryManager.Instance.RandomCreate(cellNo, dominionRecord.Id);
+
+					SfAreaRecordTableManager.Instance.Regist(areaRecord);
 
 					// 生成した地域を領域に設定していく
+					dominionRecord.AreaIdList.Add(areaRecord.Id);
 				}
 			}
-
-
-
 		}
 
 		/// <summary>
-		/// 国の作成
+		/// 世界に国を作成
 		/// SfDominion からランダムに国を選定
+		/// 選定された SfDominion の地域を開拓状態にして初期設定を行っていく
 		/// </summary>
-		public void CreateKingdom() {
+		public void CreateKingdomInWorld() {
 
 			// 表示しているテリトリのリストを取得
 			var dispTerritoryList = tgs.territories.Where(t => t.visible == true).ToList();
@@ -340,13 +399,28 @@ namespace TGS {
 						m_totalTime += Time.deltaTime;
 						if (m_totalTime >= 0.1f)
 						{
-							m_scenePhase = eScenePhase.CreateKingdom;
+							m_scenePhase = eScenePhase.CreateDominionInWorld;
 						}
 					}
 					break;
-				case eScenePhase.CreateKingdom:
+
+				case eScenePhase.CreateDominionInWorld:
 					{
-						CreateKingdom();
+						CreateDominionInWorld();
+						m_scenePhase = eScenePhase.CreateAreaInWorld;
+					}
+					break;
+
+				case eScenePhase.CreateAreaInWorld:
+					{
+						CreateAreaInWorld();
+						m_scenePhase = eScenePhase.CreateKingdomInWorld;
+					}
+					break;
+
+				case eScenePhase.CreateKingdomInWorld:
+					{
+						CreateKingdomInWorld();
 						m_scenePhase = eScenePhase.None;
 					}
 					break;

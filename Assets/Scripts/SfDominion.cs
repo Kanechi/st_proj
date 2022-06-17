@@ -184,7 +184,7 @@ namespace sfproj
             var factory = new SfDominionFactory();
 
             // ユニーク ID の作成
-            uint uniqueId = SfConstant.CreateUniqueId(ref SfDominionManager.Instance.m_uniqueIdList);
+            uint uniqueId = SfConstant.CreateUniqueId(ref SfDominionRecordTableManager.Instance.m_uniqueIdList);
 
             // 領域レコードを作成
             var record = factory.Create(uniqueId, territoryIndex);
@@ -193,16 +193,66 @@ namespace sfproj
         }
     }
 
-    /// <summary>
-    /// 領域管理
-    /// </summary>
-    public class SfDominionManager : Singleton<SfDominionManager> {
 
+
+    /// 領域 管理
+    /// プレイ中に生成されているすべての SfDominionRecord
+    /// 保存時は別ファイルの別クラスに実装
+    /// </summary>
+    public class SfDominionRecordTable : RecordTable<SfDominionRecord>
+    {
         // ユニーク ID リスト
         public HashSet<uint> m_uniqueIdList = new HashSet<uint>();
 
-        // 領域リスト
-        private List<SfDominionRecord> m_list = new List<SfDominionRecord>();
-        public List<SfDominionRecord> DominionRecordList => m_list;
+        // 登録
+        public void Regist(SfDominionRecord record) => RecordList.Add(record);
+
+        // 領域レコードの取得
+        public override SfDominionRecord Get(uint id) => RecordList.Find(r => r.Id == id);
+
+        public SfDominionRecord GetAtTerritoryIndex(int territoryIndex) => RecordList.Find(r => r.TerritoryIndex == territoryIndex);
+    }
+
+    /// <summary>
+    /// 領域管理
+    /// </summary>
+    public class SfDominionRecordTableManager : SfDominionRecordTable
+    {
+        private static SfDominionRecordTableManager s_instance = null;
+
+        public static SfDominionRecordTableManager Instance
+        {
+            get
+            {
+                if (s_instance != null)
+                    return s_instance;
+
+                s_instance = new SfDominionRecordTableManager();
+                s_instance.Load();
+                return s_instance;
+            }
+        }
+
+        /// <summary>
+        /// 読み込み処理
+        /// </summary>
+        public void Load()
+        {
+            RecordTableESDirector<SfDominionRecord> director = new RecordTableESDirector<SfDominionRecord>(new ESLoadBuilder<SfDominionRecord, SfDominionRecordTable>("SfDominionRecordTable"));
+            director.Construct();
+            if (director.GetResult() != null && director.GetResult().RecordList.Count > 0)
+            {
+                m_recordList.AddRange(director.GetResult().RecordList);
+            }
+        }
+
+        /// <summary>
+        /// 保存処理
+        /// </summary>
+        public void Save()
+        {
+            var director = new RecordTableESDirector<SfDominionRecord>(new ESSaveBuilder<SfDominionRecord>("SfDominionRecordTable", this));
+            director.Construct();
+        }
     }
 }
