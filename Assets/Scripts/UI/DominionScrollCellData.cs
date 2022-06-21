@@ -20,6 +20,10 @@ namespace sfproj
         // 地域画像スプライト
         public Sprite m_areaImageSprite = null;
 
+        // true...開拓済み  false...未開拓
+        public bool IsDevelopment = false;
+
+
         // データが参照しているセル
         public DominionScrollCell Cell { get; set; } = null;
         
@@ -35,6 +39,10 @@ namespace sfproj
 
             // 地域画像スプライトの作成
             m_areaImageSprite = AssetManager.Instance.Get<Sprite>(m_areaRecord.AreaType.ToEnumString());
+
+            // 開拓済みかどうかのチェック
+            if (record.AreaDevelopmentState == eAreaDevelopmentState.Completed)
+                IsDevelopment = true;
         }
     }
 }

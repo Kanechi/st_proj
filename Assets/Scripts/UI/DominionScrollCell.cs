@@ -47,9 +47,18 @@ namespace sfproj
 
         /// <summary>
         /// 地域ウィンドウ開示ボタン
+        /// 開拓ボタン
         /// </summary>
         [SerializeField]
-        public Button m_openAreaWindowBtn = null;
+        public Button m_btn = null;
+
+        /// <summary>
+        /// 未開拓画像
+        /// 開拓済みになったら非表示にする
+        /// </summary>
+        [SerializeField]
+        public Image m_notDevelopmentImage = null;
+
 
         /// <summary>
         /// フォーカス選択中画像
@@ -70,7 +79,7 @@ namespace sfproj
         // Start is called before the first frame update
         void Start()
         {
-            m_openAreaWindowBtn.OnClickAsObservable().Subscribe(_ => OnClicked());
+            m_btn.OnClickAsObservable().Subscribe(_ => OnClicked());
         }
 
         // Update is called once per frame
@@ -103,6 +112,9 @@ namespace sfproj
             // 画像の設定
             m_areaImage.sprite = Data.m_areaImageSprite;
 
+            // 未探索画像の表示設定
+            m_notDevelopmentImage.gameObject.SetActive(!Data.IsDevelopment);
+
             SetSelected(Data.IsSelected);
         }
 
@@ -118,7 +130,29 @@ namespace sfproj
         /// </summary>
         private void OnClicked()
         {
+            // 既に選択されていたら無効
+            if (Data.IsSelected == true)
+                return;
+
+            // フォーカス判定
             Selected?.Invoke(this);
+
+            // ウィンドウ開示処理
+            switch (Data.m_areaRecord.AreaDevelopmentState) {
+                case eAreaDevelopmentState.Not:
+                    {
+                        // 開拓ウィンドウ開示
+                    }
+                    break;
+                case eAreaDevelopmentState.Completed:
+                    {
+                        // 地域ウィンドウ表示
+                    }   
+                    break;
+                default:
+                    // 開拓中の際は処理なし
+                    break;
+            }
         }
     }
 }

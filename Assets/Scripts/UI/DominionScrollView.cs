@@ -7,6 +7,9 @@ using UniRx;
 
 namespace sfproj
 {
+    /// <summary>
+    /// 領域ウィンドウ
+    /// </summary>
     public class DominionScrollView : WindowBase, IEnhancedScrollerDelegate
     {
         // セルサイズ(単位ベクトル)
