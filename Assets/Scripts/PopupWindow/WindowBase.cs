@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Frameworks.Tween;
-
-
+using UnityEngine.UI;
 
 /// <summary>
 /// 基底ウィンドウ
@@ -19,8 +18,8 @@ public abstract class WindowBase : MonoBehaviour {
     /// 画像で存在
 	/// </summary>
     [SerializeField]
-    protected CustomButton closeBtn_ = null;
-    public CustomButton CloseBtn { get => closeBtn_; }
+    protected Button closeBtn_ = null;
+    public Button CloseBtn { get => closeBtn_; }
 
     /// <summary>
     /// tween controller

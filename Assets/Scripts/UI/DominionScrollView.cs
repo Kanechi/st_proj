@@ -36,6 +36,8 @@ namespace sfproj
         protected override void Start()
         {
             base.Start();
+
+            closeBtn_.OnClickAsObservable().Subscribe(_ => { Close(); });
             
             // 画面高さを取得
             float height = Screen.height;
@@ -66,6 +68,20 @@ namespace sfproj
 
             SelectedImageSize = new Vector2(heightOneThird * 0.2f, heightOneThird * 0.2f);
         }
+
+        /// <summary>
+        /// 領域をタッチした際アクティブ化されての同じフレームでは ReloadData() が反映されないので
+        /// 次フレーム以降で ReloadData しなければならない。そのためのイベントで、
+        /// 領域スクロールビュー開示時イベントに処理を代入し処理完了後に null を代入する
+        /// </summary>
+        private UnityAction m_openedReloadDataEvent = null;
+
+        private void Update()
+        {
+            m_openedReloadDataEvent?.Invoke();
+        }
+
+
 
         /// <summary>
         /// 領域 ID からデータリストを作成
@@ -108,11 +124,17 @@ namespace sfproj
 
             CreateData(dominionRecord);
 
+            m_openedReloadDataEvent = OpenedReloadData;
+
+            return true;
+        }
+
+        private void OpenedReloadData() {
             m_scroller.Delegate = this;
 
             m_scroller.ReloadData();
 
-            return true;
+            m_openedReloadDataEvent = null;
         }
 
         // 閉じる際の処理
