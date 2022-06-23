@@ -7,19 +7,23 @@ using System.Linq;
 
 namespace sfproj
 {
-
-    public enum eAdjacentTerrainType : uint
+    /// <summary>
+    /// 領域に存在する地形
+    /// 地形によって区域に設置できるものやトレードで販売しているものなどいろいろなものが変化する
+    /// </summary>
+    public enum eExistingTerrain : uint
     {
-        // 平地に隣接
+        // 平原
         Plane = 1u << 0,
-        // 森に隣接
+        // 森
         Forest = 1u << 1,
-        // 海に隣接
-        Ocean = 1u << 2,
-        // 山に隣接
-        Mountain = 1u << 3,
-        // 川に隣接
-        River = 1u << 4,
+        // 山
+        Mountain = 1u << 2,
+        // 川
+        River = 1u << 3,
+
+        // 海(隣接するテラインに非表示が存在するなら海に隣接している)
+        Ocean = 1u << 4,
     }
 
     /// <summary>
@@ -33,54 +37,37 @@ namespace sfproj
     [Serializable]
     public class SfDominionRecord
     {
-        /// <summary>
-        /// 領域詳細
-        /// </summary>
-        [Serializable]
-        public class SfDominionDetail
-        {
-            // 領域 ID
-            public uint m_id = 0;
-            // 領域名
-            public string m_name = "";
-            // テリトリインデックス
-            public int m_territoryIndex = -1;
-
-            // true...統治済み
-            public bool m_ruleFlag = false;
-            // 統治している王国 ID (0...統治されていない)
-            public uint m_kingdomId = 0;
-            // true...首都
-            public bool m_capitalFlag = false;
-
-            // 隣接地形タイプ
-            public eAdjacentTerrainType m_adjacentTerrainType = 0;
-
-            // 地域 ID リスト
-            public List<uint> m_sfAreaIdList = new List<uint>();
-        }
-
-        [SerializeField]
-        private SfDominionDetail m_detail = new SfDominionDetail();
-
         // 領域 ID
-        public uint Id { get => m_detail.m_id; set => m_detail.m_id = value; }
+        public uint m_id = 0;
+        public uint Id { get => m_id; set => m_id = value; }
+
         // 領域名
-        public string Name { get => m_detail.m_name; set => m_detail.m_name = value; }
+        public string m_name = "";
+        public string Name { get => m_name; set => m_name = value; }
+
         // テリトリインデックス
-        public int TerritoryIndex { get => m_detail.m_territoryIndex; set => m_detail.m_territoryIndex = value; }
+        public int m_territoryIndex = -1;
+        public int TerritoryIndex { get => m_territoryIndex; set => m_territoryIndex = value; }
 
-        // 統治済みフラグ
-        public bool RuleFlag { get => m_detail.m_ruleFlag; set => m_detail.m_ruleFlag = value; }
+        // true...統治済み
+        public bool m_ruleFlag = false;
+        public bool RuleFlag { get => m_ruleFlag; set => m_ruleFlag = value; }
+
+
         // 統治している王国 ID (0...統治されていない)
-        public uint GovernKingdomId { get => m_detail.m_kingdomId; set => m_detail.m_kingdomId = value; }
-        // 首都フラグ
-        public bool CapitalFlag { get => m_detail.m_capitalFlag; set => m_detail.m_capitalFlag = value; }
+        public uint m_kingdomId = 0;
+        public uint GovernKingdomId { get => m_kingdomId; set => m_kingdomId = value; }
 
-        // 隣接地形タイプ
-        public eAdjacentTerrainType AdjacentTerrainType { get => m_detail.m_adjacentTerrainType; set => m_detail.m_adjacentTerrainType = value; }
+        // true...首都
+        public bool m_capitalFlag = false;
+        public bool CapitalFlag { get => m_capitalFlag; set => m_capitalFlag = value; }
+
+        // 領域に存在する地形
+        public eExistingTerrain m_existingTerrain = 0;
+        public eExistingTerrain ExistingTerrain { get => m_existingTerrain; set => m_existingTerrain = value; }
         // 地域 ID リスト
-        public List<uint> AreaIdList { get => m_detail.m_sfAreaIdList; set => m_detail.m_sfAreaIdList = value; }
+        public List<uint> m_sfAreaIdList = new List<uint>();
+        public List<uint> AreaIdList { get => m_sfAreaIdList; set => m_sfAreaIdList = value; }
     }
 
     /// <summary>
@@ -124,7 +111,7 @@ namespace sfproj
             record.TerritoryIndex = territoryIndex;
 
             // 隣接地形タイプの設定
-            record.AdjacentTerrainType = CreateAdjacentTerrainType();
+            record.ExistingTerrain = SettingExistingTerrain(territoryIndex);
 
             return record;
         }
@@ -136,7 +123,7 @@ namespace sfproj
         protected abstract string CreateName();
 
         // 隣接地形タイプの設定
-        protected abstract eAdjacentTerrainType CreateAdjacentTerrainType();
+        protected abstract eExistingTerrain SettingExistingTerrain(int territoryIndex);
     }
 
     /// <summary>
@@ -161,10 +148,42 @@ namespace sfproj
             return "test";
         }
 
-        // 隣接地形タイプの設定
-        protected override eAdjacentTerrainType CreateAdjacentTerrainType()
+        // 存在する地形の設定
+        protected override eExistingTerrain SettingExistingTerrain(int territoryIndex)
         {
-            return eAdjacentTerrainType.Plane;
+            eExistingTerrain terrain = 0;
+
+            // この部分は確率
+            terrain |= eExistingTerrain.Plane;
+            terrain |= eExistingTerrain.Mountain;
+            terrain |= eExistingTerrain.Forest;
+            terrain |= eExistingTerrain.River;
+
+            if (CheckAdjastingOceanTerrain(territoryIndex))
+            {
+                terrain |= eExistingTerrain.Ocean;
+            }
+
+            return terrain;
+        }
+
+        /// <summary>
+        /// 海に隣接しているかチェック
+        /// 隣接しているテリトリに１つでも非表示があれば海
+        /// </summary>
+        /// <returns>true...海に隣接している</returns>
+        private bool CheckAdjastingOceanTerrain(int territoryIndex)
+        {
+            var territory = TGS.TerrainGridSystem.instance.territories[territoryIndex];
+
+            var neighbours = territory.neighbours;
+
+            foreach (var t in neighbours) {
+                if (t.visible == false)
+                    return true;
+            }
+
+            return false;
         }
     }
 

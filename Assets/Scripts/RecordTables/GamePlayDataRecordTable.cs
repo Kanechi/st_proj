@@ -98,7 +98,7 @@ namespace sfproj {
             public string m_name = "";
 
             // 隣接地形フラグ
-            public eAdjacentTerrainType m_adjacentTerrainTypeFlag = 0;
+            public eExistingTerrain m_existingTerrain = 0;
         }
 
         /// <summary>
