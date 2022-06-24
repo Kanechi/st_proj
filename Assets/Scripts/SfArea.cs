@@ -19,6 +19,26 @@ namespace sfproj
     }
 
     /// <summary>
+    /// 地域に存在する地形
+    /// 地形によって区域に設置できるものやトレードで販売しているものなどいろいろなものが変化する
+    /// 海のみ領域が海に面しているかを判定して設定する
+    /// </summary>
+    public enum eExistingTerrain : uint
+    {
+        // 平原
+        Plane = 1u << 0,
+        // 森
+        Forest = 1u << 1,
+        // 山
+        Mountain = 1u << 2,
+        // 川
+        River = 1u << 3,
+
+        // 海(隣接するテラインに非表示が存在するなら海に隣接している)
+        Ocean = 1u << 4,
+    }
+
+    /// <summary>
     /// 地域のタイプ
     /// 町系は 1000 番台
     /// 遺跡系は 2000 番台
@@ -230,6 +250,10 @@ namespace sfproj
         public eAreaType m_areaType = eAreaType.None;
         public eAreaType AreaType { get => m_areaType; set => m_areaType = value; }
 
+        // 地域に存在する地形
+        public eExistingTerrain m_existingTerrain = 0;
+        public eExistingTerrain ExistingTerrain { get => m_existingTerrain; set => m_existingTerrain = value; }
+
         // 最大区域数(設定可能な区域の最大数)
         public int m_maxZoneCount = -1;
         public int MaxZoneCount { get => m_maxZoneCount; set => m_maxZoneCount = value; }
@@ -269,6 +293,9 @@ namespace sfproj
             // 地域タイプの設定
             record.AreaType = RandomSettingAreaType();
 
+            // 隣接地形タイプの設定
+            record.ExistingTerrain = SettingExistingTerrain(SfDominionRecordTableManager.Instance.Get(dominionId));
+
             // 最大区域数の設定
 
             return record;
@@ -292,7 +319,11 @@ namespace sfproj
         // ランダムに地域タイプを設定
         protected abstract eAreaType RandomSettingAreaType();
 
-        protected abstract int SettingMaxZoneCount();
+        // 隣接地形タイプの設定
+        protected abstract eExistingTerrain SettingExistingTerrain(SfDominionRecord dominion);
+
+        // 最大区域数の計算
+        protected abstract int CulcMaxZoneCount();
     }
 
     /// <summary>
@@ -319,7 +350,54 @@ namespace sfproj
         // 地域タイプをランダムに設定
         protected override eAreaType RandomSettingAreaType() { return eAreaType.Town; }
 
-        protected override int SettingMaxZoneCount() { return UnityEngine.Random.Range(ConfigController.Instance.MinAreaValue, ConfigController.Instance.MaxAreaValue + 1); }
+        // 存在する地形の設定
+        protected override eExistingTerrain SettingExistingTerrain(SfDominionRecord dominion)
+        {
+            eExistingTerrain terrain = 0;
+
+            // 平原、山、森、海、は確率分布だが、重複も可能なのでそれぞれをそれぞれだけの割合で計算
+            float rate = UnityEngine.Random.value * 100.0f;
+
+            // 平原
+            if (ConfigController.Instance.DistributionRatioPlane > rate)
+            {
+                terrain |= eExistingTerrain.Plane;
+            }
+
+            // 山
+            if (ConfigController.Instance.DistributionRatioMountain > rate)
+            {
+                terrain |= eExistingTerrain.Mountain;
+            }
+
+            // 森
+            if (ConfigController.Instance.DistributionRatioForest > rate)
+            {
+                terrain |= eExistingTerrain.Forest;
+            }
+
+            // 川
+            if (ConfigController.Instance.DistributionRatioRiver > rate)
+            {
+                terrain |= eExistingTerrain.River;
+            }
+
+            // 海のみ領域が海に面しているかどうかをチェックしてフラグを立てる
+            if (dominion.NeighboursOceanFlag == true)
+            {
+                terrain |= eExistingTerrain.Ocean;
+            }
+
+            // 何も地形が無かった場合は平原を設定
+            if (terrain == 0)
+                terrain |= eExistingTerrain.Plane;
+
+            return terrain;
+        }
+
+
+        // 区域最大数の計算
+        protected override int CulcMaxZoneCount() { return UnityEngine.Random.Range(ConfigController.Instance.MinAreaValue, ConfigController.Instance.MaxAreaValue + 1); }
     }
 
     /// <summary>
@@ -335,7 +413,13 @@ namespace sfproj
         // 地域タイプをランダムに設定
         protected override eAreaType RandomSettingAreaType() { return eAreaType.Remains; }
 
-        protected override int SettingMaxZoneCount() { return UnityEngine.Random.Range(ConfigController.Instance.MinAreaValue, ConfigController.Instance.MaxAreaValue + 1); }
+        // 存在する地形の設定 (遺跡は地形効果はきにしない)
+        protected override eExistingTerrain SettingExistingTerrain(SfDominionRecord dominion)
+        {
+            return 0;
+        }
+
+        protected override int CulcMaxZoneCount() { return UnityEngine.Random.Range(ConfigController.Instance.MinAreaValue, ConfigController.Instance.MaxAreaValue + 1); }
     }
 
     /// <summary>
@@ -351,7 +435,13 @@ namespace sfproj
         // 地域タイプをランダムに設定
         protected override eAreaType RandomSettingAreaType() { return eAreaType.Cave; }
 
-        protected override int SettingMaxZoneCount() { return -1; }
+        // 存在する地形の設定 (洞窟は地形効果はきにしない)
+        protected override eExistingTerrain SettingExistingTerrain(SfDominionRecord dominion)
+        {
+            return 0;
+        }
+
+        protected override int CulcMaxZoneCount() { return -1; }
     }
 
     /// <summary>

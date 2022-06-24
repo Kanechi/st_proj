@@ -103,6 +103,28 @@ namespace sfproj {
         private int m_maxZoneValue = 10;
         public int MaxZoneValue => m_maxZoneValue;
 
+        [Title("地形の分布")]
+
+        // 平原が分布される割合
+        [SerializeField, Range(0, 100)]
+        private int m_distributionRatioPlane = 80;
+        public int DistributionRatioPlane => m_distributionRatioPlane;
+
+        // 山が分布される割合
+        [SerializeField, Range(0, 100)]
+        private int m_distributionRatioMountain = 20;
+        public int DistributionRatioMountain => m_distributionRatioMountain;
+
+        // 森が分布される割合
+        [SerializeField, Range(0, 100)]
+        private int m_distributionRatiofForest = 30;
+        public int DistributionRatioForest => m_distributionRatiofForest;
+
+        // 川が分布される割合
+        [SerializeField, Range(0, 100)]
+        private int m_distributionRatioRiver = 5;
+        public int DistributionRatioRiver => m_distributionRatioRiver;
+
         [Title("ゲーム上で設定不可")]
 
         // 国以外の土地の色

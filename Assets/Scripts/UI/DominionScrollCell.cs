@@ -22,7 +22,7 @@ namespace sfproj
         /// 背景
         /// </summary>
         [SerializeField]
-        public Image m_bg = null;
+        private Image m_bg = null;
 
         RectTransform m_bgRect = null;
         RectTransform BgRect => m_bgRect != null ? m_bgRect : m_bgRect = m_bg.gameObject.GetComponent<RectTransform>();
@@ -31,7 +31,7 @@ namespace sfproj
         /// マスク画像
         /// </summary>
         [SerializeField]
-        public Image m_maskBg = null;
+        private Image m_maskBg = null;
 
         RectTransform m_maskRect = null;
         RectTransform MaskRect => m_maskRect != null ? m_maskRect : m_maskRect = m_maskBg.gameObject.GetComponent<RectTransform>();
@@ -40,7 +40,7 @@ namespace sfproj
         /// 地域画像(町、城、遺跡、洞窟)
         /// </summary>
         [SerializeField]
-        public Image m_areaImage = null;
+        private Image m_areaImage = null;
 
         RectTransform m_selectedImageRect = null;
         RectTransform SelectedImageRect => m_selectedImageRect != null ? m_selectedImageRect : m_selectedImageRect = m_selectedImage.gameObject.GetComponent<RectTransform>();
@@ -50,21 +50,27 @@ namespace sfproj
         /// 開拓ボタン
         /// </summary>
         [SerializeField]
-        public Button m_btn = null;
+        private Button m_btn = null;
 
         /// <summary>
         /// 未開拓画像
         /// 開拓済みになったら非表示にする
         /// </summary>
         [SerializeField]
-        public Image m_notDevelopmentImage = null;
+        private Image m_notDevelopmentImage = null;
+
+        /// <summary>
+        /// 地域に存在している地形のアイコン
+        /// </summary>
+        [SerializeField]
+        private Image[] m_terrainIconArray = null;
 
 
         /// <summary>
         /// フォーカス選択中画像
         /// </summary>
         [SerializeField]
-        public Image m_selectedImage = null;
+        private Image m_selectedImage = null;
 
         /// <summary>
         /// 現在設定されている領域セルデータ
@@ -115,7 +121,24 @@ namespace sfproj
             // 未探索画像の表示設定
             m_notDevelopmentImage.gameObject.SetActive(!Data.IsDevelopment);
 
+            // 地形アイコンの表示非表示設定
+            SettingTerrainIcon();
+
             SetSelected(Data.IsSelected);
+        }
+
+        private eExistingTerrain[] m_existingTerrains = {
+            eExistingTerrain.Plane,
+            eExistingTerrain.Mountain,
+            eExistingTerrain.Forest,
+            eExistingTerrain.River,
+            eExistingTerrain.Ocean,
+        };
+
+        private void SettingTerrainIcon() {
+            for (int i = 0; i < 5; ++i)
+                m_terrainIconArray[i].gameObject.SetActive((Data.m_areaRecord.ExistingTerrain & m_existingTerrains[i]) != 0);
+
         }
 
         public void SetSelected(bool select)

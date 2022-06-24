@@ -7,24 +7,7 @@ using System.Linq;
 
 namespace sfproj
 {
-    /// <summary>
-    /// 領域に存在する地形
-    /// 地形によって区域に設置できるものやトレードで販売しているものなどいろいろなものが変化する
-    /// </summary>
-    public enum eExistingTerrain : uint
-    {
-        // 平原
-        Plane = 1u << 0,
-        // 森
-        Forest = 1u << 1,
-        // 山
-        Mountain = 1u << 2,
-        // 川
-        River = 1u << 3,
 
-        // 海(隣接するテラインに非表示が存在するなら海に隣接している)
-        Ocean = 1u << 4,
-    }
 
     /// <summary>
     /// 領域詳細レコード
@@ -62,14 +45,16 @@ namespace sfproj
         public bool m_capitalFlag = false;
         public bool CapitalFlag { get => m_capitalFlag; set => m_capitalFlag = value; }
 
-        // 領域に存在する地形
-        public eExistingTerrain m_existingTerrain = 0;
-        public eExistingTerrain ExistingTerrain { get => m_existingTerrain; set => m_existingTerrain = value; }
+        // true...海に隣接している
+        public bool m_neighboursOceanFlag = false;
+        public bool NeighboursOceanFlag { get => m_neighboursOceanFlag; set => m_neighboursOceanFlag = value; }
+
         // 地域 ID リスト
         public List<uint> m_sfAreaIdList = new List<uint>();
         public List<uint> AreaIdList { get => m_sfAreaIdList; set => m_sfAreaIdList = value; }
     }
 
+#if false
     /// <summary>
     /// 領域
     /// スクロールビューの情報
@@ -88,6 +73,7 @@ namespace sfproj
 
         }
     }
+#endif
 
     /// <summary>
     /// 領域生成工場  基底
@@ -110,8 +96,8 @@ namespace sfproj
             // テリトリインデックスの設定
             record.TerritoryIndex = territoryIndex;
 
-            // 隣接地形タイプの設定
-            record.ExistingTerrain = SettingExistingTerrain(territoryIndex);
+            // 海に隣接しているかどうかのフラグを設定
+            record.m_neighboursOceanFlag = CheckAdjastingOceanTerrain(territoryIndex);
 
             return record;
         }
@@ -122,8 +108,25 @@ namespace sfproj
         // 領域名の作成
         protected abstract string CreateName();
 
-        // 隣接地形タイプの設定
-        protected abstract eExistingTerrain SettingExistingTerrain(int territoryIndex);
+        /// <summary>
+        /// 海に隣接しているかチェック
+        /// 隣接しているテリトリに１つでも非表示があれば海
+        /// </summary>
+        /// <returns>true...海に隣接している</returns>
+        private bool CheckAdjastingOceanTerrain(int territoryIndex)
+        {
+            var territory = TGS.TerrainGridSystem.instance.territories[territoryIndex];
+
+            var neighbours = territory.neighbours;
+
+            foreach (var t in neighbours)
+            {
+                if (t.visible == false)
+                    return true;
+            }
+
+            return false;
+        }
     }
 
     /// <summary>
@@ -148,43 +151,7 @@ namespace sfproj
             return "test";
         }
 
-        // 存在する地形の設定
-        protected override eExistingTerrain SettingExistingTerrain(int territoryIndex)
-        {
-            eExistingTerrain terrain = 0;
 
-            // この部分は確率
-            terrain |= eExistingTerrain.Plane;
-            terrain |= eExistingTerrain.Mountain;
-            terrain |= eExistingTerrain.Forest;
-            terrain |= eExistingTerrain.River;
-
-            if (CheckAdjastingOceanTerrain(territoryIndex))
-            {
-                terrain |= eExistingTerrain.Ocean;
-            }
-
-            return terrain;
-        }
-
-        /// <summary>
-        /// 海に隣接しているかチェック
-        /// 隣接しているテリトリに１つでも非表示があれば海
-        /// </summary>
-        /// <returns>true...海に隣接している</returns>
-        private bool CheckAdjastingOceanTerrain(int territoryIndex)
-        {
-            var territory = TGS.TerrainGridSystem.instance.territories[territoryIndex];
-
-            var neighbours = territory.neighbours;
-
-            foreach (var t in neighbours) {
-                if (t.visible == false)
-                    return true;
-            }
-
-            return false;
-        }
     }
 
     /// <summary>
