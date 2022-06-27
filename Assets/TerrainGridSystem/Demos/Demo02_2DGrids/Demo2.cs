@@ -341,25 +341,20 @@ namespace TGS {
 			for (int i = 0; i < ConfigController.Instance.KingdomCount; ++i)
 			{
 				// ランダムに領土を領域に選定
-				Territory kingdom = dispTerritoryList[Random.Range(0, dispTerritoryCount)];
+				Territory kingdomTerritory = dispTerritoryList[Random.Range(0, dispTerritoryCount)];
 
 				// 自身の王国のみ設定した色を使用
 				Color color = i == 0 ? ConfigController.Instance.KingdomColor : Random.ColorHSV();
 				color.a = 0.4f;
 
 				// 王国の色を設定
-				foreach (var cell in kingdom.cells)
+				foreach (var cell in kingdomTerritory.cells)
 					tgs.CellSetColor(cell, color);
 
 				// 王国にした領土を territoryList から外す
-				dispTerritoryList.Remove(kingdom);
+				dispTerritoryList.Remove(kingdomTerritory);
 				// 領域数を更新
 				dispTerritoryCount = dispTerritoryList.Count;
-
-				// 王国データを設定
-				
-
-				// 王国データにテリトリーインデックスを設定
 			}
 		}
 

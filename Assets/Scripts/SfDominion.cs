@@ -7,8 +7,6 @@ using System.Linq;
 
 namespace sfproj
 {
-
-
     /// <summary>
     /// 領域詳細レコード
     /// 領域の開拓システムは無い
