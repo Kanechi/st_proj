@@ -397,7 +397,7 @@ namespace sfproj
 
 
         // ãÊàÊç≈ëÂêîÇÃåvéZ
-        protected override int CulcMaxZoneCount() { return UnityEngine.Random.Range(ConfigController.Instance.MinAreaValue, ConfigController.Instance.MaxAreaValue + 1); }
+        protected override int CulcMaxZoneCount() { return UnityEngine.Random.Range(ConfigController.Instance.MinZoneValue, ConfigController.Instance.MaxZoneValue + 1); }
     }
 
     /// <summary>
@@ -419,7 +419,7 @@ namespace sfproj
             return 0;
         }
 
-        protected override int CulcMaxZoneCount() { return UnityEngine.Random.Range(ConfigController.Instance.MinAreaValue, ConfigController.Instance.MaxAreaValue + 1); }
+        protected override int CulcMaxZoneCount() { return -1; }
     }
 
     /// <summary>

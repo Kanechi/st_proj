@@ -86,6 +86,12 @@ namespace TGS {
 		protected List<string> m_resourceNameList = new List<string>();
 		public List<string> ResourceNameList => m_resourceNameList;
 
+		/// <summary>
+		/// デバッグ用名前リストテンプレート
+		/// </summary>
+		[SerializeField]
+		private NameListObject m_nameListObj;
+
 		private async UniTaskVoid Start () {
 
 			// setup GUI styles
@@ -100,6 +106,11 @@ namespace TGS {
 			await Tex2DResourceLoader.Loading(m_resourceNameList);
 
 			m_isInit = true;
+
+
+			NameCreateDirector director = new NameCreateDirector(new NameCreateNatural());
+
+			director.Construct(10, m_nameListObj.Get(NameListObject.eCreateNameCategory.CzechF));
 		}
 
 		/// <summary>
@@ -309,7 +320,12 @@ namespace TGS {
 				var dominionRecord = SfDominionRecordTableManager.Instance.RecordList[i];
 
 				// ランダムな数を設定して地域を生成(最低値は設定可能で１以下は無し、最大値は設定可能)
-				int areaCount = Random.Range(ConfigController.Instance.MinAreaValue, ConfigController.Instance.MaxAreaValue + 1);
+				int areaIncDec = Random.Range(0, ConfigController.Instance.AreaIncDecValue + 1);
+
+				// 領域のテリトリにあるセルの数を取得
+				var cellCount = tgs.territories[dominionRecord.m_territoryIndex].cells.Count;
+
+				int areaCount = cellCount <= areaIncDec ? cellCount : cellCount + areaIncDec;
 
 				for (int cellNo = 0; cellNo < areaCount; ++cellNo)
 				{
@@ -334,8 +350,20 @@ namespace TGS {
 			// 表示しているテリトリのリストを取得
 			var dispTerritoryList = tgs.territories.Where(t => t.visible == true).ToList();
 
+			// テリトリから領域を取得
+			var dominionList = new List<SfDominionRecord>();
+			foreach (Territory t in dispTerritoryList)
+			{
+				dominionList.Add(SfDominionRecordTableManager.Instance.GetAtTerritoryIndex(tgs.TerritoryGetIndex(t)));
+			}
+
 			// 表示されているテリトリの数
 			int dispTerritoryCount = dispTerritoryList.Count;
+
+			// 最大王国数だけ王国を作成
+			for (int i = 0; i < ConfigController.Instance.KingdomCount; ++i)
+			{
+			}
 
 			// 最大王国数だけランダムに領域を作成
 			for (int i = 0; i < ConfigController.Instance.KingdomCount; ++i)

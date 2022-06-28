@@ -48,6 +48,11 @@ namespace sfproj {
         private Color m_kingdomColor;
         public Color KingdomColor => m_kingdomColor;
 
+        /// <summary>
+        /// ここから下は SPUM で作成予定
+        /// SPUM でランダム作成した際にたぶん ID があるだろうからそれを保存
+        /// </summary>
+
         // リーダーの髪型
         // リーダーの髪色
         // リーダーの体大きさ
@@ -67,15 +72,10 @@ namespace sfproj {
 
         [Title("バランス設定")]
 
-        // 領域に出現する地域の最低値
-        [SerializeField, Range(1, 9)]
-        private int m_minAreaValue = 2;
-        public int MinAreaValue => m_minAreaValue;
-
-        // 領域に出現する地域の最大値
-        [SerializeField, Range(1, 9)]
-        private int m_maxAreaValue = 6;
-        public int MaxAreaValue => m_maxAreaValue;
+        // 領域に出現する地域の増減数(セルの数+-)
+        [SerializeField, Range(0, 2)]
+        private int m_areaIncDecValue = 1;
+        public int AreaIncDecValue => m_areaIncDecValue;
 
         [Title("町と遺跡と洞窟、合わせて100%", horizontalLine: false)]
         // 領域の地域に設定される町の割合

@@ -34,28 +34,45 @@ namespace sfproj
         public List<uint> DominionIdList { get => m_sfDominionIdList; set => m_sfDominionIdList = value; }
 
         // 国民の数
+        public uint m_population = 0;
+        public uint Population { get => m_population; set => m_population = value; }
 
-        // 
+        // 資源とかは別枠？
     }
 
+    /// <summary>
+    /// 王国生成工場基底
+    /// </summary>
     public abstract class SfKingdomFactoryBase
     {
         public SfKingdomRecord Create(uint uniqueId)
         {
             var record = CreateRecord();
 
+            // ユニーク ID 設定
             record.Id = uniqueId;
 
+            // 王国名設定
             record.Name = CreateName();
+
+            // 王国カラー設定
+            record.Color = SettingColor();
 
             return record;
         }
 
+        // レコード生成
         protected abstract SfKingdomRecord CreateRecord();
 
+        // 王国名生成
         protected abstract string CreateName();
+        // 王国カラーの設定
+        protected abstract Color SettingColor();
     }
 
+    /// <summary>
+    /// 王国生成工場
+    /// </summary>
     public abstract class SfKingdomFactory : SfKingdomFactoryBase
     {
         protected override SfKingdomRecord CreateRecord()
@@ -64,18 +81,47 @@ namespace sfproj
         }
     }
 
-    // 自国の生成
+    /// <summary>
+    /// 自国の生成
+    /// 自国の生成はゲーム開始前に設定した項目を設定
+    /// </summary>
+    public class SfSelfKingdomFactory : SfKingdomFactory
+    {
+        // 王国名生成
+        protected override string CreateName() {
+            return ConfigController.Instance.KingdomName;
+        }
+
+        // 王国カラーの設定
+        protected override Color SettingColor() {
+            return ConfigController.Instance.KingdomColor;
+        }
+    }
 
 
     // その他の国のランダム生成
     // ある程度の国を事前に作成しておいて割り振るだけに
     // とどめるか、すべて０から作成するか・・・
+    public class SfOtherKingdomFactory : SfKingdomFactory
+    {
+        // 王国名生成
+        protected override string CreateName()
+        {
+            return "test";
+        }
+
+        // 王国カラーの設定
+        protected override Color SettingColor()
+        {
+            return new Color(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value, 0.6f);
+        }
+    }
 
     /// <summary>
     /// 王国工場管理
     /// </summary>
     public class SfKingdomFactoryManager : Singleton<SfKingdomFactoryManager>
-    { 
+    {
     }
 
     /// <summary>
