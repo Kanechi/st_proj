@@ -23,6 +23,11 @@ namespace sfproj
         public uint m_id = 0;
         public uint Id { get => m_id; set => m_id = value; }
 
+        // 国からみて何番目に手に入れた領域なのかの番号
+        // 奪われたり取り返したりすると番号は変わる
+        public int m_dominionIndex = 0;
+        public int DominionIndex { get => m_dominionIndex; set => m_dominionIndex = value; }
+
         // 領域名
         public string m_name = "";
         public string Name { get => m_name; set => m_name = value; }
@@ -36,9 +41,9 @@ namespace sfproj
         public bool RuleFlag { get => m_ruleFlag; set => m_ruleFlag = value; }
 
 
-        // 統治している王国 ID (0...統治されていない)
-        public uint m_kingdomId = 0;
-        public uint GovernKingdomId { get => m_kingdomId; set => m_kingdomId = value; }
+        // 統治している王国 ID (-1...統治されていない)
+        public int m_kingdomId = -1;
+        public int GovernKingdomId { get => m_kingdomId; set => m_kingdomId = value; }
 
         // true...首都
         public bool m_capitalFlag = false;
@@ -52,27 +57,6 @@ namespace sfproj
         public List<uint> m_sfAreaIdList = new List<uint>();
         public List<uint> AreaIdList { get => m_sfAreaIdList; set => m_sfAreaIdList = value; }
     }
-
-#if false
-    /// <summary>
-    /// 領域
-    /// スクロールビューの情報
-    /// </summary>
-    public class SfDominion : MonoBehaviour
-    {
-        // Start is called before the first frame update
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
-    }
-#endif
 
     /// <summary>
     /// 領域生成工場  基底
@@ -196,6 +180,46 @@ namespace sfproj
         public override SfDominionRecord Get(uint id) => RecordList.Find(r => r.Id == id);
 
         public SfDominionRecord GetAtTerritoryIndex(int territoryIndex) => RecordList.Find(r => r.TerritoryIndex == territoryIndex);
+
+        /// <summary>
+        /// 統治済みのフラグの変更
+        /// </summary>
+        /// <param name="dominionId"></param>
+        /// <param name="ruleFlag"></param>
+        public void ChangeRuleFlag(uint dominionId, bool ruleFlag) => Get(dominionId).RuleFlag = ruleFlag;
+
+        /// <summary>
+        /// 王国 ID の変更
+        /// </summary>
+        /// <param name="dominionId"></param>
+        /// <param name="kingdomId"></param>
+        public void ChangeKingdomId(uint dominionId, int kingdomId) => Get(dominionId).GovernKingdomId = kingdomId;
+
+        /// <summary>
+        /// 拠点フラグの変更
+        /// </summary>
+        /// <param name="dominionId"></param>
+        /// <param name="capitalFlag"></param>
+        public void ChangeCapitalFlag(uint dominionId, bool capitalFlag) => Get(dominionId).CapitalFlag = capitalFlag;
+
+        /// <summary>
+        /// インデックスの一番小さい地域 ID を取得
+        /// </summary>
+        /// <param name="dominionId"></param>
+        /// <param name="groupType"></param>
+        /// <returns></returns>
+        public uint GetMinimumCellIndexArea(uint dominionId, eAreaGroupType groupType = eAreaGroupType.None) {
+            var areaIdList = Get(dominionId).AreaIdList;
+            uint minimumAreaId = 0;
+            foreach (uint areaId in areaIdList) {
+                SfAreaRecord areaRecord = SfAreaRecordTableManager.Instance.Get(areaId);
+                if (areaRecord.AreaGroupType == groupType) {
+                    minimumAreaId = areaId;
+                    break;
+                }
+            }
+            return minimumAreaId;
+        }
     }
 
     /// <summary>

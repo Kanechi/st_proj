@@ -115,16 +115,16 @@ namespace sfproj
 
     /// <summary>
     /// 地域種のタイプ
-    /// 町、遺跡、洞窟の3タイプ
+    /// 平地、遺跡、洞窟の3タイプ
     /// </summary>
     public enum eAreaGroupType {
 
         [EnumString("")]
         None = -1,
 
-        // 町
+        // 平地
         [EnumString("area_town_bg_image")]
-        Town,
+        Plane,
 
         // 遺跡
         [EnumString("area_remain_bg_image")]
@@ -151,14 +151,33 @@ namespace sfproj
     /// </summary>
     public enum eZoneType
     {
+        /// <summary>
+        /// 何も設定されていない
+        /// 破壊した際もこれに設定
+        /// </summary>
         None = -1,
 
         /// <summary>
-        /// 農業区
+        /// 生産区_田畑
         /// 平地に隣接していれば建設可能
         /// 食料資源が増加
         /// </summary>
-        Agriculture = 1000,
+        Production_Fields = 1000,
+        Production_Fishery = 1001,
+
+        /// <summary>
+        /// 生産区_採掘所
+        /// 山に隣接していれば建設可能
+        /// 鉱物資源が増える
+        /// </summary>
+        Production_Mining = 1010,
+
+        /// <summary>
+        /// 生産区_伐採所
+        /// 森に隣接していれば建設可能
+        /// 材木資源が増加
+        /// </summary>
+        Production_LoggingArea = 1020,
 
         /// <summary>
         /// 商業区
@@ -166,29 +185,21 @@ namespace sfproj
         /// さまざまなアイテムをトレード可能になる
         /// 町の特産品なども増える
         /// </summary>
-        Commercial = 2000,
+        Commercial_MarketPlace  = 2000,
+        Commercial_TradingPost  = 2010,
+        // 港：海に面していないと設置不可
+        Commercial_Harbor       = 2020,
 
-        /// <summary>
-        /// 鉱業区
-        /// 山に隣接していれば建設可能
-        /// 鉱物資源が増える
-        /// </summary>
-        MiningIndustry = 3000,
 
-        /// <summary>
-        /// 伐採地
-        /// 森に隣接していれば建設可能
-        /// 材木資源が増加
-        /// </summary>
-        LoggingArea = 4000,
 
         /// <summary>
         /// 魔導区
         /// 魔力資源が増加
-        /// 魔導系のアイテムクラフトを生成可能になる
+        /// 魔導系のアイテムクラフトを生成可能
         /// 魔法防御力をを上げる事も可能
         /// </summary>
-        Witchcrafty = 5000,
+        Witchcrafty_MagicItemWorkshop = 3000,
+        Witchcrafty_RuneEngravedStone = 3010,
 
         /// <summary>
         /// 城塞区
@@ -196,7 +207,7 @@ namespace sfproj
         /// 壁とは違う
         /// 壁はまた別途城壁として建設可能
         /// </summary>
-        Citadel = 6000,
+        Citadel = 4000,
     }
 
     /// <summary>
@@ -237,6 +248,15 @@ namespace sfproj
         // 地域インデックス(スクロールのセル番号)
         public int m_areaIndex = -1;
         public int AreaIndex { get => m_areaIndex; set => m_areaIndex = value; }
+
+        /// <summary>
+        /// true...拠点
+        /// 拠点が戦争時に攻め込まれた際の防衛の値に直結する
+        /// 拠点にした町のバフが戦争時に大きく影響
+        /// 拠点にすることでその町特有のバフがいろいろと影響する
+        /// </summary>
+        public bool m_baseFlag = false;
+        public bool BaseFlag { get => m_baseFlag; set => m_baseFlag = value; }
 
         // 地域開拓状態
         public eAreaDevelopmentState m_areaDevelopmentState = eAreaDevelopmentState.Not;
@@ -338,14 +358,14 @@ namespace sfproj
     }
 
     /// <summary>
-    /// 地域 町 生成 工場
+    /// 地域 平地 生成 工場
     /// </summary>
-    public class SfAreaFactoryTown : SfAreaCreateFactory
+    public class SfAreaFactoryPlane : SfAreaCreateFactory
     {
-        protected override string CreateRandomAreaName() { return "test_towm"; }
+        protected override string CreateRandomAreaName() { return "test_plane"; }
 
         // 地域種タイプを設定
-        protected override eAreaGroupType SettingRandomAreaGroupType() { return eAreaGroupType.Town; }
+        protected override eAreaGroupType SettingRandomAreaGroupType() { return eAreaGroupType.Plane; }
 
         // 地域タイプをランダムに設定
         protected override eAreaType RandomSettingAreaType() { return eAreaType.Town; }
@@ -455,7 +475,7 @@ namespace sfproj
 
             factoryList = new List<SfAreaFactoryBase>()
             {
-                new SfAreaFactoryTown(),
+                new SfAreaFactoryPlane(),
                 new SfAreaFactoryRemains(),
                 new SfAreaFactoryCave(),
             };
@@ -467,33 +487,35 @@ namespace sfproj
         /// <param name="areaIndex">地域インデックス(セル番号)</param>
         /// <param name="dominionId">属している領域 ID</param>
         /// <returns></returns>
-        public SfAreaRecord RandomCreate(int areaIndex, uint dominionId) 
+        public SfAreaRecord RandomCreate(int areaIndex, uint dominionId, eAreaGroupType factoryType = eAreaGroupType.None)
         {
             // 町か遺跡か洞窟かをランダム
             // 割合は設定できるようにする
             float rate = UnityEngine.Random.value * 100.0f;
 
-            int factoryType = -1;
-
-            // 町 (rate が 80 以下なら町)
-            if (ConfigController.Instance.AreaTownRate > rate)
+            if (factoryType == eAreaGroupType.None)
             {
-                // 町
-                factoryType = 0;
-            }
-            // 遺跡 (rate が 80 から 90 なら遺跡)
-            else if (ConfigController.Instance.AreaTownRate <= rate && (ConfigController.Instance.AreaTownRate + ConfigController.Instance.AreaRemainsRate) > rate) {
-                // 遺跡
-                factoryType = 1;
-            }
-            // 洞窟 (rate が 90 から 100 なら遺跡)
-            else if ((ConfigController.Instance.AreaTownRate + ConfigController.Instance.AreaRemainsRate) <= rate && (ConfigController.Instance.AreaTownRate + ConfigController.Instance.AreaRemainsRate + ConfigController.Instance.AreaCaveRate) > rate)
-            {
-                // 洞窟
-                factoryType = 2;
+                // 町 (rate が 80 以下なら町)
+                if (ConfigController.Instance.AreaTownRate > rate)
+                {
+                    // 町
+                    factoryType = eAreaGroupType.Plane;
+                }
+                // 遺跡 (rate が 80 から 90 なら遺跡)
+                else if (ConfigController.Instance.AreaTownRate <= rate && (ConfigController.Instance.AreaTownRate + ConfigController.Instance.AreaRemainsRate) > rate)
+                {
+                    // 遺跡
+                    factoryType = eAreaGroupType.Remains;
+                }
+                // 洞窟 (rate が 90 から 100 なら遺跡)
+                else if ((ConfigController.Instance.AreaTownRate + ConfigController.Instance.AreaRemainsRate) <= rate && (ConfigController.Instance.AreaTownRate + ConfigController.Instance.AreaRemainsRate + ConfigController.Instance.AreaCaveRate) > rate)
+                {
+                    // 洞窟
+                    factoryType = eAreaGroupType.Cave;
+                }
             }
 
-            if (factoryType == -1)
+            if (factoryType == eAreaGroupType.None)
             {
                 Debug.LogError("factoryType == -1 !!!");
                 return null;
@@ -503,7 +525,7 @@ namespace sfproj
             uint uniqueId = SfConstant.CreateUniqueId(ref SfAreaRecordTableManager.Instance.m_uniqueIdList);
 
             // 地域レコードを作成
-            var record = factoryList[factoryType].Create(uniqueId, areaIndex, dominionId);
+            var record = factoryList[(int)factoryType].Create(uniqueId, areaIndex, dominionId);
 
             return record;
         }
@@ -524,6 +546,43 @@ namespace sfproj
 
         // 地域レコードの取得
         public override SfAreaRecord Get(uint id) => RecordList.Find(r => r.Id == id);
+
+        /// <summary>
+        /// 拠点の変更
+        /// </summary>
+        /// <param name="areaId"></param>
+        /// <param name=""></param>
+        public void ChangeBaseFlag(uint areaId, bool baseFlag) {
+            Get(areaId).BaseFlag = baseFlag;
+        }
+
+        /// <summary>
+        /// 開拓状態の変更
+        /// </summary>
+        /// <param name="areaId"></param>
+        /// <param name="state"></param>
+        public void ChangeDevelopmentState(uint areaId, eAreaDevelopmentState state) {
+            Get(areaId).AreaDevelopmentState = state;
+        }
+
+        /// <summary>
+        /// 地域の区域に指定の区域タイプを変更する
+        /// </summary>
+        /// <param name="areaId"></param>
+        /// <param name="index"></param>
+        /// <param name="zoneType"></param>
+        public void ChangeZoneType(uint areaId, int index, eZoneType zoneType) {
+
+            var record = Get(areaId);
+
+            if (index >= record.MaxZoneCount)
+            {
+                Debug.LogWarning("index >= record.MaxZoneCount !!!");
+                return;
+            }
+
+            record.ZoneTypeList[index] = zoneType;
+        }
     }
 
     /// <summary>

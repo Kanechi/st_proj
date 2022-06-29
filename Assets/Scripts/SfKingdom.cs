@@ -17,9 +17,9 @@ namespace sfproj
     [Serializable]
     public class SfKingdomRecord
     {
-        // 王国 ID
-        public uint m_id = 0;
-        public uint Id { get => m_id; set => m_id = value; }
+        // 王国 ID (もしネットワークを作成する場合はサーバーIDに準拠)
+        public int m_id = 0;
+        public int Id { get => m_id; set => m_id = value; }
 
         // 王国名
         public string m_name = "";
@@ -29,6 +29,10 @@ namespace sfproj
         public Color m_color = Color.white;
         public Color Color { get => m_color; set => m_color = value; }
 
+        // true...自分の国
+        public bool m_selfFlag = false;
+        public bool SelfFlag { get => m_selfFlag; set => m_selfFlag = value; }
+
         // 領域 ID リスト
         public List<uint> m_sfDominionIdList = new List<uint>();
         public List<uint> DominionIdList { get => m_sfDominionIdList; set => m_sfDominionIdList = value; }
@@ -36,8 +40,6 @@ namespace sfproj
         // 国民の数
         public uint m_population = 0;
         public uint Population { get => m_population; set => m_population = value; }
-
-        // 資源とかは別枠？
     }
 
     /// <summary>
@@ -45,7 +47,7 @@ namespace sfproj
     /// </summary>
     public abstract class SfKingdomFactoryBase
     {
-        public SfKingdomRecord Create(uint uniqueId)
+        public SfKingdomRecord Create(int uniqueId)
         {
             var record = CreateRecord();
 
@@ -53,10 +55,13 @@ namespace sfproj
             record.Id = uniqueId;
 
             // 王国名設定
-            record.Name = CreateName();
+            CreateName(record);
 
             // 王国カラー設定
-            record.Color = SettingColor();
+            SettingColor(record);
+
+            // 自分の国かどうかのフラグの設定
+            SettingSelfFlag(record);
 
             return record;
         }
@@ -65,9 +70,11 @@ namespace sfproj
         protected abstract SfKingdomRecord CreateRecord();
 
         // 王国名生成
-        protected abstract string CreateName();
+        protected abstract void CreateName(SfKingdomRecord record);
         // 王国カラーの設定
-        protected abstract Color SettingColor();
+        protected abstract void SettingColor(SfKingdomRecord record);
+
+        protected abstract void SettingSelfFlag(SfKingdomRecord record);
     }
 
     /// <summary>
@@ -88,13 +95,19 @@ namespace sfproj
     public class SfSelfKingdomFactory : SfKingdomFactory
     {
         // 王国名生成
-        protected override string CreateName() {
-            return ConfigController.Instance.KingdomName;
+        protected override void CreateName(SfKingdomRecord record) {
+            record.Name = ConfigController.Instance.KingdomName;
         }
 
         // 王国カラーの設定
-        protected override Color SettingColor() {
-            return ConfigController.Instance.KingdomColor;
+        protected override void SettingColor(SfKingdomRecord record) {
+            record.Color = ConfigController.Instance.KingdomColor;
+        }
+
+        // 自分の国かどうかのフラグ
+        protected override void SettingSelfFlag(SfKingdomRecord record)
+        {
+            record.SelfFlag = true;
         }
     }
 
@@ -105,15 +118,21 @@ namespace sfproj
     public class SfOtherKingdomFactory : SfKingdomFactory
     {
         // 王国名生成
-        protected override string CreateName()
+        protected override void CreateName(SfKingdomRecord record)
         {
-            return "test";
+            record.Name = "test";
         }
 
         // 王国カラーの設定
-        protected override Color SettingColor()
+        protected override void SettingColor(SfKingdomRecord record)
         {
-            return new Color(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value, 0.6f);
+            record.Color = new Color(UnityEngine.Random.value, UnityEngine.Random.value, UnityEngine.Random.value, 0.6f);
+        }
+
+        // 自分の国かどうかのフラグ
+        protected override void SettingSelfFlag(SfKingdomRecord record)
+        {
+            record.SelfFlag = false;
         }
     }
 
@@ -122,6 +141,29 @@ namespace sfproj
     /// </summary>
     public class SfKingdomFactoryManager : Singleton<SfKingdomFactoryManager>
     {
+        public SfKingdomRecord Create(bool selfKingdom)
+        {
+            SfKingdomFactoryBase factory = null;
+
+            if (selfKingdom)
+            {
+                factory = new SfSelfKingdomFactory();
+            }
+            else
+            {
+                factory = new SfOtherKingdomFactory();
+            }
+
+            // ユニーク ID
+            //uint uniqueId = SfConstant.CreateUniqueId(ref SfKingdomRecordTableManager.Instance.m_uniqueIdList);
+
+            // 領域レコード
+            var record = factory.Create(SfKingdomRecordTableManager.Instance.m_uniqueId);
+
+            SfKingdomRecordTableManager.Instance.m_uniqueId++;
+
+            return record;
+        }
     }
 
     /// <summary>
@@ -131,7 +173,7 @@ namespace sfproj
     public class SfKingdomRecordTable : RecordTable<SfKingdomRecord>
     {
         // ユニーク ID リスト
-        public HashSet<uint> m_uniqueIdList = new HashSet<uint>();
+        public int m_uniqueId = 0;
 
         // 登録
         public void Regist(SfKingdomRecord record) => RecordList.Add(record);

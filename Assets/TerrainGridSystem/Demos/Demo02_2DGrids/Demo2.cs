@@ -303,7 +303,7 @@ namespace TGS {
 		}
 
 		/// <summary>
-		/// 世界における地域を作成
+		/// 世界の領域に存在する地域を作成
 		/// SfArea を作成
 		/// SfArea を SfDominion に紐づけ
 		/// すべて未開拓状態で作成
@@ -327,7 +327,8 @@ namespace TGS {
 
 				int areaCount = cellCount <= areaIncDec ? cellCount : cellCount + areaIncDec;
 
-				for (int cellNo = 0; cellNo < areaCount; ++cellNo)
+				int cellNo = 0;
+				while (cellNo < areaCount)
 				{
 					// 地域を生成
 					var areaRecord = SfAreaFactoryManager.Instance.RandomCreate(cellNo, dominionRecord.Id);
@@ -336,6 +337,35 @@ namespace TGS {
 
 					// 生成した地域を領域に設定していく
 					dominionRecord.AreaIdList.Add(areaRecord.Id);
+
+					cellNo++;
+				}
+
+				// スクロールセルのすべてが遺跡と洞窟に割り当てられてないかをチェック
+				// 町が１でもないとだめなのでチェック
+
+				bool isOk = false;
+				foreach (var areaId in dominionRecord.AreaIdList) {
+
+					var areaRecord = SfAreaRecordTableManager.Instance.Get(areaId);
+
+					if (areaRecord.AreaGroupType == eAreaGroupType.Plane) {
+						isOk = true;
+						break;
+					}
+				}
+
+				// 平地が無かった場合は
+				if (isOk == false) {
+					// 平地を追加
+					var areaRecord = SfAreaFactoryManager.Instance.RandomCreate(cellNo, dominionRecord.Id, eAreaGroupType.Plane);
+
+					SfAreaRecordTableManager.Instance.Regist(areaRecord);
+
+					// 生成した地域を領域に設定していく
+					dominionRecord.AreaIdList.Add(areaRecord.Id);
+
+					cellNo++;
 				}
 			}
 		}
@@ -347,44 +377,127 @@ namespace TGS {
 		/// </summary>
 		public void CreateKingdomInWorld() {
 
-			// 表示しているテリトリのリストを取得
-			var dispTerritoryList = tgs.territories.Where(t => t.visible == true).ToList();
+			int kingdomCount = ConfigController.Instance.KingdomCount;
 
-			// テリトリから領域を取得
-			var dominionList = new List<SfDominionRecord>();
-			foreach (Territory t in dispTerritoryList)
+			// 自身の王国を作成する
 			{
-				dominionList.Add(SfDominionRecordTableManager.Instance.GetAtTerritoryIndex(tgs.TerritoryGetIndex(t)));
+				var kingdomRecord = SfKingdomFactoryManager.Instance.Create(true);
+
+				SfKingdomRecordTableManager.Instance.Regist(kingdomRecord);
+
+				kingdomCount--;
 			}
 
-			// 表示されているテリトリの数
-			int dispTerritoryCount = dispTerritoryList.Count;
-
-			// 最大王国数だけ王国を作成
-			for (int i = 0; i < ConfigController.Instance.KingdomCount; ++i)
+			// 自身の国を除いた数分の最大王国数だけその他の王国を作成
+			for (int i = 0; i < kingdomCount; ++i)
 			{
+				var kingdomRecord = SfKingdomFactoryManager.Instance.Create(false);
+
+				SfKingdomRecordTableManager.Instance.Regist(kingdomRecord);
 			}
 
-			// 最大王国数だけランダムに領域を作成
+			// 生成した王国に領域を割り当てていく
+
+			// 領域リスト
+			var dominionRecordList = SfDominionRecordTableManager.Instance.RecordList.ToList();
+
+			// 領域の数
+			int dominionCount = dominionRecordList.Count;
+
+			// 最大王国数だけランダムに領域を色分け
 			for (int i = 0; i < ConfigController.Instance.KingdomCount; ++i)
 			{
-				// ランダムに領土を領域に選定
-				Territory kingdomTerritory = dispTerritoryList[Random.Range(0, dispTerritoryCount)];
+				// ランダムに領域を選択
+				var dominionRecord = dominionRecordList[Random.Range(0, dominionCount)];
 
 				// 自身の王国のみ設定した色を使用
 				Color color = i == 0 ? ConfigController.Instance.KingdomColor : Random.ColorHSV();
 				color.a = 0.4f;
 
-				// 王国の色を設定
-				foreach (var cell in kingdomTerritory.cells)
+				// 領域からテリトリを取得
+				var territory = tgs.territories[dominionRecord.m_territoryIndex];
+
+				// テリトリの色を王国の色に設定
+				foreach (var cell in territory.cells)
 					tgs.CellSetColor(cell, color);
 
-				// 王国にした領土を territoryList から外す
-				dispTerritoryList.Remove(kingdomTerritory);
+				// 王国に領域 ID を設定
+				var kingdomRecord = SfKingdomRecordTableManager.Instance.Get((uint)i);
+				kingdomRecord.m_sfDominionIdList.Add(dominionRecord.Id);
+
+				// 領域番号(領域を手に入れた順の番号)
+				int dominionIndex = 0;
+
+				// ゲーム開始時領域の初期化
+				StartInitializeDominion(kingdomRecord.Id, dominionRecord.Id, dominionIndex);
+
+
+				// 王国にした領域を外す
+				dominionRecordList.Remove(dominionRecord);
 				// 領域数を更新
-				dispTerritoryCount = dispTerritoryList.Count;
+				dominionCount = dominionRecordList.Count;
+			}
+
+
+
+		}
+
+		/// <summary>
+		/// 王国に割り当てられた領域の初期化
+		/// </summary>
+		/// <param name="dominionRecord"></param>
+		private void StartInitializeDominion(int kingdomId, uint dominionId, int index) {
+
+			// 王国 ID を変更
+			SfDominionRecordTableManager.Instance.ChangeKingdomId(dominionId, kingdomId);
+
+			// 占領フラグを設定
+			SfDominionRecordTableManager.Instance.ChangeRuleFlag(dominionId, true);
+
+			// 領域の０番を首都領域として設定
+			if (index == 0)
+				SfDominionRecordTableManager.Instance.ChangeCapitalFlag(dominionId, true);
+
+			// 領域の地域を初期化
+
+			// インデックスの一番小さい平地の地域 IDを取得
+			var minimumPlaneAreaId = SfDominionRecordTableManager.Instance.GetMinimumCellIndexArea(dominionId, eAreaGroupType.Plane);
+
+
+			// 地域レコードを取得
+			var areaRecord = SfAreaRecordTableManager.Instance.Get(minimumPlaneAreaId);
+
+			// 地域をアンロック
+			areaRecord.AreaDevelopmentState = eAreaDevelopmentState.Completed;
+
+			// アンロックした地域を拠点として設定
+			areaRecord.BaseFlag = true;
+
+			// 初期区域を設定(川だけに面していた場合何も設置されない)
+			if ((areaRecord.ExistingTerrain & eExistingTerrain.Plane) != 0)
+			{
+				// アンロックした地域が平地に面していたら田畑を設定
+				SfAreaRecordTableManager.Instance.ChangeZoneType(minimumPlaneAreaId, 0, eZoneType.Production_Fields);
+			}
+			else if ((areaRecord.ExistingTerrain & eExistingTerrain.Mountain) != 0)
+			{
+				// アンロックした地域が山に面していたら採掘所を設定
+				SfAreaRecordTableManager.Instance.ChangeZoneType(minimumPlaneAreaId, 0, eZoneType.Production_Mining);
+			}
+			else if ((areaRecord.ExistingTerrain & eExistingTerrain.Forest) != 0)
+			{
+				// アンロックした地域が森に面していたら伐採所を設定
+				SfAreaRecordTableManager.Instance.ChangeZoneType(minimumPlaneAreaId, 0, eZoneType.Production_LoggingArea);
+			}
+			else if ((areaRecord.ExistingTerrain & eExistingTerrain.Ocean) != 0)
+			{
+				// アンロックした地域が海に面していたら港を設定
+				SfAreaRecordTableManager.Instance.ChangeZoneType(minimumPlaneAreaId, 0, eZoneType.Commercial_Harbor);
 			}
 		}
+
+
+
 
 		// 合計時間
 		float m_totalTime = 0.0f;
