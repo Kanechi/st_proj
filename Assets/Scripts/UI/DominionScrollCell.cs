@@ -15,6 +15,8 @@ namespace sfproj
     /// </summary>
     public class DominionScrollCell : EnhancedScrollerCellView
     {
+        static float BaseCellSize = 164.0f;
+
         private RectTransform m_rectTransform;
         public RectTransform RectTransform => m_rectTransform != null ? m_rectTransform : m_rectTransform = GetComponent<RectTransform>();
 
@@ -72,6 +74,9 @@ namespace sfproj
         [SerializeField]
         private Image m_selectedImage = null;
 
+        [SerializeField]
+        private RectTransform m_existTerrainListRect = null;
+
         /// <summary>
         /// 現在設定されている領域セルデータ
         /// </summary>
@@ -103,6 +108,9 @@ namespace sfproj
             // 名称設定
             name = data.m_areaRecord.m_name;
 
+            // サイズチェック
+            float size = DominionScrollView.CellSize.x / BaseCellSize;
+
             // 背景サイズの設定
             BgRect.sizeDelta = DominionScrollView.CellSize;
 
@@ -124,21 +132,39 @@ namespace sfproj
             // 地形アイコンの表示非表示設定
             SettingTerrainIcon();
 
+            SettingTerrainIconSize(size);
+
+            var sizeDelta = m_existTerrainListRect.sizeDelta;
+            sizeDelta.x = 150.0f * size;
+            m_existTerrainListRect.sizeDelta = sizeDelta;
+
             SetSelected(Data.IsSelected);
         }
 
         private eExistingTerrain[] m_existingTerrains = {
             eExistingTerrain.Plane,
-            eExistingTerrain.Mountain,
             eExistingTerrain.Forest,
+            eExistingTerrain.Mountain,
             eExistingTerrain.River,
             eExistingTerrain.Ocean,
         };
 
         private void SettingTerrainIcon() {
             for (int i = 0; i < 5; ++i)
-                m_terrainIconArray[i].gameObject.SetActive((Data.m_areaRecord.ExistingTerrain & m_existingTerrains[i]) != 0);
+            {
+                //m_terrainIconArray[i].gameObject.SetActive();
+                m_terrainIconArray[i].enabled = ((Data.m_areaRecord.ExistingTerrain & m_existingTerrains[i]) != 0);
+            }
+        }
 
+        private void SettingTerrainIconSize(float size) {
+            foreach (var icon in m_terrainIconArray)
+            {
+                var scale = icon.transform.localScale;
+                scale.x = size;
+                scale.y = size;
+                icon.transform.localScale = scale;
+            }
         }
 
         public void SetSelected(bool select)
