@@ -376,27 +376,32 @@ namespace sfproj
             eExistingTerrain terrain = 0;
 
             // 平原、山、森、海、は確率分布だが、重複も可能なのでそれぞれをそれぞれだけの割合で計算
-            float rate = UnityEngine.Random.value * 100.0f;
+
 
             // 平原
+            float rate = UnityEngine.Random.value * 100.0f;
             if (ConfigController.Instance.DistributionRatioPlane > rate)
             {
                 terrain |= eExistingTerrain.Plane;
             }
 
             // 山
+            rate = UnityEngine.Random.value * 100.0f;
             if (ConfigController.Instance.DistributionRatioMountain > rate)
             {
                 terrain |= eExistingTerrain.Mountain;
             }
 
+
             // 森
+            rate = UnityEngine.Random.value * 100.0f;
             if (ConfigController.Instance.DistributionRatioForest > rate)
             {
                 terrain |= eExistingTerrain.Forest;
             }
 
             // 川
+            rate = UnityEngine.Random.value * 100.0f;
             if (ConfigController.Instance.DistributionRatioRiver > rate)
             {
                 terrain |= eExistingTerrain.River;
