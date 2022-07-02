@@ -281,6 +281,13 @@ namespace sfproj
         // 設定されている区域タイプリスト
         public List<eZoneType> m_zoneTypeList = new List<eZoneType>();
         public List<eZoneType> ZoneTypeList { get => m_zoneTypeList; set => m_zoneTypeList = value; }
+
+
+        // 地域の人口
+
+        // 地域の人口が増加する速度(ゲージがたまれば)
+
+        // 
     }
 
     /// <summary>
@@ -410,7 +417,11 @@ namespace sfproj
             // 海のみ領域が海に面しているかどうかをチェックしてフラグを立てる
             if (dominion.NeighboursOceanFlag == true)
             {
-                terrain |= eExistingTerrain.Ocean;
+                rate = UnityEngine.Random.value * 100.0f;
+                if (ConfigController.Instance.DistributionRatioOcean > rate)
+                {
+                    terrain |= eExistingTerrain.Ocean;
+                }
             }
 
             // 何も地形が無かった場合は平原を設定

@@ -98,19 +98,7 @@ namespace sfproj
         /// <returns>true...ŠC‚É—×Ú‚µ‚Ä‚¢‚é</returns>
         private bool CheckAdjastingOceanTerrain(int territoryIndex)
         {
-            var tgs = TerrainGridSystem.instance;
-
-            var territory = tgs.territories[territoryIndex];
-
-            var neighbours = territory.neighbours;
-
-            foreach (var t in neighbours)
-            {
-                if (t.visible == false)
-                    return true;
-            }
-
-            return false;
+            return (TerrainGridSystem.instance.territories[territoryIndex].neighbourVisible == false);
         }
     }
 

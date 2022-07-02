@@ -254,6 +254,9 @@ namespace TGS {
 				// タッチしたテリトリのセルを非表示
 				tgs.CellSetVisible(cell.index, false);
 			}
+
+			// タッチしたテリトリ
+
 			// タッチしたテリトリを非表示
 			tgs.TerritorySetVisible(territoryIndex, false);
 		}
@@ -272,8 +275,24 @@ namespace TGS {
 			// セルが属しているテリトリのセルをすべて非表示にしていく
 			if (cellsUnderBoxCollider != null) {
 				for (int k = 0; k < cellsUnderBoxCollider.Count; k++) {
-					var cell = tgs.cells[cellsUnderBoxCollider[k]];
-					DeleteTerritory(cell.territoryIndex);
+
+					var territoryIndex = tgs.cells[cellsUnderBoxCollider[k]].territoryIndex;
+
+					foreach (var cell in tgs.territories[territoryIndex].cells)
+					{
+						// テリトリのセルを非表示
+						tgs.CellSetVisible(cell.index, false);
+					}
+
+					// 非表示にするテリトリの隣をチェック
+					var territory = tgs.territories[territoryIndex];
+
+					foreach (Territory t in territory.neighbours) {
+						t.neighbourVisible = false;
+					}
+
+					// テリトリを非表示
+					tgs.TerritorySetVisible(territoryIndex, false);
 				}
 			}
 		}
@@ -530,13 +549,9 @@ namespace TGS {
 							InitCells(collider);
 						}
 
-						// 一回だけ領域の作成を行う
+						// 領域の作成を行う
+						m_scenePhase = eScenePhase.CreateDominionInWorld;
 
-						m_totalTime += Time.deltaTime;
-						if (m_totalTime >= 0.1f)
-						{
-							m_scenePhase = eScenePhase.CreateDominionInWorld;
-						}
 					}
 					break;
 

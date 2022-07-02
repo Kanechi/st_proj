@@ -23,6 +23,9 @@ namespace TGS {
 
 		public bool neutral { get; set; }
 
+		// false...—×‚ÌƒeƒŠƒgƒŠ‚ª”ñ•\Ž¦
+		public bool neighbourVisible { get; set; } = true;
+
 		public Territory() : this("") {
 		}
 

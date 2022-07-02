@@ -125,6 +125,11 @@ namespace sfproj {
         private int m_distributionRatioRiver = 5;
         public int DistributionRatioRiver => m_distributionRatioRiver;
 
+        // 海に面しているうえで海が面しているであろう割合
+        [SerializeField, Range(0, 100)]
+        private int m_distributionRatioOcean = 75;
+        public int DistributionRatioOcean => m_distributionRatioOcean;
+
         [Title("ゲーム上で設定不可")]
 
         // 国以外の土地の色
