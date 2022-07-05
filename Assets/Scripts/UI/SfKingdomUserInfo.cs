@@ -58,6 +58,8 @@ namespace sfproj
         // Update is called once per frame
         void Update()
         {
+            if (m_record == null)
+                return;
 #if false
             // 人口の部分は領域 ID から地域 ID までさかのぼって地域情報の人口の合計や
             // 最大人口の合計で計算を行う
