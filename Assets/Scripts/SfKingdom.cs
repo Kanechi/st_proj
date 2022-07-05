@@ -7,7 +7,17 @@ using System.Linq;
 
 namespace sfproj
 {
+    [Serializable]
+    public class SfSaveRecord
+    {
+        // 保存番号
+        public uint m_saveNo = 0;
+        public uint SaveNo { get => m_saveNo; set => m_saveNo = value; }
 
+        // 保存時間
+        public long m_saveTime = 0;
+        public long SaveTime { get => m_saveTime; set => m_saveTime = value; }
+    }
 
     /// <summary>
     /// 王国
@@ -21,10 +31,6 @@ namespace sfproj
         public int m_id = 0;
         public int Id { get => m_id; set => m_id = value; }
 
-        // 王国名
-        public string m_name = "";
-        public string Name { get => m_name; set => m_name = value; }
-
         // 王国の色
         public Color m_color = Color.white;
         public Color Color { get => m_color; set => m_color = value; }
@@ -37,9 +43,32 @@ namespace sfproj
         public List<uint> m_sfDominionIdList = new List<uint>();
         public List<uint> DominionIdList { get => m_sfDominionIdList; set => m_sfDominionIdList = value; }
 
-        // 国民の数
+        // 現在国王になっている人物のID
+        // 人物 ID は現在のセーブ ID から検索
+        public uint m_personId = 0;
+        public uint PersonId { get => m_personId; set => m_personId = value; }
+
+        // 王国レベル
+        public uint m_kingdomLv = 0;
+        public uint KngdomLv { get => m_kingdomLv; set => m_kingdomLv = value; }
+
+#if false
+        // 最大人口(ってかこれは地域ごとに設定？)
+        // 王国情報に表示する際は合計値を表示かな？
+        public uint m_maxPopulation = 0;
+        public uint MaxPopulation { get => m_maxPopulation; set => m_maxPopulation = value; }
+
+        // 現在人口(これも地域ごとに設定？)
         public uint m_population = 0;
         public uint Population { get => m_population; set => m_population = value; }
+#endif
+        // 王国経験値
+        public uint m_kingdomExp = 0;
+        public uint KingdomExp { get => m_kingdomExp; set => m_kingdomExp = value; }
+
+        // 王国名
+        public string m_name = "";
+        public string Name { get => m_name; set => m_name = value; }
     }
 
     /// <summary>
@@ -120,6 +149,7 @@ namespace sfproj
         // 王国名生成
         protected override void CreateName(SfKingdomRecord record)
         {
+            // ランダム生成
             record.Name = "test";
         }
 
@@ -180,6 +210,73 @@ namespace sfproj
 
         // 領域レコードの取得
         public override SfKingdomRecord Get(uint id) => RecordList.Find(r => r.Id == id);
+
+        // 自身の王国を取得
+        public SfKingdomRecord GetSelfKingdom() => RecordList.Find(r => r.m_selfFlag == true);
+
+        /// <summary>
+        /// 国王の変更
+        /// </summary>
+        /// <param name="kingdomId">王国 ID</param>
+        /// <param name="personId">次の国王の人物 ID</param>
+        public void ChangeKing(uint kingdomId, uint nextPersonId) => Get(kingdomId).PersonId = nextPersonId;
+
+        /// <summary>
+        /// true...既に指定の領域を占領している
+        /// </summary>
+        public bool CheckDominionId(uint kingdomId, uint dominionId) => Get(kingdomId).DominionIdList.Contains(dominionId);
+
+        /// <summary>
+        /// 指定の領域を占領する
+        /// </summary>
+        public void AddDominionId(uint kingdomId, uint dominionId)
+        {
+            if (CheckDominionId(kingdomId, dominionId))
+                return;
+            Get(kingdomId).DominionIdList.Add(dominionId);
+        }
+
+        /// <summary>
+        /// 王国レベルの増加
+        /// </summary>
+        /// <param name="kingdomId"></param>
+        public void IncKingdomLv(uint kingdomId) => Get(kingdomId).m_kingdomLv++;
+
+#if false
+        /// <summary>
+        /// 最大人口の変更
+        /// 0 以下にはならない
+        /// </summary>
+        /// <param name="kingdomId"></param>
+        /// <param name="pop"></param>
+        public void ChangeMaxPop(uint kingdomId, uint pop)
+        {
+            uint p = Get(kingdomId).m_maxPopulation;
+            p += pop;
+            if (p < 0)
+                p = 0;
+            Get(kingdomId).m_maxPopulation = p;
+        }
+
+        /// <summary>
+        /// 人口の変更
+        /// 0 以下にはならない
+        /// 最大人口以上にはならない
+        /// </summary>
+        /// <param name="kingdomId"></param>
+        /// <param name="pop"></param>
+        public void ChangePop(uint kingdomId, uint pop)
+        {
+            var record = Get(kingdomId);
+            uint p = record.m_population;
+            p += pop;
+            if (p < 0)
+                p = 0;
+            if (p > record.MaxPopulation)
+                p = record.MaxPopulation;
+            record.m_population = p;
+        }
+#endif
     }
 
     public class SfKingdomRecordTableManager : SfKingdomRecordTable
