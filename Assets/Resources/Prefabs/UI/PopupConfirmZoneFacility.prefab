@@ -374,12 +374,12 @@ GameObject:
   - component: {fileID: 2870656707052890900}
   - component: {fileID: 2870656707052890901}
   m_Layer: 5
-  m_Name: MyInfoScene_Popup_ItemDetail
+  m_Name: PopupConfirmZoneFacility
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2870656707052890900
 RectTransform:
   m_ObjectHideFlags: 0
