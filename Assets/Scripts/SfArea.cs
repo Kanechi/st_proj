@@ -274,20 +274,23 @@ namespace sfproj
         public eExistingTerrain m_existingTerrain = 0;
         public eExistingTerrain ExistingTerrain { get => m_existingTerrain; set => m_existingTerrain = value; }
 
+        // 地域人口
+        public int m_population = 0;
+        public int Puplation { get => m_population; set => m_population = value; }
+
         // 最大区域数(設定可能な区域の最大数)
+        // 区域解放数は現状の地域人口に比例
         public int m_maxZoneCount = -1;
         public int MaxZoneCount { get => m_maxZoneCount; set => m_maxZoneCount = value; }
 
-        // 設定されている区域タイプリスト
-        public List<eZoneType> m_zoneTypeList = new List<eZoneType>();
-        public List<eZoneType> ZoneTypeList { get => m_zoneTypeList; set => m_zoneTypeList = value; }
+        // 設定されている区域タイプリスト<セルインデックス、区域タイプ>
+        public Dictionary<uint, eZoneType> m_zoneTypeDict = new Dictionary<uint, eZoneType>();
+        public Dictionary<uint, eZoneType> ZoneTypeDict { get => m_zoneTypeDict; set => m_zoneTypeDict = value; }
 
-
-        // 地域の人口
-
-        // 地域の人口が増加する速度(ゲージがたまれば)
-
-        // 
+        // 設定されている区域の拡張数<セルインデックス、拡張数>
+        public Dictionary<uint, int> m_zoneExpantionDict = new Dictionary<uint, int>();
+        public Dictionary<uint, int> ZoneExpantionDict = new Dictionary<uint, int>();
+        
     }
 
     /// <summary>
@@ -585,19 +588,39 @@ namespace sfproj
         /// 地域の区域に指定の区域タイプを変更する
         /// </summary>
         /// <param name="areaId"></param>
-        /// <param name="index"></param>
+        /// <param name="cellIndex"></param>
         /// <param name="zoneType"></param>
-        public void ChangeZoneType(uint areaId, int index, eZoneType zoneType) {
+        public void ChangeZoneType(uint areaId, int cellIndex, eZoneType zoneType) {
 
             var record = Get(areaId);
 
-            if (index >= record.MaxZoneCount)
+            if (cellIndex >= record.MaxZoneCount)
             {
                 Debug.LogWarning("index >= record.MaxZoneCount !!!");
                 return;
             }
 
-            record.ZoneTypeList[index] = zoneType;
+            record.ZoneTypeDict.Add((uint)cellIndex, zoneType);
+        }
+
+        /// <summary>
+        /// 区域の拡張
+        /// </summary>
+        /// <param name="areaId"></param>
+        /// <param name="cellIndex"></param>
+        public void ExpantionZone(uint areaId, int cellIndex) 
+        {
+            var record = Get(areaId);
+
+            if (cellIndex >= record.MaxZoneCount)
+            {
+                Debug.LogWarning("index >= record.MaxZoneCount !!!");
+                return;
+            }
+
+            int expCt = record.ZoneExpantionDict[(uint)cellIndex];
+            expCt++;
+            record.ZoneExpantionDict[(uint)cellIndex] = expCt;
         }
     }
 

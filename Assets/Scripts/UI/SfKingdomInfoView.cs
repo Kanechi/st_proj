@@ -12,7 +12,7 @@ namespace sfproj
     /// ¶ã‚Ìî•ñ
     /// 
     /// </summary>
-    public class SfKingdomUserInfo : MonoBehaviour
+    public class SfKingdomInfoView : MonoBehaviour
     {
         // Šç‰æ‘œ
         [SerializeField]
