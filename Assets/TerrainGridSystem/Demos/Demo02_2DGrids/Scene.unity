@@ -1671,7 +1671,7 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!1 &817365293
+--- !u!1 &821241041
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1679,7 +1679,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 817365294}
+  - component: {fileID: 821241042}
   m_Layer: 5
   m_Name: Surfaces
   m_TagString: Untagged
@@ -1687,13 +1687,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &817365294
+--- !u!4 &821241042
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 817365293}
+  m_GameObject: {fileID: 821241041}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -3216,6 +3216,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PopupAreaInfoView
       objectReference: {fileID: 0}
+    - target: {fileID: 7992712716985119106, guid: 48705adc030a1674bb4d9a8cbae854c5, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7992712716985119107, guid: 48705adc030a1674bb4d9a8cbae854c5, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -3789,7 +3793,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 850, y: 600, z: 1}
   m_Children:
-  - {fileID: 817365294}
+  - {fileID: 821241042}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
