@@ -276,7 +276,7 @@ namespace sfproj
 
         // 地域人口
         public int m_population = 0;
-        public int Puplation { get => m_population; set => m_population = value; }
+        public int Pupulation { get => m_population; set => m_population = value; }
 
         // 最大区域数(設定可能な区域の最大数)
         // 区域解放数は現状の地域人口に比例
@@ -284,13 +284,18 @@ namespace sfproj
         public int MaxZoneCount { get => m_maxZoneCount; set => m_maxZoneCount = value; }
 
         // 設定されている区域タイプリスト<セルインデックス、区域タイプ>
-        public Dictionary<uint, eZoneType> m_zoneTypeDict = new Dictionary<uint, eZoneType>();
-        public Dictionary<uint, eZoneType> ZoneTypeDict { get => m_zoneTypeDict; set => m_zoneTypeDict = value; }
+        public Dictionary<int, eZoneType> m_zoneTypeDict = new Dictionary<int, eZoneType>();
+        public Dictionary<int, eZoneType> ZoneTypeDict { get => m_zoneTypeDict; set => m_zoneTypeDict = value; }
 
         // 設定されている区域の拡張数<セルインデックス、拡張数>
-        public Dictionary<uint, int> m_zoneExpantionDict = new Dictionary<uint, int>();
-        public Dictionary<uint, int> ZoneExpantionDict = new Dictionary<uint, int>();
-        
+        public Dictionary<int, int> m_zoneExpantionDict = new Dictionary<int, int>();
+        public Dictionary<int, int> ZoneExpantionDict = new Dictionary<int, int>();
+
+        // 保管されている生産物ID と総数
+        public Dictionary<int, int> m_products = new Dictionary<int, int>();
+
+        // 割り当てられている武将 ID
+        public List<uint> m_troops = new List<uint>();
     }
 
     /// <summary>
@@ -600,7 +605,7 @@ namespace sfproj
                 return;
             }
 
-            record.ZoneTypeDict.Add((uint)cellIndex, zoneType);
+            record.ZoneTypeDict.Add(cellIndex, zoneType);
         }
 
         /// <summary>
@@ -618,9 +623,9 @@ namespace sfproj
                 return;
             }
 
-            int expCt = record.ZoneExpantionDict[(uint)cellIndex];
+            int expCt = record.ZoneExpantionDict[cellIndex];
             expCt++;
-            record.ZoneExpantionDict[(uint)cellIndex] = expCt;
+            record.ZoneExpantionDict[cellIndex] = expCt;
         }
     }
 

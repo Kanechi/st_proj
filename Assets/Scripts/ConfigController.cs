@@ -94,13 +94,13 @@ namespace sfproj {
         public int AreaCaveRate => m_areaCaveRate;
 
         // 地域に設定される区域の最低値
-        [SerializeField, Range(1, 20)]
+        [SerializeField, Range(1, 9)]
         private int m_minZoneValue = 5;
         public int MinZoneValue => m_minZoneValue;
 
         // 地域に設定される区域の最大値
-        [SerializeField, Range(1, 20)]
-        private int m_maxZoneValue = 10;
+        [SerializeField, Range(1, 9)]
+        private int m_maxZoneValue = 9;
         public int MaxZoneValue => m_maxZoneValue;
 
         [Title("地形の分布")]

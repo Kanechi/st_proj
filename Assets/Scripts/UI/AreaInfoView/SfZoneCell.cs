@@ -77,7 +77,8 @@ namespace sfproj
         // Update is called once per frame
         void Update()
         {
-
+            // タイプによる時間経過における資源の獲得
+            // もしくはバッファの設定
         }
     }
 }
