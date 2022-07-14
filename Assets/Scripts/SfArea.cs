@@ -276,7 +276,7 @@ namespace sfproj
 
         // 地域人口
         public int m_population = 0;
-        public int Pupulation { get => m_population; set => m_population = value; }
+        public int Population { get => m_population; set => m_population = value; }
 
         // 最大区域数(設定可能な区域の最大数)
         // 区域解放数は現状の地域人口に比例
@@ -332,6 +332,7 @@ namespace sfproj
             record.ExistingTerrain = SettingExistingTerrain(SfDominionRecordTableManager.Instance.Get(dominionId));
 
             // 最大区域数の設定
+            record.MaxZoneCount = CulcMaxZoneCount();
 
             return record;
         }

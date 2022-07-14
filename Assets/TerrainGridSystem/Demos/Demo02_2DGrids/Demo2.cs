@@ -152,11 +152,6 @@ namespace TGS {
 		void OnTerritoryMouseUp(TerrainGridSystem sender, int territoryIndex, int buttonIndex) { 
 		}
 
-		/// <summary>
-		/// 領土スクロールビュー
-		/// </summary>
-		[SerializeField]
-		private DominionScrollView m_dominionScrollView = null;
 
 		/// <summary>
 		/// 王国ウィンドウ
@@ -194,7 +189,7 @@ namespace TGS {
 			if (dominionRecord == null)
 				return;
 
-			m_dominionScrollView.Open(dominionRecord);
+			SfViewManager.Instance.DominionScrollView.Open(dominionRecord);
 		}
 
 		// Parameters to pass through to our new method
@@ -491,6 +486,11 @@ namespace TGS {
 
 			// アンロックした地域を拠点として設定
 			areaRecord.BaseFlag = true;
+
+			// 初期人口を設定
+			// 起源などがあるならそれによって人口を変更する？
+			// 人口は全て同じ方が良いか？
+			areaRecord.Population = 100;
 
 			// 初期区域を設定(川だけに面していた場合何も設置されない)
 			if ((areaRecord.ExistingTerrain & eExistingTerrain.Plane) != 0)

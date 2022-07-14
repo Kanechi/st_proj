@@ -196,6 +196,7 @@ namespace sfproj
                 case eAreaDevelopmentState.Completed:
                     {
                         // 地域ウィンドウ表示
+                        SfViewManager.Instance.AreaInfoView.Open(Data.m_areaRecord.Id);
                     }   
                     break;
                 default:
