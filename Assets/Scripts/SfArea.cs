@@ -332,7 +332,13 @@ namespace sfproj
             record.ExistingTerrain = SettingExistingTerrain(SfDominionRecordTableManager.Instance.Get(dominionId));
 
             // Å‘å‹æˆæ”‚Ìİ’è
-            record.MaxZoneCount = CulcMaxZoneCount();
+            int ct = record.MaxZoneCount = CulcMaxZoneCount();
+
+            for (int i = 0; i < ct; ++i)
+            {
+                record.ZoneTypeDict.Add(i, eZoneType.None);
+                record.ZoneExpantionDict.Add(i, 0);
+            }
 
             return record;
         }
@@ -606,15 +612,15 @@ namespace sfproj
                 return;
             }
 
-            record.ZoneTypeDict.Add(cellIndex, zoneType);
+            record.ZoneTypeDict[cellIndex] = zoneType;
         }
 
         /// <summary>
-        /// ‹æˆæ‚ÌŠg’£
+        /// ‹æˆæŠg’£”‚ğ‘‰Á
         /// </summary>
         /// <param name="areaId"></param>
         /// <param name="cellIndex"></param>
-        public void ExpantionZone(uint areaId, int cellIndex) 
+        public void IncZoneExp(uint areaId, int cellIndex)
         {
             var record = Get(areaId);
 
@@ -627,6 +633,25 @@ namespace sfproj
             int expCt = record.ZoneExpantionDict[cellIndex];
             expCt++;
             record.ZoneExpantionDict[cellIndex] = expCt;
+        }
+
+        /// <summary>
+        /// ‹æˆæŠg’£”‚ğ•ÏX
+        /// </summary>
+        /// <param name="areaId"></param>
+        /// <param name="cellIndex"></param>
+        /// <param name="exp"></param>
+        public void ChangeZoneExp(uint areaId, int cellIndex, int exp) {
+
+            var record = Get(areaId);
+
+            if (cellIndex >= record.MaxZoneCount)
+            {
+                Debug.LogWarning("index >= record.MaxZoneCount !!!");
+                return;
+            }
+
+            record.ZoneExpantionDict[cellIndex] = exp;
         }
     }
 

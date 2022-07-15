@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/MainScene.unity
-    guid: 2cda990e2423bbf4892e6590ba056729
+    path: Assets/TerrainGridSystem/Demos/Demo02_2DGrids/Scene.unity
+    guid: 42db0986cd53d4c008afdf12f9607222
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: fa4c49e0593ceda42a624f58f5e3c18e, type: 2}

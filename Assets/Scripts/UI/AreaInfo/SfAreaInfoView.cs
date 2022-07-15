@@ -13,6 +13,7 @@ namespace sfproj
     {
         // true...ŠJ‚¢‚Ä‚¢‚é
         private bool m_openFlag = false;
+        public bool OpenFlag => m_openFlag;
 
         // ’nˆæ–¼
         [SerializeField]

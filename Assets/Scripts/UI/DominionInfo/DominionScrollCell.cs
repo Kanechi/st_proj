@@ -179,15 +179,9 @@ namespace sfproj
         /// </summary>
         private void OnClicked()
         {
-            // 既に選択されていたら無効
-            if (Data.IsSelected == true)
-                return;
-
-            // フォーカス判定
-            Selected?.Invoke(this);
-
             // ウィンドウ開示処理
-            switch (Data.m_areaRecord.AreaDevelopmentState) {
+            switch (Data.m_areaRecord.AreaDevelopmentState)
+            {
                 case eAreaDevelopmentState.Not:
                     {
                         // 開拓ウィンドウ開示
@@ -196,13 +190,16 @@ namespace sfproj
                 case eAreaDevelopmentState.Completed:
                     {
                         // 地域ウィンドウ表示
-                        SfViewManager.Instance.AreaInfoView.Open(Data.m_areaRecord.Id);
-                    }   
+                        SfGameManager.Instance.AreaInfoView.Open(Data.m_areaRecord.Id);
+                    }
                     break;
                 default:
                     // 開拓中の際は処理なし
                     break;
             }
+
+            // フォーカス判定
+            Selected?.Invoke(this);
         }
     }
 }

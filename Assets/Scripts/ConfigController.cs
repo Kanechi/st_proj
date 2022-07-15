@@ -6,6 +6,12 @@ using Sirenix.OdinInspector;
 namespace sfproj {
     public class ConfigController : SingletonMonoBehaviour<ConfigController> {
 
+        /// <summary>
+        /// 区域表示最大数
+        /// 区域の表示上の最大数
+        /// </summary>
+        static public readonly int ZONE_MAX_DISPLAY_COUNT = 9;
+
         [Title("ゲーム上で設定可能", horizontalLine: false)]
 
         [Title("プレイ設定")]

@@ -17,7 +17,7 @@ namespace sfproj
 
         // Šg’£”
         private int m_expansionCount = 0;
-        public int ExpansionCount { get => m_expansionCount = 0; set => m_expansionCount = value; }
+        public int ExpansionCount { get => m_expansionCount; set => m_expansionCount = value; }
 
         // true...‰ğ•ú‚³‚ê‚Ä‚¢‚é(Œ®ƒAƒCƒRƒ“‰ğœ)
         private bool m_unlockFlag = false;

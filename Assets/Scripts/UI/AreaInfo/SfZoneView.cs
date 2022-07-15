@@ -12,18 +12,23 @@ namespace sfproj
     /// </summary>
     public class SfZoneView : MonoBehaviour
     {
-#if false
-        // 区域最大数文字(解放、未開放合わせての最大数)
+        // 区域セル prefab
         [SerializeField]
-        private TextMeshProUGUI m_zoneMaxCount = null;
-#endif
+        private GameObject m_zonePrefab = null;
+
         // 解放済み区域数文字(利用可能な区域の数)
         [SerializeField]
         private TextMeshProUGUI m_zoneCount = null;
 
-        // 区域セル
+        // 区域セル transform
         [SerializeField]
+        private List<Transform> m_zoneCellTransformList = new List<Transform>();
+
+        // 区域セル
         private List<SfZoneCell> m_zoneCellList = new List<SfZoneCell>();
+
+        // true...初期化完了
+        private bool m_isInit = false;
 
         /// <summary>
         /// 区域数人口比テーブル
@@ -43,7 +48,7 @@ namespace sfproj
         // Start is called before the first frame update
         void Start()
         {
-           
+            OnInitialize();
         }
 
         // Update is called once per frame
@@ -52,7 +57,22 @@ namespace sfproj
 
         }
 
+        public void OnInitialize()
+        {
+            if (m_isInit == true)
+                return;
+            m_isInit = true;
+
+            foreach (var t in m_zoneCellTransformList)
+            {
+                var obj = GameObject.Instantiate(m_zonePrefab, t);
+                m_zoneCellList.Add(obj.GetComponent<SfZoneCell>());
+            }
+        }
+
         public void SetData(SfAreaRecord record) {
+
+            OnInitialize();
 
             int zoneCt = 0;
             foreach (var zoneCtPopRatio in m_zoneCtPopRatioTable) {
@@ -77,30 +97,30 @@ namespace sfproj
             
             m_zoneCount.text = colorStr + zoneCt.ToString() + "</color> / " + zoneMaxCt.ToString();
 
-#if false
-            m_zoneCount.text = zoneCt.ToString();
-            m_zoneMaxCount.text = zoneMaxCt.ToString();
-#endif
-            for (int i = 0; i < zoneCt; ++i){
+            for (int i = 0; i < ConfigController.ZONE_MAX_DISPLAY_COUNT; ++i){
 
-                var zoneCellData = new SfZoneCellData(i, record.ZoneTypeDict[i], record.ZoneExpantionDict[i]);
+                // 表示数分のすべての区域データを作成
+                SfZoneCellData zoneCellData = null ;
+                if (i < zoneMaxCt)
+                    zoneCellData = new SfZoneCellData(i, record.ZoneTypeDict[i], record.ZoneExpantionDict[i]);
+                else
+                    zoneCellData = new SfZoneCellData(i, eZoneType.None, 0);
 
+                // 地域に存在する区域数分の区域データを設定
                 if (i < zoneCt)
                 {
                     zoneCellData.UnlockFlag = true;
-
                     m_zoneCellList[i].gameObject.SetActive(true);
-
-                    m_zoneCellList[i].SetData(zoneCellData);
+                }
+                else if (i < zoneMaxCt) {
+                    m_zoneCellList[i].gameObject.SetActive(true);
                 }
                 else
                 {
-                    zoneCellData.UnlockFlag = false;
-
-                    m_zoneCellList[i].gameObject.SetActive(false) ;
-
-                    m_zoneCellList[i].SetData(zoneCellData);
+                    m_zoneCellList[i].gameObject.SetActive(false);
                 }
+
+                m_zoneCellList[i].SetData(zoneCellData);
             }
         }
     }

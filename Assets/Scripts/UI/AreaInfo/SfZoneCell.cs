@@ -36,6 +36,16 @@ namespace sfproj
         private SfZoneCellData m_data = null;
         public SfZoneCellData Data => m_data;
 
+        // 区域施設が建造されている部分のボタン
+        // 処理はプラスと同じですでに建造されている施設は建造できないようにするのと
+        // 拡張が追加されているのが違い
+        [SerializeField]
+        private Button m_facilityBtn = null;
+
+        // プラス部分のボタン
+        [SerializeField]
+        private Button m_addBtn = null;
+
         public void SetData(SfZoneCellData data) {
             m_data = data;
             m_data.Cell = this;

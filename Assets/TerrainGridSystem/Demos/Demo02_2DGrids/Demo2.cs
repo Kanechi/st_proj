@@ -92,7 +92,10 @@ namespace TGS {
 		[SerializeField]
 		private NameListObject m_nameListObj;
 
-		private async UniTaskVoid Start () {
+        private async UniTaskVoid Start()
+        {
+
+			Debug.Log("Start");
 
 			// setup GUI styles
 			labelStyle = new GUIStyle();
@@ -118,6 +121,8 @@ namespace TGS {
 		/// </summary>
 		private void InitializeTgs() {
 
+			Debug.Log("InitializeTgs");
+
 			tgs = TerrainGridSystem.instance;
 
 			// シード設定
@@ -138,18 +143,25 @@ namespace TGS {
 		}
 
         void OnCellMouseDown(TerrainGridSystem grid, int cellIndex, int buttonIndex) {
+			Debug.Log("OnCellMouseDown");
 		}
 
 		void OnCellMouseUp(TerrainGridSystem grid, int cellIndex, int buttonIndex) {
+			Debug.Log("OnCellMouseUp");
 		}
 
 		void OnCellClick(TerrainGridSystem grid, int cellIndex, int buttonIndex) {
+			Debug.Log("OnCellClick");
 		}
 
-		void OnTerritoryMouseDown(TerrainGridSystem sender, int territoryIndex, int buttonIndex) { 
+		void OnTerritoryMouseDown(TerrainGridSystem sender, int territoryIndex, int buttonIndex) {
+
+			Debug.Log("OnTerritoryMouseDown");
 		}
 
-		void OnTerritoryMouseUp(TerrainGridSystem sender, int territoryIndex, int buttonIndex) { 
+		void OnTerritoryMouseUp(TerrainGridSystem sender, int territoryIndex, int buttonIndex) {
+
+			Debug.Log("OnTerritoryMouseUp");
 		}
 
 
@@ -183,13 +195,25 @@ namespace TGS {
 		/// <param name="buttonIndex"></param>
 		void OnTerritoryClick(TerrainGridSystem sender, int territoryIndex, int buttonIndex){
 
+			Debug.Log("OnTerritoryClick0");
+
+			// 地域ビューが開いていたらテリトリには触れないようにする
+			if (SfGameManager.Instance.AreaInfoView.OpenFlag == true)
+				return;
+
+
+			Debug.Log("OnTerritoryClick1");
+
+
 			// テリトリインデックスから領域レコードを取得
 			var dominionRecord = SfDominionRecordTableManager.Instance.GetAtTerritoryIndex(territoryIndex);
 
 			if (dominionRecord == null)
 				return;
 
-			SfViewManager.Instance.DominionScrollView.Open(dominionRecord);
+			Debug.Log("OnTerritoryClick2");
+
+			SfGameManager.Instance.DominionScrollView.Open(dominionRecord);
 		}
 
 		// Parameters to pass through to our new method
@@ -474,8 +498,15 @@ namespace TGS {
 
 			// 領域の地域を初期化
 
+
+
 			// インデックスの一番小さい平地の地域 IDを取得
 			var minimumPlaneAreaId = SfDominionRecordTableManager.Instance.GetMinimumCellIndexArea(dominionId, eAreaGroupType.Plane);
+
+
+			// ==================================
+			// 初期地域の作成
+			// ==================================
 
 
 			// 地域レコードを取得
@@ -497,26 +528,27 @@ namespace TGS {
 			{
 				// アンロックした地域が平地に面していたら田畑を設定
 				SfAreaRecordTableManager.Instance.ChangeZoneType(minimumPlaneAreaId, 0, eZoneType.Production_Fields);
+				SfAreaRecordTableManager.Instance.ChangeZoneExp(minimumPlaneAreaId, 0, 1);
 			}
 			else if ((areaRecord.ExistingTerrain & eExistingTerrain.Mountain) != 0)
 			{
 				// アンロックした地域が山に面していたら採掘所を設定
 				SfAreaRecordTableManager.Instance.ChangeZoneType(minimumPlaneAreaId, 0, eZoneType.Production_Mining);
+				SfAreaRecordTableManager.Instance.ChangeZoneExp(minimumPlaneAreaId, 0, 1);
 			}
 			else if ((areaRecord.ExistingTerrain & eExistingTerrain.Forest) != 0)
 			{
 				// アンロックした地域が森に面していたら伐採所を設定
 				SfAreaRecordTableManager.Instance.ChangeZoneType(minimumPlaneAreaId, 0, eZoneType.Production_LoggingArea);
+				SfAreaRecordTableManager.Instance.ChangeZoneExp(minimumPlaneAreaId, 0, 1);
 			}
 			else if ((areaRecord.ExistingTerrain & eExistingTerrain.Ocean) != 0)
 			{
 				// アンロックした地域が海に面していたら港を設定
 				SfAreaRecordTableManager.Instance.ChangeZoneType(minimumPlaneAreaId, 0, eZoneType.Commercial_Harbor);
+				SfAreaRecordTableManager.Instance.ChangeZoneExp(minimumPlaneAreaId, 0, 1);
 			}
 		}
-
-
-
 
 		// 合計時間
 		float m_totalTime = 0.0f;

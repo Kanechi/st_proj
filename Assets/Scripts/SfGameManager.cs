@@ -1,14 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TGS;
 
 namespace sfproj
 {
     /// <summary>
     /// ビュー系の管理
     /// </summary>
-    public class SfViewManager : SingletonMonoBehaviour<SfViewManager>
+    public class SfGameManager : SingletonMonoBehaviour<SfGameManager>
     {
+        /// <summary>
+        /// 現在のキャンバス
+        /// </summary>
+        [SerializeField]
+        private Canvas m_canvas = null;
+        public Canvas CurrentCanvas => m_canvas;
 
         /// <summary>
         /// 領土スクロールビュー
@@ -23,6 +30,10 @@ namespace sfproj
         [SerializeField]
         private SfAreaInfoView m_areaInfoView = null;
         public SfAreaInfoView AreaInfoView => m_areaInfoView;
+
+        [SerializeField]
+        private SfInputSystem m_inputSystem = null;
+        public SfInputSystem InputSystem => m_inputSystem;
 
         // Start is called before the first frame update
         void Start()

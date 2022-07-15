@@ -38,17 +38,19 @@ namespace sfproj
             base.Start();
 
             closeBtn_.OnClickAsObservable().Subscribe(_ => { Close(); });
-            
-            // 画面高さを取得
-            float height = Screen.height;
 
-            // 画面高さの３分の１のサイズを取得
-            float heightOneThird = height * 0.3333f;
+            var canvasTransform = SfGameManager.Instance.CurrentCanvas.GetComponent<RectTransform>();
+
+            // 画面高さを取得
+            float height = canvasTransform.sizeDelta.y; //Screen.height;
+
+            // 画面高さの４分の１のサイズを取得
+            float heightOneFour = height * 0.25f;
 
             // スクロールビューの高さをそのサイズに設定
             var rectTransform = gameObject.GetComponent<RectTransform>();
             var size = rectTransform.sizeDelta;
-            size.y = heightOneThird;
+            size.y = heightOneFour;
             rectTransform.sizeDelta = size;
 
             // 画面高さの３分の２の位置を取得
@@ -56,17 +58,17 @@ namespace sfproj
 
             // その位置にスクロールビューの高さを設定
             var pos = rectTransform.localPosition;
-            pos.y = -heightOneThird;
+            pos.y = -(heightOneFour + (heightOneFour * 0.5f));
             rectTransform.localPosition = pos;
 
             // セルサイズを計算。高さの９０％
-            CELL_SIZE = heightOneThird * 0.9f;
+            CELL_SIZE = heightOneFour * 0.9f;
 
-            CellSize = new Vector2(heightOneThird * 0.9f, heightOneThird * 0.9f);
+            CellSize = new Vector2(heightOneFour * 0.9f, heightOneFour * 0.9f);
 
-            MaskCellSize = new Vector2(heightOneThird * 0.65f, heightOneThird * 0.65f);
+            MaskCellSize = new Vector2(heightOneFour * 0.65f, heightOneFour * 0.65f);
 
-            SelectedImageSize = new Vector2(heightOneThird * 0.2f, heightOneThird * 0.2f);
+            SelectedImageSize = new Vector2(heightOneFour * 0.2f, heightOneFour * 0.2f);
         }
 
         /// <summary>
@@ -191,9 +193,10 @@ namespace sfproj
             // 選択しているものをタッチした場合はフォーカス解除
             bool isFocus = true;
 
+#if false
             if (ReferenceEquals(m_selectedCellData, cell.Data))
                 isFocus = false;
-
+#endif
             foreach (var data in m_dataList)
                 data.IsSelected = false;
 

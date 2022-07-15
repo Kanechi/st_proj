@@ -308,7 +308,15 @@ namespace TGS {
 #if ENABLE_INPUT_SYSTEM
                 input = new NewInputSystem();
 #else
-                input = new DefaultInputSystem();
+                if (Application.isEditor)
+                {
+                    input = new DefaultInputSystem();
+                }
+                else
+                {
+                    //input = new SfInputSystem();
+                    input = sfproj.SfGameManager.Instance.InputSystem;
+                }
 #endif
             }
             input.Init();
@@ -3984,6 +3992,8 @@ namespace TGS {
             rightButtonDown = input.GetMouseButtonDown(1);
             leftButtonUp = input.GetMouseButtonUp(0);
             rightButtonUp = input.GetMouseButtonUp(1);
+
+            Debug.Log("ld" + leftButtonDown.ToString() + "rd" + rightButtonDown.ToString() + "lu" + leftButtonUp.ToString() + "ru" + rightButtonUp.ToString());
 
             if (leftButtonUp || leftButtonDown) {
                 buttonIndex = 0;
