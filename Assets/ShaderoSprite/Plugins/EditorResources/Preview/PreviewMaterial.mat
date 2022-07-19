@@ -96,11 +96,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NewTex_1:
-        m_Texture: {fileID: 2800000, guid: b69edb07234ec174fb7843a1fbd18207, type: 3}
+        m_Texture: {fileID: 2800000, guid: bfe39d1dd84b7324eab0548ff38551a9, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NewTex_2:
-        m_Texture: {fileID: 2800000, guid: 2217adebf73932d4abe5314165938fae, type: 3}
+        m_Texture: {fileID: 2800000, guid: effe9648c488d314e94368ecf70c5bd9, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NewTex_3:
@@ -960,15 +960,15 @@ Material:
     - _ShadowLight_PosY_1: 0
     - _ShadowLight_Precision_1: 8
     - _ShadowLight_Size_1: 1.2
-    - _ShinyFX_Intensity_1: 1.218
+    - _ShinyFX_Intensity_1: 1
     - _ShinyFX_Intensity_2: 0.614633
-    - _ShinyFX_Pos_1: -0.07
+    - _ShinyFX_Pos_1: 0.124
     - _ShinyFX_Pos_2: 0.09756041
-    - _ShinyFX_Size_1: -0.092
+    - _ShinyFX_Size_1: -0.118
     - _ShinyFX_Size_2: -0.06341464
-    - _ShinyFX_Smooth_1: 0.25
+    - _ShinyFX_Smooth_1: 0.271
     - _ShinyFX_Smooth_2: 0.257317
-    - _ShinyFX_Speed_1: 1.407
+    - _ShinyFX_Speed_1: 0
     - _ShinyFX_Speed_2: 1.141461
     - _Simple_Displacement_Rotative_Rotation_1: 0.05
     - _Simple_Displacement_Rotative_Value_1: 0.05
@@ -986,6 +986,7 @@ Material:
     - _StencilOp: 0
     - _StencilReadMask: 255
     - _StencilWriteMask: 255
+    - _SuperGrayScale_Fade_1: 1
     - _Threshold_Fade_1: 0.5
     - _TurnAlphaToBlack_Fade_1: 1
     - _TurnAlphaToBlack_Fade_6: 1

@@ -5,10 +5,10 @@ using Sirenix.OdinInspector;
 using UniRx;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using TGS;
 
-using sfproj;
-
-namespace TGS {
+namespace sfproj
+{
 
 	/// <summary>
 	/// リソース読み込み
@@ -73,7 +73,7 @@ namespace TGS {
 
 
 
-	public class Demo2 : SerializedMonoBehaviour {
+	public class SfInMatchGameSceneController : SerializedMonoBehaviour {
 
 		TerrainGridSystem tgs;
 		GUIStyle labelStyle;

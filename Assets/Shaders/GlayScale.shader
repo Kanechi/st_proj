@@ -5,14 +5,17 @@
 /// http://www.shadero.com #Docs                            //
 //////////////////////////////////////////////////////////////
 
-Shader "Shadero Customs/New Shadero Sprite Shader"
+Shader "Shadero Customs/GlayScale"
 {
 Properties
 {
 [PerRendererData] _MainTex("Sprite Texture", 2D) = "white" {}
-_NewTex_1("NewTex_1(RGB)", 2D) = "white" { }
-_Destroyer_Value_1("_Destroyer_Value_1", Range(0, 1)) = 0
-_Destroyer_Speed_1("_Destroyer_Speed_1", Range(0, 1)) =  0.893
+_SuperGrayScale_Fade_1("_SuperGrayScale_Fade_1", Range(0, 1)) = 1
+_ShinyFX_Pos_1("_ShinyFX_Pos_1", Range(-1, 1)) = 0.124
+_ShinyFX_Size_1("_ShinyFX_Size_1", Range(-1, 1)) = -0.118
+_ShinyFX_Smooth_1("_ShinyFX_Smooth_1", Range(0, 1)) = 0.271
+_ShinyFX_Intensity_1("_ShinyFX_Intensity_1", Range(0, 4)) = 1
+_ShinyFX_Speed_1("_ShinyFX_Speed_1", Range(0, 8)) = 0
 _SpriteFade("SpriteFade", Range(0, 1)) = 1.0
 
 // required for UI.Mask
@@ -65,9 +68,12 @@ float4 color    : COLOR;
 
 sampler2D _MainTex;
 float _SpriteFade;
-sampler2D _NewTex_1;
-float _Destroyer_Value_1;
-float _Destroyer_Speed_1;
+float _SuperGrayScale_Fade_1;
+float _ShinyFX_Pos_1;
+float _ShinyFX_Size_1;
+float _ShinyFX_Smooth_1;
+float _ShinyFX_Intensity_1;
+float _ShinyFX_Speed_1;
 
 v2f vert(appdata_t IN)
 {
@@ -109,11 +115,38 @@ c.b = lerp(c.b, c.b*5.0*(1 - c.a) , value);
 c.rgb = lerp(saturate(c.rgb),c.rgb,HDR);
 return c;
 }
+float4 SuperGrayScale(float4 rgba, float4 red, float4 green, float4 blue, float fade)
+{
+float3 c_r = float3(red.r, red.g, red.b);
+float3 c_g = float3(green.r, green.g, green.b);
+float3 c_b = float3(blue.r, blue.g, blue.b);
+float4 r = float4(dot(rgba.rgb, c_r) + red.a, dot(rgba.rgb, c_g) + green.a, dot(rgba.rgb, c_b) + blue.a, rgba.a);
+return lerp(rgba, r, fade);
+
+}
+
+float4 AlphaIntensity(float4 txt,float fade)
+{
+if (txt.a < 1) txt.a = txt.a*fade;
+return txt;
+}
+
+float4 ShinyFX(float4 txt, float2 uv, float pos, float size, float smooth, float intensity, float speed)
+{
+pos = pos + 0.5+sin(_Time*20*speed)*0.5;
+uv = uv - float2(pos, 0.5);
+float a = atan2(uv.x, uv.y) + 1.4, r = 3.1415;
+float d = cos(floor(0.5 + a / r) * r - a) * length(uv);
+float dist = 1.0 - smoothstep(size, size + smooth, d);
+txt.rgb += dist*intensity;
+return txt;
+}
 float4 frag (v2f i) : COLOR
 {
-float4 NewTex_1 = tex2D(_NewTex_1, i.texcoord);
-float4 _Destroyer_1 = DestroyerFX(NewTex_1,i.texcoord,_Destroyer_Value_1,_Destroyer_Speed_1,0);
-float4 FinalResult = _Destroyer_1;
+float4 _MainTex_1 = tex2D(_MainTex, i.texcoord);
+float4 _SuperGrayScale_1 = SuperGrayScale(_MainTex_1,float4(0,0,1,0),float4(0,0,1,0),float4(0,0,1,0),_SuperGrayScale_Fade_1);
+float4 _ShinyFX_1 = ShinyFX(_SuperGrayScale_1,i.texcoord,_ShinyFX_Pos_1,_ShinyFX_Size_1,_ShinyFX_Smooth_1,_ShinyFX_Intensity_1,_ShinyFX_Speed_1);
+float4 FinalResult = _ShinyFX_1;
 FinalResult.rgb *= i.color.rgb;
 FinalResult.a = FinalResult.a * _SpriteFade * i.color.a;
 return FinalResult;
