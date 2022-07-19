@@ -300,7 +300,7 @@ GameObject:
   - component: {fileID: 649119915975998327}
   - component: {fileID: 649119915975998326}
   m_Layer: 5
-  m_Name: DominionScrollCell
+  m_Name: AreaWithinDominionScrollCell
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -346,8 +346,8 @@ MonoBehaviour:
   m_notDevelopmentImage: {fileID: 5169589429280237015}
   m_terrainIconArray:
   - {fileID: 1034943254022909143}
-  - {fileID: 5920771382685144857}
   - {fileID: 3576307420405947632}
+  - {fileID: 5920771382685144857}
   - {fileID: 5484655723539780272}
   - {fileID: 2692812672467470006}
   m_selectedImage: {fileID: 899438014166038388}

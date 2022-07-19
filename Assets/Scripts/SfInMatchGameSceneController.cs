@@ -72,7 +72,9 @@ namespace sfproj
 	}
 
 
-
+	/// <summary>
+	/// 対戦ゲームのメインとなるシーン
+	/// </summary>
 	public class SfInMatchGameSceneController : SerializedMonoBehaviour {
 
 		TerrainGridSystem tgs;
@@ -96,6 +98,9 @@ namespace sfproj
         {
 
 			Debug.Log("Start");
+
+			// ゲーム管理の初期化
+			SfGameManager.Instance.OnInitialize();
 
 			// setup GUI styles
 			labelStyle = new GUIStyle();
@@ -213,7 +218,7 @@ namespace sfproj
 
 			Debug.Log("OnTerritoryClick2");
 
-			SfGameManager.Instance.DominionScrollView.Open(dominionRecord);
+			SfGameManager.Instance.AreaWithinDominionScrollView.Open(dominionRecord);
 		}
 
 		// Parameters to pass through to our new method
@@ -358,7 +363,7 @@ namespace sfproj
 				var dominionRecord = SfDominionRecordTableManager.Instance.RecordList[i];
 
 				// ランダムな数を設定して地域を生成(最低値は設定可能で１以下は無し、最大値は設定可能)
-				int areaIncDec = Random.Range(0, ConfigController.Instance.AreaIncDecValue + 1);
+				int areaIncDec = Random.Range(0, SfConfigController.Instance.AreaIncDecValue + 1);
 
 				// 領域のテリトリにあるセルの数を取得
 				var cellCount = tgs.territories[dominionRecord.m_territoryIndex].cells.Count;
@@ -415,7 +420,7 @@ namespace sfproj
 		/// </summary>
 		public void CreateKingdomInWorld() {
 
-			int kingdomCount = ConfigController.Instance.KingdomCount;
+			int kingdomCount = SfConfigController.Instance.KingdomCount;
 
 			// 自身の王国を作成する
 			{
@@ -443,13 +448,13 @@ namespace sfproj
 			int dominionCount = dominionRecordList.Count;
 
 			// 最大王国数だけランダムに領域を色分け
-			for (int i = 0; i < ConfigController.Instance.KingdomCount; ++i)
+			for (int i = 0; i < SfConfigController.Instance.KingdomCount; ++i)
 			{
 				// ランダムに領域を選択
 				var dominionRecord = dominionRecordList[Random.Range(0, dominionCount)];
 
 				// 自身の王国のみ設定した色を使用
-				Color color = i == 0 ? ConfigController.Instance.KingdomColor : Random.ColorHSV();
+				Color color = i == 0 ? SfConfigController.Instance.KingdomColor : Random.ColorHSV();
 				color.a = 0.4f;
 
 				// 領域からテリトリを取得
@@ -527,25 +532,25 @@ namespace sfproj
 			if ((areaRecord.ExistingTerrain & eExistingTerrain.Plane) != 0)
 			{
 				// アンロックした地域が平地に面していたら田畑を設定
-				SfAreaRecordTableManager.Instance.ChangeZoneType(minimumPlaneAreaId, 0, eZoneType.Production_Fields);
-				SfAreaRecordTableManager.Instance.ChangeZoneExp(minimumPlaneAreaId, 0, 1);
-			}
-			else if ((areaRecord.ExistingTerrain & eExistingTerrain.Mountain) != 0)
-			{
-				// アンロックした地域が山に面していたら採掘所を設定
-				SfAreaRecordTableManager.Instance.ChangeZoneType(minimumPlaneAreaId, 0, eZoneType.Production_Mining);
+				SfAreaRecordTableManager.Instance.ChangeZoneType(minimumPlaneAreaId, 0, eZoneFacilityType.Production_Farm);
 				SfAreaRecordTableManager.Instance.ChangeZoneExp(minimumPlaneAreaId, 0, 1);
 			}
 			else if ((areaRecord.ExistingTerrain & eExistingTerrain.Forest) != 0)
 			{
 				// アンロックした地域が森に面していたら伐採所を設定
-				SfAreaRecordTableManager.Instance.ChangeZoneType(minimumPlaneAreaId, 0, eZoneType.Production_LoggingArea);
+				SfAreaRecordTableManager.Instance.ChangeZoneType(minimumPlaneAreaId, 0, eZoneFacilityType.Production_LoggingArea);
+				SfAreaRecordTableManager.Instance.ChangeZoneExp(minimumPlaneAreaId, 0, 1);
+			}
+			else if ((areaRecord.ExistingTerrain & eExistingTerrain.Mountain) != 0)
+			{
+				// アンロックした地域が山に面していたら採掘所を設定
+				SfAreaRecordTableManager.Instance.ChangeZoneType(minimumPlaneAreaId, 0, eZoneFacilityType.Production_Mining);
 				SfAreaRecordTableManager.Instance.ChangeZoneExp(minimumPlaneAreaId, 0, 1);
 			}
 			else if ((areaRecord.ExistingTerrain & eExistingTerrain.Ocean) != 0)
 			{
 				// アンロックした地域が海に面していたら港を設定
-				SfAreaRecordTableManager.Instance.ChangeZoneType(minimumPlaneAreaId, 0, eZoneType.Commercial_Harbor);
+				SfAreaRecordTableManager.Instance.ChangeZoneType(minimumPlaneAreaId, 0, eZoneFacilityType.Commercial_Harbor);
 				SfAreaRecordTableManager.Instance.ChangeZoneExp(minimumPlaneAreaId, 0, 1);
 			}
 		}
@@ -568,7 +573,7 @@ namespace sfproj
 
 						foreach (var cell in list)
 						{
-							tgs.CellSetColor(cell, ConfigController.Instance.LandColor);
+							tgs.CellSetColor(cell, SfConfigController.Instance.LandColor);
 						}
 
 						m_scenePhase = eScenePhase.CreateTerritory;
@@ -576,7 +581,7 @@ namespace sfproj
 					break;
 				case eScenePhase.CreateTerritory:
 					{
-						foreach (var collider in currentBoxCollider[(int)ConfigController.Instance.LandType])
+						foreach (var collider in currentBoxCollider[(int)SfConfigController.Instance.LandType])
 						{
 							InitCells(collider);
 						}

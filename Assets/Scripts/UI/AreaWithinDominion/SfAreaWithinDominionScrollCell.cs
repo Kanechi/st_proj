@@ -13,7 +13,7 @@ namespace sfproj
     /// 領域スクロールビューのセル(地域セル)
     /// タッチすることで地域ウィンドウを上部に表示する
     /// </summary>
-    public class DominionScrollCell : EnhancedScrollerCellView
+    public class SfAreaWithinDominionScrollCell : EnhancedScrollerCellView
     {
         static float BaseCellSize = 164.0f;
 
@@ -80,10 +80,10 @@ namespace sfproj
         /// <summary>
         /// 現在設定されている領域セルデータ
         /// </summary>
-        public DominionScrollCellData Data { get; set; } = null;
+        public SfAreaWithinDominionScrollCellData Data { get; set; } = null;
 
         // 手札セルビューにある手札をタッチした際の処理
-        public UnityAction<DominionScrollCell> Selected { get; set; } = null;
+        public UnityAction<SfAreaWithinDominionScrollCell> Selected { get; set; } = null;
 
         public int DataIndex { get; private set; }
 
@@ -99,7 +99,7 @@ namespace sfproj
 
         }
 
-        public void SetData(int dataIndex, DominionScrollCellData data)
+        public void SetData(int dataIndex, SfAreaWithinDominionScrollCellData data)
         {
             DataIndex = dataIndex;
             Data = data;
@@ -109,16 +109,16 @@ namespace sfproj
             name = data.m_areaRecord.m_name;
 
             // サイズチェック
-            float size = DominionScrollView.CellSize.x / BaseCellSize;
+            float size = SfAreaWithinDominionScrollView.CellSize.x / BaseCellSize;
 
             // 背景サイズの設定
-            BgRect.sizeDelta = DominionScrollView.CellSize;
+            BgRect.sizeDelta = SfAreaWithinDominionScrollView.CellSize;
 
             // マスク画像のサイズを設定
-            MaskRect.sizeDelta = DominionScrollView.MaskCellSize;
+            MaskRect.sizeDelta = SfAreaWithinDominionScrollView.MaskCellSize;
 
             // 選択画像のサイズを選択
-            SelectedImageRect.sizeDelta = DominionScrollView.SelectedImageSize;
+            SelectedImageRect.sizeDelta = SfAreaWithinDominionScrollView.SelectedImageSize;
 
             // 背景画像の設定
             m_bg.sprite = Data.m_areaBgImageSprite;

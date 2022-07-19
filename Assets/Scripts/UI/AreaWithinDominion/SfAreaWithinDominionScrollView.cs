@@ -8,9 +8,9 @@ using UniRx;
 namespace sfproj
 {
     /// <summary>
-    /// 領域ウィンドウ
+    /// 領域内地域スクロールビュー
     /// </summary>
-    public class DominionScrollView : WindowBase, IEnhancedScrollerDelegate
+    public class SfAreaWithinDominionScrollView : WindowBase, IEnhancedScrollerDelegate
     {
         // セルサイズ(単位ベクトル)
         static private float CELL_SIZE = 0.0f;
@@ -28,10 +28,10 @@ namespace sfproj
         private EnhancedScrollerCellView m_cell = null;
 
         // データリスト
-        private List<DominionScrollCellData> m_dataList = new List<DominionScrollCellData>();
+        private List<SfAreaWithinDominionScrollCellData> m_dataList = new List<SfAreaWithinDominionScrollCellData>();
 
         // 現在選択中のセルデータ
-        private DominionScrollCellData m_selectedCellData = null;
+        private SfAreaWithinDominionScrollCellData m_selectedCellData = null;
 
         protected override void Start()
         {
@@ -103,7 +103,7 @@ namespace sfproj
                 if (areaRecord == null)
                     continue;
 
-                m_dataList.Add(new DominionScrollCellData(areaRecord));
+                m_dataList.Add(new SfAreaWithinDominionScrollCellData(areaRecord));
             }
         }
 
@@ -159,7 +159,7 @@ namespace sfproj
         // スクロール時処理
         public EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex)
         {
-            var cell = scroller.GetCellView(m_cell) as DominionScrollCell;
+            var cell = scroller.GetCellView(m_cell) as SfAreaWithinDominionScrollCell;
 
             // セルの名前を地域の名前にしたいので SetData 内部で name に対して地域名を設定する
             //cell.name = m_dataList[dataIndex].Identifier + "_Cell";
@@ -188,7 +188,7 @@ namespace sfproj
         /// セル選択時の処理
         /// </summary>
         /// <param name="cell"></param>
-        public void OnSelected(DominionScrollCell cell)
+        public void OnSelected(SfAreaWithinDominionScrollCell cell)
         {
             // 選択しているものをタッチした場合はフォーカス解除
             bool isFocus = true;

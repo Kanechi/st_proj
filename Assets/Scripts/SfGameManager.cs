@@ -21,8 +21,8 @@ namespace sfproj
         /// 領土スクロールビュー
         /// </summary>
         [SerializeField]
-        private DominionScrollView m_dominionScrollView = null;
-        public DominionScrollView DominionScrollView => m_dominionScrollView;
+        private SfAreaWithinDominionScrollView m_areaWithinDominionScrollView = null;
+        public SfAreaWithinDominionScrollView AreaWithinDominionScrollView => m_areaWithinDominionScrollView;
 
         /// <summary>
         /// 地域情報ビュー
@@ -31,14 +31,24 @@ namespace sfproj
         private SfAreaInfoView m_areaInfoView = null;
         public SfAreaInfoView AreaInfoView => m_areaInfoView;
 
+        /// <summary>
+        /// release 時入力処理
+        /// </summary>
         [SerializeField]
         private SfInputSystem m_inputSystem = null;
         public SfInputSystem InputSystem => m_inputSystem;
 
+        protected override void Awake()
+        {
+            base.Awake();
+
+            m_areaWithinDominionScrollView.gameObject.SetActive(false);
+            m_areaInfoView.gameObject.SetActive(false);
+        }
+
         // Start is called before the first frame update
         void Start()
         {
-
         }
 
         // Update is called once per frame
@@ -47,10 +57,14 @@ namespace sfproj
 
         }
 
+        public void OnInitialize() {
+
+        }
+
         public void OnFinalize() {
 
             // ゲームメイン終了時にビュー系をすべて解放してタイトル画面に戻す
-            m_dominionScrollView = null;
+            m_areaWithinDominionScrollView = null;
             m_areaInfoView = null;
         }
     }

@@ -14,7 +14,7 @@ namespace sfproj {
     /// ゲームプレイセーブデータ
     /// </summary>
     [Serializable]
-    public class GamePlaySaveDataRecord : IJsonParser
+    public class SfGamePlaySaveDataRecord : IJsonParser
     {
         // 識別 ID
         [SerializeField]

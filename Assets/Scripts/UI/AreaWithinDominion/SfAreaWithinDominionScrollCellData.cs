@@ -9,7 +9,7 @@ namespace sfproj
     /// <summary>
     /// 表示している領域スクロールセル(地域セル)のデータ
     /// </summary>
-    public class DominionScrollCellData
+    public class SfAreaWithinDominionScrollCellData
     {
         // 地域レコード
         public SfAreaRecord m_areaRecord = null;
@@ -25,12 +25,12 @@ namespace sfproj
 
 
         // データが参照しているセル
-        public DominionScrollCell Cell { get; set; } = null;
+        public SfAreaWithinDominionScrollCell Cell { get; set; } = null;
         
         // true...選択(フォーカス)されている
         public bool IsSelected { get; set; } = false;
 
-        public DominionScrollCellData(SfAreaRecord record) {
+        public SfAreaWithinDominionScrollCellData(SfAreaRecord record) {
 
             m_areaRecord = record;
 

@@ -4,7 +4,7 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 
 namespace sfproj {
-    public class ConfigController : SingletonMonoBehaviour<ConfigController> {
+    public class SfConfigController : SingletonMonoBehaviour<SfConfigController> {
 
         /// <summary>
         /// ‹æˆæ•\¦Å‘å”

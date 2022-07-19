@@ -143,72 +143,6 @@ namespace sfproj
     }
 
 
-    /// <summary>
-    /// 区域タイプ
-    /// stellaris は電気、工業、農業、産業区域を別枠で振り分けれるようになっているが
-    /// それをすべて専門枠として扱うような感じ
-    /// 利用できる土地があってそこに区域を振り分けるという考えかた
-    /// </summary>
-    public enum eZoneType
-    {
-        /// <summary>
-        /// 何も設定されていない
-        /// 破壊した際もこれに設定
-        /// </summary>
-        None = -1,
-
-        /// <summary>
-        /// 生産区_田畑
-        /// 平地に隣接していれば建設可能
-        /// 食料資源が増加
-        /// </summary>
-        Production_Fields = 1000,
-        Production_Fishery = 1001,
-
-        /// <summary>
-        /// 生産区_採掘所
-        /// 山に隣接していれば建設可能
-        /// 鉱物資源が増える
-        /// </summary>
-        Production_Mining = 1010,
-
-        /// <summary>
-        /// 生産区_伐採所
-        /// 森に隣接していれば建設可能
-        /// 材木資源が増加
-        /// </summary>
-        Production_LoggingArea = 1020,
-
-        /// <summary>
-        /// 商業区
-        /// 資金が増加
-        /// さまざまなアイテムをトレード可能になる
-        /// 町の特産品なども増える
-        /// </summary>
-        Commercial_MarketPlace  = 2000,
-        Commercial_TradingPost  = 2010,
-        // 港：海に面していないと設置不可
-        Commercial_Harbor       = 2020,
-
-
-
-        /// <summary>
-        /// 魔導区
-        /// 魔力資源が増加
-        /// 魔導系のアイテムクラフトを生成可能
-        /// 魔法防御力をを上げる事も可能
-        /// </summary>
-        Witchcrafty_MagicItemWorkshop = 3000,
-        Witchcrafty_RuneEngravedStone = 3010,
-
-        /// <summary>
-        /// 城塞区
-        /// 町の一区画の防御力を上げることが可能
-        /// 壁とは違う
-        /// 壁はまた別途城壁として建設可能
-        /// </summary>
-        Citadel = 4000,
-    }
 
     /// <summary>
     /// 地域レコード
@@ -284,8 +218,8 @@ namespace sfproj
         public int MaxZoneCount { get => m_maxZoneCount; set => m_maxZoneCount = value; }
 
         // 設定されている区域タイプリスト<セルインデックス、区域タイプ>
-        public Dictionary<int, eZoneType> m_zoneTypeDict = new Dictionary<int, eZoneType>();
-        public Dictionary<int, eZoneType> ZoneTypeDict { get => m_zoneTypeDict; set => m_zoneTypeDict = value; }
+        public Dictionary<int, eZoneFacilityType> m_zoneTypeDict = new Dictionary<int, eZoneFacilityType>();
+        public Dictionary<int, eZoneFacilityType> ZoneTypeDict { get => m_zoneTypeDict; set => m_zoneTypeDict = value; }
 
         // 設定されている区域の拡張数<セルインデックス、拡張数>
         public Dictionary<int, int> m_zoneExpantionDict = new Dictionary<int, int>();
@@ -336,7 +270,7 @@ namespace sfproj
 
             for (int i = 0; i < ct; ++i)
             {
-                record.ZoneTypeDict.Add(i, eZoneType.None);
+                record.ZoneTypeDict.Add(i, eZoneFacilityType.None);
                 record.ZoneExpantionDict.Add(i, 0);
             }
 
@@ -402,29 +336,28 @@ namespace sfproj
 
             // 平原
             float rate = UnityEngine.Random.value * 100.0f;
-            if (ConfigController.Instance.DistributionRatioPlane > rate)
+            if (SfConfigController.Instance.DistributionRatioPlane > rate)
             {
                 terrain |= eExistingTerrain.Plane;
             }
 
-            // 山
-            rate = UnityEngine.Random.value * 100.0f;
-            if (ConfigController.Instance.DistributionRatioMountain > rate)
-            {
-                terrain |= eExistingTerrain.Mountain;
-            }
-
-
             // 森
             rate = UnityEngine.Random.value * 100.0f;
-            if (ConfigController.Instance.DistributionRatioForest > rate)
+            if (SfConfigController.Instance.DistributionRatioForest > rate)
             {
                 terrain |= eExistingTerrain.Forest;
             }
 
+            // 山
+            rate = UnityEngine.Random.value * 100.0f;
+            if (SfConfigController.Instance.DistributionRatioMountain > rate)
+            {
+                terrain |= eExistingTerrain.Mountain;
+            }
+
             // 川
             rate = UnityEngine.Random.value * 100.0f;
-            if (ConfigController.Instance.DistributionRatioRiver > rate)
+            if (SfConfigController.Instance.DistributionRatioRiver > rate)
             {
                 terrain |= eExistingTerrain.River;
             }
@@ -433,7 +366,7 @@ namespace sfproj
             if (dominion.NeighboursOceanFlag == true)
             {
                 rate = UnityEngine.Random.value * 100.0f;
-                if (ConfigController.Instance.DistributionRatioOcean > rate)
+                if (SfConfigController.Instance.DistributionRatioOcean > rate)
                 {
                     terrain |= eExistingTerrain.Ocean;
                 }
@@ -448,7 +381,7 @@ namespace sfproj
 
 
         // 区域最大数の計算
-        protected override int CulcMaxZoneCount() { return UnityEngine.Random.Range(ConfigController.Instance.MinZoneValue, ConfigController.Instance.MaxZoneValue + 1); }
+        protected override int CulcMaxZoneCount() { return UnityEngine.Random.Range(SfConfigController.Instance.MinZoneValue, SfConfigController.Instance.MaxZoneValue + 1); }
     }
 
     /// <summary>
@@ -527,19 +460,19 @@ namespace sfproj
             if (factoryType == eAreaGroupType.None)
             {
                 // 町 (rate が 80 以下なら町)
-                if (ConfigController.Instance.AreaTownRate > rate)
+                if (SfConfigController.Instance.AreaTownRate > rate)
                 {
                     // 町
                     factoryType = eAreaGroupType.Plane;
                 }
                 // 遺跡 (rate が 80 から 90 なら遺跡)
-                else if (ConfigController.Instance.AreaTownRate <= rate && (ConfigController.Instance.AreaTownRate + ConfigController.Instance.AreaRemainsRate) > rate)
+                else if (SfConfigController.Instance.AreaTownRate <= rate && (SfConfigController.Instance.AreaTownRate + SfConfigController.Instance.AreaRemainsRate) > rate)
                 {
                     // 遺跡
                     factoryType = eAreaGroupType.Remains;
                 }
                 // 洞窟 (rate が 90 から 100 なら遺跡)
-                else if ((ConfigController.Instance.AreaTownRate + ConfigController.Instance.AreaRemainsRate) <= rate && (ConfigController.Instance.AreaTownRate + ConfigController.Instance.AreaRemainsRate + ConfigController.Instance.AreaCaveRate) > rate)
+                else if ((SfConfigController.Instance.AreaTownRate + SfConfigController.Instance.AreaRemainsRate) <= rate && (SfConfigController.Instance.AreaTownRate + SfConfigController.Instance.AreaRemainsRate + SfConfigController.Instance.AreaCaveRate) > rate)
                 {
                     // 洞窟
                     factoryType = eAreaGroupType.Cave;
@@ -602,7 +535,7 @@ namespace sfproj
         /// <param name="areaId"></param>
         /// <param name="cellIndex"></param>
         /// <param name="zoneType"></param>
-        public void ChangeZoneType(uint areaId, int cellIndex, eZoneType zoneType) {
+        public void ChangeZoneType(uint areaId, int cellIndex, eZoneFacilityType zoneType) {
 
             var record = Get(areaId);
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Sirenix.OdinInspector;
 
 namespace sfproj
 {
@@ -33,6 +34,7 @@ namespace sfproj
         private Image ZoneFacilityImage => m_zoneFacilityImage != null ? m_zoneFacilityImage : m_zoneFacilityImage = m_zoneFacilityObj.GetComponent<Image>();
 
         // このセルのデータ
+        [ShowInInspector, ReadOnly]
         private SfZoneCellData m_data = null;
         public SfZoneCellData Data => m_data;
 
@@ -61,7 +63,7 @@ namespace sfproj
                 m_zoneFacilityObj.SetActive(false);
             }
 
-            if (m_data.ZoneType != eZoneType.None)
+            if (m_data.ZoneType != eZoneFacilityType.None)
             {
                 m_addObj.SetActive(false);
             }

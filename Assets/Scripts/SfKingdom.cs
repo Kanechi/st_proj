@@ -125,12 +125,12 @@ namespace sfproj
     {
         // 王国名生成
         protected override void CreateName(SfKingdomRecord record) {
-            record.Name = ConfigController.Instance.KingdomName;
+            record.Name = SfConfigController.Instance.KingdomName;
         }
 
         // 王国カラーの設定
         protected override void SettingColor(SfKingdomRecord record) {
-            record.Color = ConfigController.Instance.KingdomColor;
+            record.Color = SfConfigController.Instance.KingdomColor;
         }
 
         // 自分の国かどうかのフラグ
