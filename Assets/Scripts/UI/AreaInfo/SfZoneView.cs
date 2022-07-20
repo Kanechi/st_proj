@@ -102,9 +102,9 @@ namespace sfproj
                 // 表示数分のすべての区域データを作成
                 SfZoneCellData zoneCellData = null ;
                 if (i < zoneMaxCt)
-                    zoneCellData = new SfZoneCellData(i, record.ZoneTypeDict[i], record.ZoneExpantionDict[i]);
+                    zoneCellData = new SfZoneCellData(record.Id, i, record.ZoneTypeDict[i], record.ZoneExpantionDict[i]);
                 else
-                    zoneCellData = new SfZoneCellData(i, eZoneFacilityType.None, 0);
+                    zoneCellData = new SfZoneCellData(record.Id, i, eZoneFacilityType.None, 0);
 
                 // 地域に存在する区域数分の区域データを設定
                 if (i < zoneCt)

@@ -226,7 +226,7 @@ namespace sfproj
         public Dictionary<int, int> ZoneExpantionDict = new Dictionary<int, int>();
 
         // 保管されている生産物ID と総数
-        public Dictionary<int, int> m_products = new Dictionary<int, int>();
+        public Dictionary<uint, int> m_products = new Dictionary<uint, int>();
 
         // 割り当てられている武将 ID
         public List<uint> m_troops = new List<uint>();
@@ -585,6 +585,49 @@ namespace sfproj
             }
 
             record.ZoneExpantionDict[cellIndex] = exp;
+        }
+
+        /// <summary>
+        /// 区域施設の建設に必要なコストのチェック
+        /// </summary>
+        /// <param name="areaRecord"></param>
+        /// <param name="facilityRecord"></param>
+        /// <returns>true...建設可能</returns>
+        public bool CheckCostForBuildingFacility(SfAreaRecord areaRecord, SfZoneFacilityRecord facilityRecord)
+        {
+            // 外部で取得して引数に渡した方が良いかも
+            //var areaRecord = Get(areaId);
+            //var facilityRecord = SfZoneFacilityRecordTable.Instance.Get(type);
+
+            foreach (var cost in facilityRecord.Costs)
+            {
+                // 必要コストの資源が生産物に１つでも無い場合は false
+                if (areaRecord.m_products.ContainsKey(cost.Key) == false)
+                {
+                    return false;
+                }
+
+                // 生産物がコストより少ない場合は false
+                if (areaRecord.m_products[cost.Key] < cost.Value)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// 区域施設の建設に必要なコストを支払う
+        /// </summary>
+        /// <param name="areaRecord"></param>
+        /// <param name="facilityRecord"></param>
+        public void PayCostForBuildingFacility(SfAreaRecord areaRecord, SfZoneFacilityRecord facilityRecord)
+        {
+            foreach (var cost in facilityRecord.Costs)
+            {
+                areaRecord.m_products[cost.Key] -= facilityRecord.Costs[cost.Key];
+            }
         }
     }
 

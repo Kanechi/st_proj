@@ -12,6 +12,11 @@ namespace sfproj {
         /// </summary>
         static public readonly int ZONE_MAX_DISPLAY_COUNT = 9;
 
+        /// <summary>
+        /// 区域最大拡張数
+        /// </summary>
+        static public readonly int ZONE_MAX_EXPANTION_COUNT = 3;
+
         [Title("ゲーム上で設定可能", horizontalLine: false)]
 
         [Title("プレイ設定")]

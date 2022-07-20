@@ -10,6 +10,10 @@ namespace sfproj
     [Serializable]
     public class SfZoneCellData
     {
+        // この区域セルの存在する地域 ID
+        private uint m_areaId = 0;
+        public uint AreaId => m_areaId;
+
         // セルインデックス
         [ShowInInspector, ReadOnly]
         private int m_cellIndex = 0;
@@ -31,7 +35,8 @@ namespace sfproj
 
         public SfZoneCell Cell { get; set; } = null;
 
-        public SfZoneCellData(int index, eZoneFacilityType zoneType, int expansionCt) {
+        public SfZoneCellData(uint areaId, int index, eZoneFacilityType zoneType, int expansionCt) {
+            m_areaId = areaId;
             m_cellIndex = index;
             m_zoneType = zoneType;
             m_expansionCount = expansionCt;

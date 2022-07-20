@@ -131,47 +131,42 @@ namespace sfproj
         Witchcrafty_MagicBarrier = 5100,
     }
 
-
+    /// <summary>
+    /// 区域施設レコード
+    /// </summary>
     [Serializable]
     public class SfZoneFacilityRecord
     {
-        protected const string LEFT_VERTICAL_GROUP = "Split/Left";
-        protected const string STATS_BOX_GROUP = "Split/Left/Stats";
-        protected const string GENERAL_SETTINGS_VERTICAL_GROUP = "Split/Left/General Settings/Split/Right";
+        // アイコン
+        [SerializeField, HideLabel, PreviewField(55), HorizontalGroup(55, LabelWidth = 67)]
+        private Texture m_icon = null;
 
-
-        [HideLabel, PreviewField(55)]
-        [HorizontalGroup(LEFT_VERTICAL_GROUP + "/General Settings/Split", 55, LabelWidth = 67)]
-        public Texture m_icon = null;
-
-        //[BoxGroup(LEFT_VERTICAL_GROUP + "/General Settings")]
-        [HorizontalGroup("Split/Right", LabelWidth = 80)]
-        [VerticalGroup(GENERAL_SETTINGS_VERTICAL_GROUP)]
-        public string Name;
+        // 名前
+        [SerializeField]
+        private string m_name;
 
         // 区域施設タイプ
-        [SerializeField, HorizontalGroup("Split/Right")]
-        [VerticalGroup(GENERAL_SETTINGS_VERTICAL_GROUP)]
+        [SerializeField]
         private eZoneFacilityType m_zoneFacilityType = eZoneFacilityType.None;
         public eZoneFacilityType Type => m_zoneFacilityType;
 
-
-
         // 施設画像
-        [SerializeField, HorizontalGroup("Split/Right")]
-        [VerticalGroup(GENERAL_SETTINGS_VERTICAL_GROUP)]
+        [SerializeField]
         private Sprite m_facilitySprite = null;
         public Sprite FacilitySprite => m_facilitySprite;
 
-#if false
+        // コスト(生産資源ID,必要数)
+        [SerializeField]
+        private Dictionary<uint, int> m_costs;
+        public Dictionary<uint, int> Costs => m_costs;
+
         // 説明文
         [SerializeField, Multiline(3)]
         private string m_desc = "";
         public string Description => m_desc;
-#endif
     }
 
-    [CreateAssetMenu(menuName = "RecordTables/Create SfZoneFacilityRecordTable", fileName = "SfZoneFacilityRecordTables", order = 10000)]
+    [CreateAssetMenu(menuName = "RecordTables/Create SfZoneFacilityRecordTable", fileName = "SfZoneFacilityRecordTable", order = 10000)]
     public class SfZoneFacilityRecordTable : EditorRecordTable<SfZoneFacilityRecord>
     {
         // assets path

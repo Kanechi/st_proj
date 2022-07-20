@@ -15,7 +15,7 @@ namespace sfproj
     /// </summary>
     public class SfAreaWithinDominionScrollCell : EnhancedScrollerCellView
     {
-        static float BaseCellSize = 164.0f;
+        static private float BaseCellSize = 164.0f;
 
         private RectTransform m_rectTransform;
         public RectTransform RectTransform => m_rectTransform != null ? m_rectTransform : m_rectTransform = GetComponent<RectTransform>();

@@ -4,6 +4,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Sirenix.OdinInspector;
+using UniRx;
+using System.Linq;
 
 namespace sfproj
 {
@@ -20,10 +22,18 @@ namespace sfproj
         // プラス画像(解放された状態で施設を何も建設していない場合はこの画像が一番上に来ている)
         [SerializeField]
         private GameObject m_addObj = null;
+        // プラス部分のボタン
+        [SerializeField]
+        private Button m_addBtn = null;
 
         // 区域施設画像(解放された状態でなにかしら施設が建設されている)
         [SerializeField]
         private GameObject m_zoneFacilityObj = null;
+        // 区域施設が建造されている部分のボタン
+        // 処理はプラスと同じですでに建造されている施設は建造できないようにするのと
+        // 拡張が追加されているのが違い
+        [SerializeField]
+        private Button m_zoneFacilityBtn = null;
 
         // 拡張数
         [SerializeField]
@@ -38,17 +48,22 @@ namespace sfproj
         private SfZoneCellData m_data = null;
         public SfZoneCellData Data => m_data;
 
-        // 区域施設が建造されている部分のボタン
-        // 処理はプラスと同じですでに建造されている施設は建造できないようにするのと
-        // 拡張が追加されているのが違い
-        [SerializeField]
-        private Button m_facilityBtn = null;
+        // Start is called before the first frame update
+        void Start()
+        {
+            m_addBtn.OnClickAsObservable().Subscribe(_ => OnClickedAddBtn());
+            m_zoneFacilityBtn.OnClickAsObservable().Subscribe(_ => OnClickedZoneFacilityBtn());
+        }
 
-        // プラス部分のボタン
-        [SerializeField]
-        private Button m_addBtn = null;
+        // Update is called once per frame
+        void Update()
+        {
+            // タイプによる時間経過における資源の獲得
+            // もしくはバッファの設定
+        }
 
-        public void SetData(SfZoneCellData data) {
+        public void SetData(SfZoneCellData data)
+        {
             m_data = data;
             m_data.Cell = this;
 
@@ -80,17 +95,17 @@ namespace sfproj
             //ZoneFacilityImage.sprite = null;
         }
 
-        // Start is called before the first frame update
-        void Start()
-        {
-
+        /// <summary>
+        /// プラスボタンを押した際の処理
+        /// </summary>
+        private void OnClickedAddBtn() { 
+        
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-            // タイプによる時間経過における資源の獲得
-            // もしくはバッファの設定
+        /// <summary>
+        /// 区域施設ボタンを押した際の処理
+        /// </summary>
+        private void OnClickedZoneFacilityBtn() {
         }
     }
 }

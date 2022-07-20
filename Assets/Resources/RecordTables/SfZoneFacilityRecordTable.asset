@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 254ce530d89b05546945aa12e1cb4327, type: 3}
+  m_Name: SfZoneFacilityRecordTable
+  m_EditorClassIdentifier: 
+  m_recordList:
+  - m_icon: {fileID: 2800000, guid: d521ae5273b6e0348aeacb5d81087479, type: 3}
+    m_name: "\u8FB2\u5730"
+    m_zoneFacilityType: 1000
+    m_facilitySprite: {fileID: 21300000, guid: d521ae5273b6e0348aeacb5d81087479, type: 3}
+    m_desc: "\u5B9A\u671F\u7684\u306B\u98DF\u6599\u3092\u5897\u52A0"
+  - m_icon: {fileID: 2800000, guid: af3a78fd32043c54e8298e7c89a22e82, type: 3}
+    m_name: "\u6F01\u6E2F"
+    m_zoneFacilityType: 1010
+    m_facilitySprite: {fileID: 21300000, guid: af3a78fd32043c54e8298e7c89a22e82, type: 3}
+    m_desc: "\u5B9A\u671F\u7684\u306B\u98DF\u6599\u3092\u5897\u52A0"
+  - m_icon: {fileID: 2800000, guid: c20c15863a1f38449972c09cc4b592c8, type: 3}
+    m_name: "\u70AD\u9271"
+    m_zoneFacilityType: 1100
+    m_facilitySprite: {fileID: 21300000, guid: c20c15863a1f38449972c09cc4b592c8, type: 3}
+    m_desc: "\u5B9A\u671F\u7684\u306B\u9271\u7269\u3092\u5897\u52A0"
+  - m_icon: {fileID: 2800000, guid: 18952e38f46c8b345b6f805e352f1733, type: 3}
+    m_name: "\u4F10\u63A1\u6240"
+    m_zoneFacilityType: 1200
+    m_facilitySprite: {fileID: 21300000, guid: 18952e38f46c8b345b6f805e352f1733, type: 3}
+    m_desc: "\u5B9A\u671F\u7684\u306B\u6750\u6728\u3092\u5897\u52A0"
+  - m_icon: {fileID: 2800000, guid: 62e71338f8c48f0469095b2c7f1831ef, type: 3}
+    m_name: "\u30DE\u30FC\u30B1\u30C3\u30C8"
+    m_zoneFacilityType: 2000
+    m_facilitySprite: {fileID: 21300000, guid: 62e71338f8c48f0469095b2c7f1831ef, type: 3}
+    m_desc: "\u30DE\u30FC\u30B1\u30C3\u30C8\u30DC\u30BF\u30F3\u3092\u5229\u7528\u53EF\u80FD"
+  - m_icon: {fileID: 2800000, guid: 5b4d49c1c77899441aaf843ed632488d, type: 3}
+    m_name: "\u6E2F"
+    m_zoneFacilityType: 2020
+    m_facilitySprite: {fileID: 21300000, guid: 5b4d49c1c77899441aaf843ed632488d, type: 3}
+    m_desc: "\u8F38\u9001\u30DC\u30BF\u30F3\u3068\u30C8\u30EC\u30FC\u30C9\u30DC\u30BF\u30F3\u3092\u5229\u7528\u53EF\u80FD"
+  - m_icon: {fileID: 2800000, guid: a5264b409d51c7c48bdd19b5339e3315, type: 3}
+    m_name: "\u5BB6"
+    m_zoneFacilityType: 3000
+    m_facilitySprite: {fileID: 21300000, guid: a5264b409d51c7c48bdd19b5339e3315, type: 3}
+    m_desc: "\u6700\u5927\u4EBA\u53E3\u3092\u5897\u52A0"
