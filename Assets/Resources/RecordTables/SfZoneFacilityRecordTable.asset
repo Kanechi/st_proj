@@ -18,6 +18,11 @@ MonoBehaviour:
     m_zoneFacilityType: 1000
     m_facilitySprite: {fileID: 21300000, guid: d521ae5273b6e0348aeacb5d81087479, type: 3}
     m_desc: "\u5B9A\u671F\u7684\u306B\u98DF\u6599\u3092\u5897\u52A0"
+  - m_icon: {fileID: 2800000, guid: 5130436a21c423d4191b84e6364e5a3c, type: 3}
+    m_name: "\u679C\u6A39\u5712"
+    m_zoneFacilityType: 1010
+    m_facilitySprite: {fileID: 21300000, guid: 5130436a21c423d4191b84e6364e5a3c, type: 3}
+    m_desc: "\u5B9A\u671F\u7684\u306B\u98DF\u6599\u3092\u5897\u52A0"
   - m_icon: {fileID: 2800000, guid: af3a78fd32043c54e8298e7c89a22e82, type: 3}
     m_name: "\u6F01\u6E2F"
     m_zoneFacilityType: 1010
@@ -33,11 +38,16 @@ MonoBehaviour:
     m_zoneFacilityType: 1200
     m_facilitySprite: {fileID: 21300000, guid: 18952e38f46c8b345b6f805e352f1733, type: 3}
     m_desc: "\u5B9A\u671F\u7684\u306B\u6750\u6728\u3092\u5897\u52A0"
-  - m_icon: {fileID: 2800000, guid: 62e71338f8c48f0469095b2c7f1831ef, type: 3}
+  - m_icon: {fileID: 2800000, guid: 9bfbe367fa6022f40803ac8498ecbed8, type: 3}
     m_name: "\u30DE\u30FC\u30B1\u30C3\u30C8"
     m_zoneFacilityType: 2000
-    m_facilitySprite: {fileID: 21300000, guid: 62e71338f8c48f0469095b2c7f1831ef, type: 3}
+    m_facilitySprite: {fileID: 21300000, guid: 9bfbe367fa6022f40803ac8498ecbed8, type: 3}
     m_desc: "\u30DE\u30FC\u30B1\u30C3\u30C8\u30DC\u30BF\u30F3\u3092\u5229\u7528\u53EF\u80FD"
+  - m_icon: {fileID: 0}
+    m_name: "\u4EA4\u6613\u6240"
+    m_zoneFacilityType: 2010
+    m_facilitySprite: {fileID: 0}
+    m_desc: "\u8F38\u9001\u30DC\u30BF\u30F3\u3068\u30C8\u30EC\u30FC\u30C9\u30DC\u30BF\u30F3\u3092\u5229\u7528\u53EF\u80FD"
   - m_icon: {fileID: 2800000, guid: 5b4d49c1c77899441aaf843ed632488d, type: 3}
     m_name: "\u6E2F"
     m_zoneFacilityType: 2020
@@ -48,3 +58,23 @@ MonoBehaviour:
     m_zoneFacilityType: 3000
     m_facilitySprite: {fileID: 21300000, guid: a5264b409d51c7c48bdd19b5339e3315, type: 3}
     m_desc: "\u6700\u5927\u4EBA\u53E3\u3092\u5897\u52A0"
+  - m_icon: {fileID: 0}
+    m_name: "\u30AE\u30EB\u30C9"
+    m_zoneFacilityType: 4000
+    m_facilitySprite: {fileID: 0}
+    m_desc: "\u8ABF\u67FB\u30DC\u30BF\u30F3\u3092\u5229\u7528\u53EF\u80FD"
+  - m_icon: {fileID: 0}
+    m_name: "\u57CE\u58C1"
+    m_zoneFacilityType: 4100
+    m_facilitySprite: {fileID: 0}
+    m_desc: "\u9632\u885B\u6642\u306E\u9632\u5FA1\u529B\u304C\u4E0A\u6607"
+  - m_icon: {fileID: 0}
+    m_name: "\u30EB\u30FC\u30F3\u7089"
+    m_zoneFacilityType: 5000
+    m_facilitySprite: {fileID: 0}
+    m_desc: "\u5B9A\u671F\u7684\u306B\u30DE\u30CA\u3092\u5897\u52A0"
+  - m_icon: {fileID: 0}
+    m_name: "\u9B54\u6CD5\u969C\u58C1"
+    m_zoneFacilityType: 5100
+    m_facilitySprite: {fileID: 0}
+    m_desc: "\u9632\u885B\u6642\u306E\u9B54\u6CD5\u9632\u5FA1\u529B\u304C\u4E0A\u6607"
