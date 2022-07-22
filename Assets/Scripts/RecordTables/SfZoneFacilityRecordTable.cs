@@ -171,7 +171,7 @@ namespace sfproj
     public class SfZoneFacilityRecordTable : EditorRecordTable<SfZoneFacilityRecord>
     {
         // assets path
-        static private readonly string ResourcePath = "RecordTables/TerrainTileRecordTable";
+        static private readonly string ResourcePath = "RecordTables/SfZoneFacilityRecordTable";
         // singleton instance
         protected static SfZoneFacilityRecordTable s_instance = null;
         // singleton getter 
