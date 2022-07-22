@@ -98,14 +98,17 @@ namespace sfproj
         /// <summary>
         /// プラスボタンを押した際の処理
         /// </summary>
-        private void OnClickedAddBtn() { 
-        
+        private void OnClickedAddBtn() {
+
+            SfGameManager.Instance.ZoneFacilityScrollView.Open();
         }
 
         /// <summary>
         /// 区域施設ボタンを押した際の処理
         /// </summary>
         private void OnClickedZoneFacilityBtn() {
+
+            SfGameManager.Instance.ZoneFacilityScrollView.Open();
         }
     }
 }

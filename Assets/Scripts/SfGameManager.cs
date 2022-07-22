@@ -32,6 +32,13 @@ namespace sfproj
         public SfAreaInfoView AreaInfoView => m_areaInfoView;
 
         /// <summary>
+        /// 建設施設選択スクロールビュー
+        /// </summary>
+        [SerializeField]
+        private SfZoneFacilityScrollView m_zoneFacilityScrollView = null;
+        public SfZoneFacilityScrollView ZoneFacilityScrollView => m_zoneFacilityScrollView;
+
+        /// <summary>
         /// release 時入力処理
         /// </summary>
         [SerializeField]
@@ -44,6 +51,7 @@ namespace sfproj
 
             m_areaWithinDominionScrollView.gameObject.SetActive(false);
             m_areaInfoView.gameObject.SetActive(false);
+            m_zoneFacilityScrollView.gameObject.SetActive(false);
         }
 
         // Start is called before the first frame update
@@ -66,6 +74,7 @@ namespace sfproj
             // ゲームメイン終了時にビュー系をすべて解放してタイトル画面に戻す
             m_areaWithinDominionScrollView = null;
             m_areaInfoView = null;
+            m_zoneFacilityScrollView = null;
         }
     }
 }
