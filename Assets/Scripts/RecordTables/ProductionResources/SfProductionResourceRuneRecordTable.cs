@@ -13,11 +13,11 @@ namespace sfproj
     /// <summary>
     /// ê∂éYéëåπ(ÉãÅ[Éì)
     /// </summary>
-    [CreateAssetMenu(menuName = "RecordTables/Create SfProductionResourceRuneRecordTable", fileName = "SfProductionResourceRuneRecordTable", order = 11000)]
+    [CreateAssetMenu(menuName = "RecordTables/Create SfProductionResourceRuneRecordTable", fileName = "SfProductionResourceRecord", order = 11002)]
     public class SfProductionResourceRuneRecordTable : EditorRecordTable<SfProductionResourceRecord>
     {
         // assets path
-        static private readonly string ResourcePath = "RecordTables/SfProductionResourceRuneRecordTable";
+        static private readonly string ResourcePath = "RecordTables/ProductionResources/SfProductionResourceRuneRecordTable";
         // singleton instance
         protected static SfProductionResourceRuneRecordTable s_instance = null;
         // singleton getter
