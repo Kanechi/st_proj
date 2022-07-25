@@ -602,13 +602,13 @@ namespace sfproj
             foreach (var cost in facilityRecord.Costs)
             {
                 // 必要コストの資源が生産物に１つでも無い場合は false
-                if (areaRecord.m_products.ContainsKey(cost.Key) == false)
+                if (areaRecord.m_products.ContainsKey(cost.Id) == false)
                 {
                     return false;
                 }
 
                 // 生産物がコストより少ない場合は false
-                if (areaRecord.m_products[cost.Key] < cost.Value)
+                if (areaRecord.m_products[cost.Id] < cost.Count)
                 {
                     return false;
                 }
@@ -626,7 +626,7 @@ namespace sfproj
         {
             foreach (var cost in facilityRecord.Costs)
             {
-                areaRecord.m_products[cost.Key] -= facilityRecord.Costs[cost.Key];
+                areaRecord.m_products[cost.Id] -= cost.Count;
             }
         }
     }

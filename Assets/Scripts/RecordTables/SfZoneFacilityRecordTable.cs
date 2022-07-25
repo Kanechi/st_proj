@@ -133,6 +133,21 @@ namespace sfproj
     }
 
     /// <summary>
+    /// コスト
+    /// </summary>
+    [Serializable]
+    public class SfCost
+    {
+        [SerializeField]
+        private uint m_id = 0;
+        public uint Id => m_id;
+
+        [SerializeField]
+        private int m_count = 0;
+        public int Count => m_count;
+    }
+
+    /// <summary>
     /// 区域施設レコード
     /// </summary>
     [Serializable]
@@ -158,8 +173,8 @@ namespace sfproj
 
         // コスト(生産資源ID,必要数)
         [SerializeField]
-        private Dictionary<uint, int> m_costs;
-        public Dictionary<uint, int> Costs => m_costs;
+        private List<SfCost> m_costs = new List<SfCost>();
+        public List<SfCost> Costs => m_costs;
 
         // 説明文
         [SerializeField, Multiline(3)]

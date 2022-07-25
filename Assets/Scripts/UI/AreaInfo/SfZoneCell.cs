@@ -100,7 +100,7 @@ namespace sfproj
         /// </summary>
         private void OnClickedAddBtn() {
 
-            SfGameManager.Instance.ZoneFacilityScrollView.Open();
+            SfGameManager.Instance.ZoneFacilityScrollView.Open(Data);
         }
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace sfproj
         /// </summary>
         private void OnClickedZoneFacilityBtn() {
 
-            SfGameManager.Instance.ZoneFacilityScrollView.Open();
+            SfGameManager.Instance.ZoneFacilityScrollView.Open(Data);
         }
     }
 }

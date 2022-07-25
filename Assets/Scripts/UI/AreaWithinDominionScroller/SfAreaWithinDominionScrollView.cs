@@ -25,7 +25,8 @@ namespace sfproj
         private EnhancedScroller m_scroller = null;
 
         [SerializeField]
-        private EnhancedScrollerCellView m_cell = null;
+        private EnhancedScrollerCellView m_cellView = null;
+        //private EnhancedScrollerCellView m_cell = null;
 
         // データリスト
         private List<SfAreaWithinDominionScrollCellData> m_dataList = new List<SfAreaWithinDominionScrollCellData>();
@@ -159,7 +160,8 @@ namespace sfproj
         // スクロール時処理
         public EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex)
         {
-            var cell = scroller.GetCellView(m_cell) as SfAreaWithinDominionScrollCell;
+#if true
+            var cell = scroller.GetCellView(m_cellView) as SfAreaWithinDominionScrollCell;
 
             // セルの名前を地域の名前にしたいので SetData 内部で name に対して地域名を設定する
             //cell.name = m_dataList[dataIndex].Identifier + "_Cell";
@@ -170,6 +172,9 @@ namespace sfproj
             cell.Selected = OnSelected;
 
             return cell;
+#else
+            return null;
+#endif
         }
 
         // セルサイズ

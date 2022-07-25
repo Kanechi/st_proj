@@ -30,7 +30,7 @@ public abstract class RecordTable<RecordT> : IRecordTable<RecordT> {
 /// エディター用レコードテーブル
 /// </summary>
 /// <typeparam name="RecordT"></typeparam>
-public abstract class EditorRecordTable<RecordT> : ScriptableObject, IRecordTable<RecordT> {
+public abstract class EditorRecordTable<RecordT> : SerializedScriptableObject, IRecordTable<RecordT> {
     
     [SerializeField]
     protected List<RecordT> m_recordList = new List<RecordT>();

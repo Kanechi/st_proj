@@ -50,20 +50,23 @@ namespace sfproj
             // 画面高さの４分の１のサイズを取得
             float heightOneFour = height * 0.25f;
 
+#if false
             // スクロールビューの高さをそのサイズに設定
             var rectTransform = gameObject.GetComponent<RectTransform>();
             var size = rectTransform.sizeDelta;
             size.y = heightOneFour;
             rectTransform.sizeDelta = size;
+#endif
 
             // 画面高さの３分の２の位置を取得
             //float posTwoThird = height * 0.6666f;
 
+#if false
             // その位置にスクロールビューの高さを設定
             var pos = rectTransform.localPosition;
             pos.y = -(heightOneFour + (heightOneFour * 0.5f));
             rectTransform.localPosition = pos;
-
+#endif
             // セルサイズを計算。高さの９０％
             CELL_SIZE = heightOneFour * 0.9f;
 
@@ -96,6 +99,8 @@ namespace sfproj
         public bool Open(SfZoneCellData touchedZoneCellData, UnityAction opened = null)
         {
             gameObject.SetActive(true);
+
+            m_touchedZoneCellData = touchedZoneCellData;
 
             if (tweenCtrl_ != null)
             {

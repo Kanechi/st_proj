@@ -673,7 +673,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_lockObj: {fileID: 1178010900595124906}
   m_addObj: {fileID: 4126048255253035286}
+  m_addBtn: {fileID: 5279554830086294517}
   m_zoneFacilityObj: {fileID: 5057956813620532789}
+  m_zoneFacilityBtn: {fileID: 8488621050068055470}
   m_expansionCount: {fileID: 5845002016367052184}
 --- !u!1 &6552193756832286929
 GameObject:

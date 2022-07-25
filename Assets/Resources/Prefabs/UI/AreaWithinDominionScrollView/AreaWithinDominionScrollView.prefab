@@ -173,7 +173,7 @@ MonoBehaviour:
   closeBtn_: {fileID: 5567376077919768957}
   tweenCtrl_: {fileID: 0}
   m_scroller: {fileID: 5567376078830544988}
-  m_cell: {fileID: 649119915975998326, guid: 7989a2c8a47a107428e8abcb7518a9ec, type: 3}
+  m_cellView: {fileID: 649119915975998326, guid: 7989a2c8a47a107428e8abcb7518a9ec, type: 3}
 --- !u!1 &5567376078421032798
 GameObject:
   m_ObjectHideFlags: 0
