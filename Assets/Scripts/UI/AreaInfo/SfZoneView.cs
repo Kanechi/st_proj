@@ -70,7 +70,7 @@ namespace sfproj
             }
         }
 
-        public void SetData(SfAreaRecord record) {
+        public void SetData(SfAreaData record) {
 
             OnInitialize();
 
@@ -102,9 +102,14 @@ namespace sfproj
                 // 表示数分のすべての区域データを作成
                 SfZoneCellData zoneCellData = null ;
                 if (i < zoneMaxCt)
-                    zoneCellData = new SfZoneCellData(record.Id, i, record.ZoneTypeDict[i], record.ZoneExpantionDict[i]);
+                {
+                    var set = record.ZoneFacilityList.Find(z => z.ZoneCellIndex == i);
+                    zoneCellData = new SfZoneCellData(record.Id, i, set.ZoneFacilityType, set.ZoneExpantionCount);
+                }
                 else
+                {
                     zoneCellData = new SfZoneCellData(record.Id, i, eZoneFacilityType.None, 0);
+                }
 
                 // 地域に存在する区域数分の区域データを設定
                 if (i < zoneCt)

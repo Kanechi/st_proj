@@ -81,7 +81,13 @@ namespace sfproj
         /// </summary>
         private void CheckBtnDisp()
         {
+            m_buildButton.gameObject.SetActive(Data.EnableBuildBtn);
 
+            m_notBuyImage.gameObject.SetActive(Data.EnableNotBuildImage);
+
+            m_expantionButton.gameObject.SetActive(Data.EnableExpationBtn);
+
+            //m_expantionButton.enabled = !Data.DisableExpantionImage;
 
         }
 
@@ -109,8 +115,19 @@ namespace sfproj
         /// <summary>
         /// 建設ボタンを押した際の処理
         /// </summary>
-        private void OnBuildBtn() { 
-        
+        private void OnBuildBtn() {
+
+            // データテーブルを変更
+            SfAreaDataTableManager.Instance.ChangeZoneFacilityType(
+                    Data.m_zoneCellData.AreaId,
+                    Data.m_zoneCellData.CellIndex,
+                    Data.m_record.Type
+                );
+
+            // データテーブルにある施設を変更したら、プラスボタン、を施設ボタンに変更する必要がある
+
+            // セルデータを変更
+            Data.m_zoneCellData.ChangeFacilityType(Data.m_record.Type);
         }
 
         /// <summary>
@@ -118,8 +135,7 @@ namespace sfproj
         /// </summary>
         private void OnExpantionBtn() { 
         
+            //Data.m_zoneCellData.ExpansionCount
         }
-
-
     }
 }

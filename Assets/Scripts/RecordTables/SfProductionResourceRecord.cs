@@ -7,25 +7,30 @@ using System.Collections.Generic;
 namespace sfproj
 { 
 
+    /// <summary>
+    /// 生産資源カテゴリ
+    /// </summary>
     public enum eProductionResouceCategory
     {
         None        = 0,
-        // 木
-        Wood        = 100,
-        // 石
-        Stone       = 200,
-        // 鉱物
-        Mineral     = 300,
         // 穀物
-        Grain       = 400,
+        Grain       = 10000,
+        // 木
+        Wood        = 20000,
+
+
+        // 石
+        Stone       = 30000,
+        // 鉱物
+        Mineral     = 40000,
         // 果実
-        Fruit       = 500,
+        Fruit       = 50000,
         // 野菜
-        Vegetable   = 600,
+        Vegetable   = 60000,
         // 肉
-        Meat        = 700,
+        Meat        = 70000,
         // 皮、皮膚、肌、表皮、毛皮
-        Skin        = 800,
+        Skin        = 80000,
     }
 
 
@@ -47,6 +52,7 @@ namespace sfproj
         private uint m_id = 0;
         public uint Id => m_id;
 
+        // 生産資源カテゴリ
         [SerializeField]
         private eProductionResouceCategory m_category = eProductionResouceCategory.None;
         public eProductionResouceCategory Category => m_category;

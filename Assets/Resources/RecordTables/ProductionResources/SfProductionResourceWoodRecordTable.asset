@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ef840f44886f0d419f7c2af253dd23e, type: 3}
-  m_Name: SfProductionResourceRecord
+  m_Script: {fileID: 11500000, guid: ec11c03e468d85c44ac26cb19b4f55c0, type: 3}
+  m_Name: SfProductionResourceWoodRecordTable
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
@@ -22,8 +22,8 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   m_recordList:
-  - m_icon: {fileID: -825254912808381985, guid: cf1028e4293088e44a22a3fa8427e561, type: 3}
-    m_id: 10000
-    m_category: 400
-    m_baseName: "\u9EA6"
-    m_desc: "\u30C6\u30B9\u30C8"
+  - m_icon: {fileID: -7129947104931158369, guid: cf1028e4293088e44a22a3fa8427e561, type: 3}
+    m_id: 120000
+    m_category: 100
+    m_baseName: "\u6728"
+    m_desc: "\u4E00\u822C\u7684\u306A\u6728\u6750"

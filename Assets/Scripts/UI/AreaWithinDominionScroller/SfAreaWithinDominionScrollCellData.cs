@@ -12,7 +12,7 @@ namespace sfproj
     public class SfAreaWithinDominionScrollCellData
     {
         // 地域レコード
-        public SfAreaRecord m_areaRecord = null;
+        public SfAreaData m_areaRecord = null;
 
         // 地域背景画像スプライト
         public Sprite m_areaBgImageSprite = null;
@@ -30,7 +30,7 @@ namespace sfproj
         // true...選択(フォーカス)されている
         public bool IsSelected { get; set; } = false;
 
-        public SfAreaWithinDominionScrollCellData(SfAreaRecord record) {
+        public SfAreaWithinDominionScrollCellData(SfAreaData record) {
 
             m_areaRecord = record;
 

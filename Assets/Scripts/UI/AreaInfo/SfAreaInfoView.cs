@@ -66,7 +66,7 @@ namespace sfproj
             if (m_openFlag == true)
                 return false;
 
-            var record = SfAreaRecordTableManager.Instance.Get(areaId);
+            var record = SfAreaDataTableManager.Instance.Get(areaId);
 
             m_areaName.text = record.Name;
 

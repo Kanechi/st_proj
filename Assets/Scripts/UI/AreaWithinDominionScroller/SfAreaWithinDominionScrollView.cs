@@ -100,7 +100,7 @@ namespace sfproj
             // 地域 ID リストから地域レコードを取得しセルデータを作成していく
             foreach(uint areaId in areaIdList) {
 
-                var areaRecord = SfAreaRecordTableManager.Instance.Get(areaId);
+                var areaRecord = SfAreaDataTableManager.Instance.Get(areaId);
                 if (areaRecord == null)
                     continue;
 

@@ -35,6 +35,8 @@ namespace sfproj
         public SfZoneFacilityScrollCell Cell { get; set; } = null;
         public bool IsSelected { get; set; } = false;
 
+
+
         /// <summary>
         /// 
         /// </summary>
@@ -48,15 +50,15 @@ namespace sfproj
 
             m_facilitySprite = m_record.FacilitySprite;
 
-            var areaRecord = SfAreaRecordTableManager.Instance.Get(zoneCellData.AreaId);
+            var areaRecord = SfAreaDataTableManager.Instance.Get(zoneCellData.AreaId);
 
-            if (zoneCellData.ZoneType == record.Type)
+            if (zoneCellData.ZoneFacilityType == record.Type)
             {
                 // ’nˆæ‚ÉŒšİ‚³‚ê‚Ä‚¢‚é{İ‚ÆƒZƒ‹‚Ì{İ‚ª“¯‚¶ê‡‚ÍŠg’£ƒ{ƒ^ƒ“
 
                 if (zoneCellData.ExpansionCount < SfConfigController.ZONE_MAX_EXPANTION_COUNT)
                 {
-                    if (SfAreaRecordTableManager.Instance.CheckCostForBuildingFacility(areaRecord, record))
+                    if (SfAreaDataTableManager.Instance.CheckCostForBuildingFacility(areaRecord, record))
                     {
                         // Šg’£‰Â”\
                         EnableBuildBtn = false;
@@ -70,7 +72,7 @@ namespace sfproj
                         // Šg’£•s‰Â
                         EnableBuildBtn = false;
                         EnableNotBuildImage = false;
-                        EnableExpationBtn = false;
+                        EnableExpationBtn = true;
                         DisableExpantionImage = true;
                         MaxExpantionImage = false;
                     }
@@ -85,10 +87,10 @@ namespace sfproj
                     MaxExpantionImage = true;
                 }
             }
-            else if (zoneCellData.ZoneType == eZoneFacilityType.None)
+            else if (zoneCellData.ZoneFacilityType == eZoneFacilityType.None)
             {
                 // ‰½‚àŒšİ‚³‚ê‚Ä‚¢‚È‚¢ê‡
-                if (SfAreaRecordTableManager.Instance.CheckCostForBuildingFacility(areaRecord, record))
+                if (SfAreaDataTableManager.Instance.CheckCostForBuildingFacility(areaRecord, record))
                 {
                     // Œšİ‰Â”\
                     EnableBuildBtn = true;
@@ -110,7 +112,7 @@ namespace sfproj
             else
             {
                 // ‰½‚©Œšİ‚³‚ê‚Ä‚¢‚é‚ª“¯‚¶{İ‚Å‚Í‚È‚¢ê‡‚Í{İ‚Ì•ÏX‚É‚È‚é
-                if (SfAreaRecordTableManager.Instance.CheckCostForBuildingFacility(areaRecord, record))
+                if (SfAreaDataTableManager.Instance.CheckCostForBuildingFacility(areaRecord, record))
                 {
                     // Œšİ‰Â”\
                     EnableBuildBtn = true;

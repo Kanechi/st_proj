@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59f2a9f6f4a001946a6a31b550d67225, type: 3}
-  m_Name: SfProcessedGoodsFoodRecordTable
+  m_Script: {fileID: 11500000, guid: 4ef840f44886f0d419f7c2af253dd23e, type: 3}
+  m_Name: SfProductionResourceGrainRecordTable
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
@@ -22,11 +22,8 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   m_recordList:
-  - m_icon: {fileID: 3251572537446691504, guid: cf1028e4293088e44a22a3fa8427e561, type: 3}
-    m_id: 210000
-    m_category: 100
-    m_baseName: "\u30D1\u30F3"
-    m_desc: "\u4E00\u822C\u7684\u306A\u30D1\u30F3"
-    m_resourceRatio:
-    - m_id: 10000
-      m_ratio: 100
+  - m_icon: {fileID: -825254912808381985, guid: cf1028e4293088e44a22a3fa8427e561, type: 3}
+    m_id: 110000
+    m_category: 400
+    m_baseName: "\u9EA6"
+    m_desc: "\u4E00\u822C\u7684\u306A\u7A40\u7269"

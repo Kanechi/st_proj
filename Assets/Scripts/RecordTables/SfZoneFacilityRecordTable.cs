@@ -10,8 +10,10 @@ using Sirenix.OdinInspector;
 
 namespace sfproj
 {
+
+
     /// <summary>
-    /// 区域タイプ
+    /// 区域タイプ = ID
     /// stellaris は電気、工業、農業、産業区域を別枠で振り分けれるようになっているが
     /// それをすべて専門枠として扱うような感じ
     /// 利用できる土地があってそこに区域を振り分けるという考えかた
@@ -133,6 +135,21 @@ namespace sfproj
     }
 
     /// <summary>
+    /// 施設アイテム生成カテゴリ
+    /// 生産タイプは設定されているアイテム ID が生産品の ID となる
+    /// 加工品タイプは設定されているアイテム ID が加工品の ID となる
+    /// 加工品である場合は、定期的に時間が来たら生産品を消費して加工品が生成される
+    /// 消費される生産品の数はそれぞれの加工品によって定められていて
+    /// 時間が来た際に使用すべき生産品があったら加工品が生成される
+    /// </summary>
+    public enum eFacilityItemGenCategory
+    {
+        None = -1,
+        Production,     // 生産
+        Processed,      // 加工
+    }
+
+    /// <summary>
     /// コスト
     /// </summary>
     [Serializable]
@@ -153,9 +170,10 @@ namespace sfproj
     [Serializable]
     public class SfZoneFacilityRecord
     {
-        // アイコン
+        // アイコン(施設画像)
         [SerializeField, HideLabel, PreviewField(55), HorizontalGroup(55, LabelWidth = 67)]
-        private Texture m_icon = null;
+        private Sprite m_icon = null;
+        public Sprite FacilitySprite => m_icon;
 
         // 名前
         [SerializeField]
@@ -165,11 +183,7 @@ namespace sfproj
         [SerializeField]
         private eZoneFacilityType m_zoneFacilityType = eZoneFacilityType.None;
         public eZoneFacilityType Type => m_zoneFacilityType;
-
-        // 施設画像
-        [SerializeField]
-        private Sprite m_facilitySprite = null;
-        public Sprite FacilitySprite => m_facilitySprite;
+        
 
         // コスト(生産資源ID,必要数)
         [SerializeField]
@@ -180,6 +194,16 @@ namespace sfproj
         [SerializeField, Multiline(3)]
         private string m_desc = "";
         public string Description => m_desc;
+
+        // 施設のアイテム生成カテゴリ
+        [SerializeField]
+        private eFacilityItemGenCategory m_itemGenCategory = eFacilityItemGenCategory.None;
+        public eFacilityItemGenCategory ItemGenCategory => m_itemGenCategory;
+
+        // 生成するアイテムの ID
+        [SerializeField]
+        private uint m_genItemId = 0;
+        public uint GenItemId => m_genItemId;
     }
 
     [CreateAssetMenu(menuName = "RecordTables/Create SfZoneFacilityRecordTable", fileName = "SfZoneFacilityRecordTable", order = 10000)]

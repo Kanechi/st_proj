@@ -40,8 +40,8 @@ namespace sfproj
         private TextMeshProUGUI m_expansionCount = null;
 
         // 区域施設画像
+        [SerializeField]
         private Image m_zoneFacilityImage = null;
-        private Image ZoneFacilityImage => m_zoneFacilityImage != null ? m_zoneFacilityImage : m_zoneFacilityImage = m_zoneFacilityObj.GetComponent<Image>();
 
         // このセルのデータ
         [ShowInInspector, ReadOnly]
@@ -78,9 +78,11 @@ namespace sfproj
                 m_zoneFacilityObj.SetActive(false);
             }
 
-            if (m_data.ZoneType != eZoneFacilityType.None)
+            if (m_data.ZoneFacilityType != eZoneFacilityType.None)
             {
                 m_addObj.SetActive(false);
+                var record = SfZoneFacilityRecordTable.Instance.Get(m_data.ZoneFacilityType);
+                m_zoneFacilityImage.sprite = record.FacilitySprite;
             }
             else
             {
@@ -92,7 +94,12 @@ namespace sfproj
             m_expansionCount.text = m_data.ExpansionCount.ToString();
 
             // 施設画像の設定(シリアライズデータから画像ファイルを検索)
-            //ZoneFacilityImage.sprite = null;
+            //m_zoneFacilityImage.sprite = null;
+        }
+
+        public void ChangeFacilityImage() {
+            var record = SfZoneFacilityRecordTable.Instance.Get(m_data.ZoneFacilityType);
+            m_zoneFacilityImage.sprite = record.FacilitySprite;
         }
 
         /// <summary>

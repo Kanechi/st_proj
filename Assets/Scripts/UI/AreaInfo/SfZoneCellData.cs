@@ -21,8 +21,8 @@ namespace sfproj
 
         // 区域タイプ(None じゃない場合は Add アイコン解除)
         [ShowInInspector, ReadOnly]
-        private eZoneFacilityType m_zoneType = eZoneFacilityType.None;
-        public eZoneFacilityType ZoneType { get => m_zoneType; set => m_zoneType = value; }
+        private eZoneFacilityType m_zoneFacilityType = eZoneFacilityType.None;
+        public eZoneFacilityType ZoneFacilityType { get => m_zoneFacilityType; set => m_zoneFacilityType = value; }
 
         // 拡張数
         [ShowInInspector, ReadOnly]
@@ -35,11 +35,20 @@ namespace sfproj
 
         public SfZoneCell Cell { get; set; } = null;
 
-        public SfZoneCellData(uint areaId, int index, eZoneFacilityType zoneType, int expansionCt) {
+        public SfZoneCellData(uint areaId, int index, eZoneFacilityType type, int exp) {
             m_areaId = areaId;
             m_cellIndex = index;
-            m_zoneType = zoneType;
-            m_expansionCount = expansionCt;
+            m_zoneFacilityType = type;
+            m_expansionCount = exp;
+        }
+
+        /// <summary>
+        /// 施設タイプの変更
+        /// </summary>
+        /// <param name="type"></param>
+        public void ChangeFacilityType(eZoneFacilityType type) {
+            m_zoneFacilityType = type;
+            Cell.ChangeFacilityImage();
         }
     }
 }

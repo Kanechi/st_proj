@@ -202,7 +202,7 @@ namespace sfproj
             var areaIdList = Get(dominionId).AreaIdList;
             uint minimumAreaId = 0;
             foreach (uint areaId in areaIdList) {
-                SfAreaRecord areaRecord = SfAreaRecordTableManager.Instance.Get(areaId);
+                SfAreaData areaRecord = SfAreaDataTableManager.Instance.Get(areaId);
                 if (areaRecord.AreaGroupType == groupType) {
                     minimumAreaId = areaId;
                     break;
