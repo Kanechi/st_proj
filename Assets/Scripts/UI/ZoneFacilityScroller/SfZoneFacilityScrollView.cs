@@ -120,12 +120,11 @@ namespace sfproj
             return true;
         }
 
-
-        private void OpenedReloadData()
+        public void OpenedReloadData()
         {
             m_scroller.Delegate = this;
 
-            m_scroller.ReloadData();
+            m_scroller.ReloadData(m_scroller.ScrollRect.horizontalNormalizedPosition);
 
             m_openedReloadDataEvent = null;
         }

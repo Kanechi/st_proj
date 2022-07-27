@@ -12,7 +12,7 @@ namespace sfproj {
     /// </summary>
     public abstract class SfAreaFactoryBase
     {
-        public SfAreaData Create(uint uniqueId, int areaIndex, uint dominionId)
+        public SfArea Create(uint uniqueId, int areaIndex, uint dominionId)
         {
             var data = CreateAreaData();
 
@@ -38,12 +38,7 @@ namespace sfproj {
             data.ExistingTerrain = SettingExistingTerrain(SfDominionRecordTableManager.Instance.Get(dominionId));
 
             // 最大区域数の設定
-            int ct = data.MaxZoneCount = CulcMaxZoneCount();
-
-            for (int i = 0; i < ct; ++i)
-            {
-                data.ZoneFacilityList.Add(new SfAreaData.ZoneFacilitySet(i));
-            }
+            data.MaxZoneCount = CulcMaxZoneCount();
 
             return data;
         }
@@ -52,7 +47,7 @@ namespace sfproj {
         /// 地域レコードを生成
         /// </summary>
         /// <returns></returns>
-        protected abstract SfAreaData CreateAreaData();
+        protected abstract SfArea CreateAreaData();
 
         /// <summary>
         /// 地域名をランダムに生成
@@ -78,9 +73,9 @@ namespace sfproj {
     /// </summary>
     public abstract class SfAreaCreateFactory : SfAreaFactoryBase
     {
-        protected override SfAreaData CreateAreaData()
+        protected override SfArea CreateAreaData()
         {
-            return new SfAreaData();
+            return new SfArea();
         }
     }
 
@@ -223,7 +218,7 @@ namespace sfproj {
         /// <param name="areaIndex">地域インデックス(セル番号)</param>
         /// <param name="dominionId">属している領域 ID</param>
         /// <returns></returns>
-        public SfAreaData RandomCreate(int areaIndex, uint dominionId, eAreaGroupType factoryType = eAreaGroupType.None)
+        public SfArea RandomCreate(int areaIndex, uint dominionId, eAreaGroupType factoryType = eAreaGroupType.None)
         {
             // 町か遺跡か洞窟かをランダム
             // 割合は設定できるようにする
@@ -258,7 +253,7 @@ namespace sfproj {
             }
 
             // ユニーク ID の作成
-            uint uniqueId = SfConstant.CreateUniqueId(ref SfAreaDataTableManager.Instance.m_uniqueIdList);
+            uint uniqueId = SfConstant.CreateUniqueId(ref SfAreaTableManager.Instance.m_uniqueIdList);
 
             // 地域データを作成
             var data = factoryList[(int)factoryType].Create(uniqueId, areaIndex, dominionId);

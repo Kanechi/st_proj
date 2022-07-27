@@ -9,13 +9,16 @@ namespace sfproj
     /// </summary>
     public class SfZoneFacilityScrollCellData
     {
-        public SfZoneFacilityRecord m_record = null;
+        // 区域施設建設選択スクロールに設定されている施設セルの情報
+        public SfZoneFacilityRecord ZoneFacilityRecord { get; private set; } = null;
 
         // タッチした区域セルのデータ
-        public SfZoneCellData m_zoneCellData = null;
+        public SfZoneCellData ZoneCellData { get; private set; } = null;
 
         // 施設画像
-        public Sprite m_facilitySprite = null;
+        public Sprite FacilitySprite { get; private set; } = null;
+
+
 
         // true...Build ボタン表示
         public bool EnableBuildBtn { get; set; } = false;
@@ -32,33 +35,25 @@ namespace sfproj
         // true...拡張最大
         public bool MaxExpantionImage { get; set; } = false;
 
+
+
         public SfZoneFacilityScrollCell Cell { get; set; } = null;
         public bool IsSelected { get; set; } = false;
-
-
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="record">表示する区域施設</param>
-        /// <param name="zoneCellData">タッチした区域セルのデータ</param>
-        public SfZoneFacilityScrollCellData(SfZoneFacilityRecord record, SfZoneCellData zoneCellData)
+        public void CheckButtonEnable() 
         {
-            m_record = record;
+            var area = SfAreaTableManager.Instance.Get(ZoneCellData.AreaId);
 
-            m_zoneCellData = zoneCellData;
-
-            m_facilitySprite = m_record.FacilitySprite;
-
-            var areaRecord = SfAreaDataTableManager.Instance.Get(zoneCellData.AreaId);
-
-            if (zoneCellData.ZoneFacilityType == record.Type)
+            if (ZoneCellData.ZoneFacilityType == ZoneFacilityRecord.Type)
             {
                 // 地域に建設されている施設とセルの施設が同じ場合は拡張ボタン
 
-                if (zoneCellData.ExpansionCount < SfConfigController.ZONE_MAX_EXPANTION_COUNT)
+                if (ZoneCellData.ExpansionCount < SfConfigController.ZONE_MAX_EXPANTION_COUNT)
                 {
-                    if (SfAreaDataTableManager.Instance.CheckCostForBuildingFacility(areaRecord, record))
+                    if (SfAreaTableManager.Instance.CheckCostForBuildingFacility(area, ZoneFacilityRecord))
                     {
                         // 拡張可能
                         EnableBuildBtn = false;
@@ -87,10 +82,10 @@ namespace sfproj
                     MaxExpantionImage = true;
                 }
             }
-            else if (zoneCellData.ZoneFacilityType == eZoneFacilityType.None)
+            else if (ZoneCellData.ZoneFacilityType == eZoneFacilityType.None)
             {
                 // 何も建設されていない場合
-                if (SfAreaDataTableManager.Instance.CheckCostForBuildingFacility(areaRecord, record))
+                if (SfAreaTableManager.Instance.CheckCostForBuildingFacility(area, ZoneFacilityRecord))
                 {
                     // 建設可能
                     EnableBuildBtn = true;
@@ -112,7 +107,7 @@ namespace sfproj
             else
             {
                 // 何か建設されているが同じ施設ではない場合は施設の変更になる
-                if (SfAreaDataTableManager.Instance.CheckCostForBuildingFacility(areaRecord, record))
+                if (SfAreaTableManager.Instance.CheckCostForBuildingFacility(area, ZoneFacilityRecord))
                 {
                     // 建設可能
                     EnableBuildBtn = true;
@@ -131,6 +126,22 @@ namespace sfproj
                     MaxExpantionImage = false;
                 }
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="record">表示する区域施設</param>
+        /// <param name="zoneCellData">タッチした区域セルのデータ</param>
+        public SfZoneFacilityScrollCellData(SfZoneFacilityRecord record, SfZoneCellData zoneCellData)
+        {
+            ZoneFacilityRecord = record;
+
+            ZoneCellData = zoneCellData;
+
+            FacilitySprite = ZoneFacilityRecord.FacilitySprite;
+
+            CheckButtonEnable();
         }
     }
 }

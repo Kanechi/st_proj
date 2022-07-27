@@ -376,7 +376,7 @@ namespace sfproj
 					// 地域を生成
 					var areaRecord = SfAreaFactoryManager.Instance.RandomCreate(cellNo, dominionRecord.Id);
 
-					SfAreaDataTableManager.Instance.Regist(areaRecord);
+					SfAreaTableManager.Instance.Regist(areaRecord);
 
 					// 生成した地域を領域に設定していく
 					dominionRecord.AreaIdList.Add(areaRecord.Id);
@@ -390,7 +390,7 @@ namespace sfproj
 				bool isOk = false;
 				foreach (var areaId in dominionRecord.AreaIdList) {
 
-					var areaRecord = SfAreaDataTableManager.Instance.Get(areaId);
+					var areaRecord = SfAreaTableManager.Instance.Get(areaId);
 
 					if (areaRecord.AreaGroupType == eAreaGroupType.Plane) {
 						isOk = true;
@@ -403,7 +403,7 @@ namespace sfproj
 					// 平地を追加
 					var areaRecord = SfAreaFactoryManager.Instance.RandomCreate(cellNo, dominionRecord.Id, eAreaGroupType.Plane);
 
-					SfAreaDataTableManager.Instance.Regist(areaRecord);
+					SfAreaTableManager.Instance.Regist(areaRecord);
 
 					// 生成した地域を領域に設定していく
 					dominionRecord.AreaIdList.Add(areaRecord.Id);
@@ -515,7 +515,7 @@ namespace sfproj
 
 
 			// 地域レコードを取得
-			var areaRecord = SfAreaDataTableManager.Instance.Get(minimumPlaneAreaId);
+			var areaRecord = SfAreaTableManager.Instance.Get(minimumPlaneAreaId);
 
 			// 地域をアンロック
 			areaRecord.AreaDevelopmentState = eAreaDevelopmentState.Completed;
@@ -531,27 +531,23 @@ namespace sfproj
 			// 初期区域を設定(川だけに面していた場合何も設置されない)
 			if ((areaRecord.ExistingTerrain & eExistingTerrain.Plane) != 0)
 			{
-				// アンロックした地域が平地に面していたら田畑を設定
-				SfAreaDataTableManager.Instance.ChangeZoneFacilityType(minimumPlaneAreaId, 0, eZoneFacilityType.Production_Farm);
-				SfAreaDataTableManager.Instance.ChangeZoneExp(minimumPlaneAreaId, 0, 1);
+				// アンロックした地域が平地に面していたら田畑を新規で建設
+				SfZoneFacilityTableManager.Instance.Table.BuildZoneFacilityType(minimumPlaneAreaId, 0, eZoneFacilityType.Production_Farm, 1);
 			}
 			else if ((areaRecord.ExistingTerrain & eExistingTerrain.Forest) != 0)
 			{
-				// アンロックした地域が森に面していたら伐採所を設定
-				SfAreaDataTableManager.Instance.ChangeZoneFacilityType(minimumPlaneAreaId, 0, eZoneFacilityType.Production_LoggingArea);
-				SfAreaDataTableManager.Instance.ChangeZoneExp(minimumPlaneAreaId, 0, 1);
+				// アンロックした地域が森に面していたら伐採所を新規で建設
+				SfZoneFacilityTableManager.Instance.Table.BuildZoneFacilityType(minimumPlaneAreaId, 0, eZoneFacilityType.Production_LoggingArea, 1);
 			}
 			else if ((areaRecord.ExistingTerrain & eExistingTerrain.Mountain) != 0)
 			{
-				// アンロックした地域が山に面していたら採掘所を設定
-				SfAreaDataTableManager.Instance.ChangeZoneFacilityType(minimumPlaneAreaId, 0, eZoneFacilityType.Production_Mining);
-				SfAreaDataTableManager.Instance.ChangeZoneExp(minimumPlaneAreaId, 0, 1);
+				// アンロックした地域が山に面していたら採掘所を新規で建設
+				SfZoneFacilityTableManager.Instance.Table.BuildZoneFacilityType(minimumPlaneAreaId, 0, eZoneFacilityType.Production_Mining, 1);
 			}
 			else if ((areaRecord.ExistingTerrain & eExistingTerrain.Ocean) != 0)
 			{
-				// アンロックした地域が海に面していたら港を設定
-				SfAreaDataTableManager.Instance.ChangeZoneFacilityType(minimumPlaneAreaId, 0, eZoneFacilityType.Commercial_Harbor);
-				SfAreaDataTableManager.Instance.ChangeZoneExp(minimumPlaneAreaId, 0, 1);
+				// アンロックした地域が海に面していたら港を新規で建設
+				SfZoneFacilityTableManager.Instance.Table.BuildZoneFacilityType(minimumPlaneAreaId, 0, eZoneFacilityType.Commercial_Harbor, 1);
 			}
 		}
 

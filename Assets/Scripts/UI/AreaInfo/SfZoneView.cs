@@ -27,6 +27,9 @@ namespace sfproj
         // 区域セル
         private List<SfZoneCell> m_zoneCellList = new List<SfZoneCell>();
 
+        // 区域セルのデータリスト
+        private List<SfZoneCellData> m_zoneCellDataList = new List<SfZoneCellData>();
+
         // true...初期化完了
         private bool m_isInit = false;
 
@@ -63,6 +66,7 @@ namespace sfproj
                 return;
             m_isInit = true;
 
+            // プレハブから区域セルを作成
             foreach (var t in m_zoneCellTransformList)
             {
                 var obj = GameObject.Instantiate(m_zonePrefab, t);
@@ -70,7 +74,7 @@ namespace sfproj
             }
         }
 
-        public void SetData(SfAreaData record) {
+        public void SetData(SfArea record) {
 
             OnInitialize();
 
@@ -97,19 +101,21 @@ namespace sfproj
             
             m_zoneCount.text = colorStr + zoneCt.ToString() + "</color> / " + zoneMaxCt.ToString();
 
-            for (int i = 0; i < SfConfigController.ZONE_MAX_DISPLAY_COUNT; ++i){
-
-                // 表示数分のすべての区域データを作成
-                SfZoneCellData zoneCellData = null ;
-                if (i < zoneMaxCt)
+            for (int i = 0; i < SfConfigController.ZONE_MAX_DISPLAY_COUNT; ++i)
+            {
+                var zoneFacility = SfZoneFacilityTableManager.Instance.Table.Get(record.Id, i);
+                SfZoneCellData zoneCellData = null;
+                if (zoneFacility != null)
                 {
-                    var set = record.ZoneFacilityList.Find(z => z.ZoneCellIndex == i);
-                    zoneCellData = new SfZoneCellData(record.Id, i, set.ZoneFacilityType, set.ZoneExpantionCount);
+                    zoneCellData = new SfZoneCellData(zoneFacility);
                 }
                 else
                 {
-                    zoneCellData = new SfZoneCellData(record.Id, i, eZoneFacilityType.None, 0);
+                    zoneCellData = new SfZoneCellData(record.Id, i);
                 }
+
+                zoneCellData.SetZoneView(this);
+                m_zoneCellDataList.Add(zoneCellData);
 
                 // 地域に存在する区域数分の区域データを設定
                 if (i < zoneCt)
@@ -117,7 +123,8 @@ namespace sfproj
                     zoneCellData.UnlockFlag = true;
                     m_zoneCellList[i].gameObject.SetActive(true);
                 }
-                else if (i < zoneMaxCt) {
+                else if (i < zoneMaxCt)
+                {
                     m_zoneCellList[i].gameObject.SetActive(true);
                 }
                 else
@@ -127,6 +134,14 @@ namespace sfproj
 
                 m_zoneCellList[i].SetData(zoneCellData);
             }
+        }
+
+        /// <summary>
+        /// 再描画
+        /// </summary>
+        public void Reload()
+        { 
+
         }
     }
 }

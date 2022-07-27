@@ -16,6 +16,8 @@ namespace sfproj
     {
         static private float BaseCellSize = 164.0f;
 
+        
+
         private RectTransform m_rectTransform;
         public RectTransform RectTransform => m_rectTransform != null ? m_rectTransform : m_rectTransform = GetComponent<RectTransform>();
 
@@ -96,7 +98,7 @@ namespace sfproj
             Data = data;
             Data.Cell = this;
 
-            m_zoneFacilityImage.sprite = Data.m_facilitySprite;
+            m_zoneFacilityImage.sprite = Data.FacilitySprite;
 
             SetSelected(false);
 
@@ -117,17 +119,19 @@ namespace sfproj
         /// </summary>
         private void OnBuildBtn() {
 
-            // データテーブルを変更
-            SfAreaDataTableManager.Instance.ChangeZoneFacilityType(
-                    Data.m_zoneCellData.AreaId,
-                    Data.m_zoneCellData.CellIndex,
-                    Data.m_record.Type
-                );
+            // 区域セルの施設を変更、建設されていない場合は新規で建設
+            Data.ZoneCellData.ChangeFacilityType(Data.ZoneFacilityRecord.Type);
 
-            // データテーブルにある施設を変更したら、プラスボタン、を施設ボタンに変更する必要がある
+            //Data.ZoneCellData.Cell.SettingZoneButtonEnable();
 
-            // セルデータを変更
-            Data.m_zoneCellData.ChangeFacilityType(Data.m_record.Type);
+            // 区域施設建設スクロールビューにあるセルのボタンの更新を行うために再オープンする
+            SfGameManager.Instance.ZoneFacilityScrollView.Open(Data.ZoneCellData);
+
+            // 区域施設建設にあるボタンの表示非表示再チェック
+            //Data.CheckButtonEnable();
+
+            // ボタンの再表示非表示
+            //CheckBtnDisp();
         }
 
         /// <summary>

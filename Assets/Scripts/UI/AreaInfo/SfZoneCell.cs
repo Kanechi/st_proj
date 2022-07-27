@@ -67,6 +67,18 @@ namespace sfproj
             m_data = data;
             m_data.Cell = this;
 
+            SettingZoneButtonEnable();
+
+            // 拡張数の設定
+            m_expansionCount.text = m_data.ExpansionCount.ToString();
+        }
+
+        /// <summary>
+        /// 区域ボタンの有効化設定
+        /// </summary>
+        public void SettingZoneButtonEnable() {
+
+            // ロックボタン表示チェック
             if (m_data.UnlockFlag == true)
             {
                 m_lockObj.SetActive(false);
@@ -78,26 +90,25 @@ namespace sfproj
                 m_zoneFacilityObj.SetActive(false);
             }
 
+            // プラスボタン表示チェック
             if (m_data.ZoneFacilityType != eZoneFacilityType.None)
             {
                 m_addObj.SetActive(false);
-                var record = SfZoneFacilityRecordTable.Instance.Get(m_data.ZoneFacilityType);
-                m_zoneFacilityImage.sprite = record.FacilitySprite;
+                m_zoneFacilityObj.SetActive(true);
+                // 区域施設画像の設定
+                SettingFacilityImage();
             }
             else
             {
                 m_addObj.SetActive(true);
                 m_zoneFacilityObj.SetActive(false);
             }
-
-            // 拡張数の設定
-            m_expansionCount.text = m_data.ExpansionCount.ToString();
-
-            // 施設画像の設定(シリアライズデータから画像ファイルを検索)
-            //m_zoneFacilityImage.sprite = null;
         }
 
-        public void ChangeFacilityImage() {
+        /// <summary>
+        /// 区域施設画像の設定
+        /// </summary>
+        public void SettingFacilityImage() {
             var record = SfZoneFacilityRecordTable.Instance.Get(m_data.ZoneFacilityType);
             m_zoneFacilityImage.sprite = record.FacilitySprite;
         }

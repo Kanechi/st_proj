@@ -171,7 +171,7 @@ namespace sfproj
     /// 
     /// </summary>
     [Serializable]
-    public class SfAreaData : IJsonParser
+    public class SfArea : IJsonParser
     {
         // 地域 ID (ユニーク ID)
         public uint m_id = 0;
@@ -223,32 +223,8 @@ namespace sfproj
         public int m_maxZoneCount = -1;
         public int MaxZoneCount { get => m_maxZoneCount; set => m_maxZoneCount = value; }
 
-        // 区域施設セット
-        public class ZoneFacilitySet : IJsonParser
-        {
-            // 区域セルインデックス
-            public int m_zoneCellIndex = -1;
-            public int ZoneCellIndex { get => m_zoneCellIndex; set => m_zoneCellIndex = value; }
 
-            // 区域施設のタイプ
-            public eZoneFacilityType m_zoneFacilityType = eZoneFacilityType.None;
-            public eZoneFacilityType ZoneFacilityType { get => m_zoneFacilityType; set => m_zoneFacilityType = value; }
 
-            // 拡張数
-            public int m_zoneExpantionCount = 0;
-            public int ZoneExpantionCount { get => m_zoneExpantionCount; set => m_zoneExpantionCount = value; }
-
-            public ZoneFacilitySet() { }
-            public ZoneFacilitySet(int index, eZoneFacilityType type = eZoneFacilityType.None, int exp = 0) { m_zoneCellIndex = index; m_zoneFacilityType = type; m_zoneExpantionCount = exp; }
-
-            public void Parse(IDictionary<string, object> data)
-            {
-                
-            }
-        }
-
-        public List<ZoneFacilitySet> m_zoneFacilityList = new List<ZoneFacilitySet>();
-        public List<ZoneFacilitySet> ZoneFacilityList => m_zoneFacilityList;
 
         // 保管されているアイテム ID と総数
         public class StragedProductSet : IJsonParser {
@@ -287,16 +263,16 @@ namespace sfproj
     /// プレイ中に生成されているすべての SfAreaData
     /// 保存時は別ファイルの別クラスに実装
     /// </summary>
-    public class SfAreaDataTable : RecordTable<SfAreaData>
+    public class SfAreaTable : RecordTable<SfArea>
     {
         // ユニーク ID リスト
         public HashSet<uint> m_uniqueIdList = new HashSet<uint>();
 
         // 登録
-        public void Regist(SfAreaData record) => RecordList.Add(record);
+        public void Regist(SfArea record) => RecordList.Add(record);
 
         // 地域レコードの取得
-        public override SfAreaData Get(uint id) => RecordList.Find(r => r.Id == id);
+        public override SfArea Get(uint id) => RecordList.Find(r => r.Id == id);
 
         /// <summary>
         /// 拠点の変更
@@ -316,71 +292,6 @@ namespace sfproj
             Get(areaId).AreaDevelopmentState = state;
         }
 
-        /// <summary>
-        /// 地域の区域に指定の区域タイプを変更する
-        /// </summary>
-        /// <param name="areaId"></param>
-        /// <param name="cellIndex"></param>
-        /// <param name="zoneType"></param>
-        public void ChangeZoneFacilityType(uint areaId, int cellIndex, eZoneFacilityType zoneType) {
-
-            var record = Get(areaId);
-
-            if (cellIndex >= record.MaxZoneCount)
-            {
-                Debug.LogWarning("index >= record.MaxZoneCount !!!");
-                return;
-            }
-
-            //record.ZoneFacilityDict[cellIndex] = zoneType;
-
-            record.ZoneFacilityList.Find(z => z.ZoneCellIndex == cellIndex).ZoneFacilityType = zoneType;
-        }
-
-        /// <summary>
-        /// 区域拡張数を増加
-        /// </summary>
-        /// <param name="areaId"></param>
-        /// <param name="cellIndex"></param>
-        public void IncZoneExp(uint areaId, int cellIndex)
-        {
-            var data = Get(areaId);
-
-            if (cellIndex >= data.MaxZoneCount)
-            {
-                Debug.LogWarning("index >= record.MaxZoneCount !!!");
-                return;
-            }
-
-
-            //int expCt = record.ZoneExpantionDict[cellIndex];
-            //expCt++;
-            //record.ZoneExpantionDict[cellIndex] = expCt;
-
-            var set = data.ZoneFacilityList.Find(z => z.ZoneCellIndex == cellIndex);
-            int expCt = set.ZoneExpantionCount;
-            expCt++;
-            set.ZoneExpantionCount = expCt;
-        }
-
-        /// <summary>
-        /// 区域拡張数を変更
-        /// </summary>
-        /// <param name="areaId"></param>
-        /// <param name="cellIndex"></param>
-        /// <param name="exp"></param>
-        public void ChangeZoneExp(uint areaId, int cellIndex, int exp) {
-
-            var data = Get(areaId);
-
-            if (cellIndex >= data.MaxZoneCount)
-            {
-                Debug.LogWarning("index >= record.MaxZoneCount !!!");
-                return;
-            }
-
-            data.ZoneFacilityList.Find(z => z.ZoneCellIndex == cellIndex).ZoneExpantionCount = exp;
-        }
 
         /// <summary>
         /// 生産アイテムの追加
@@ -388,7 +299,7 @@ namespace sfproj
         /// <param name="areaData"></param>
         /// <param name="itemId"></param>
         /// <param name="count"></param>
-        public void AddProductItem(SfAreaData areaData, uint itemId, int count)
+        public void AddProductItem(SfArea areaData, uint itemId, int count)
         {
             var set = areaData.StoragedProductList.Find(s => s.m_itemId == itemId);
 
@@ -398,7 +309,7 @@ namespace sfproj
             }
             else
             {
-                areaData.StoragedProductList.Add(new SfAreaData.StragedProductSet(itemId, count));
+                areaData.StoragedProductList.Add(new SfArea.StragedProductSet(itemId, count));
             }
         }
 
@@ -408,7 +319,7 @@ namespace sfproj
         /// <param name="areaRecord"></param>
         /// <param name="facilityRecord"></param>
         /// <returns>true...建設可能</returns>
-        public bool CheckCostForBuildingFacility(SfAreaData areaData, SfZoneFacilityRecord facilityRecord)
+        public bool CheckCostForBuildingFacility(SfArea areaData, SfZoneFacilityRecord facilityRecord)
         {
 #if DEBUG_COSTCHECK
             // 後々保管生産リストを起動時に加算できるように実装
@@ -445,7 +356,7 @@ namespace sfproj
         /// </summary>
         /// <param name="areaRecord"></param>
         /// <param name="facilityRecord"></param>
-        public void PayCostForBuildingFacility(SfAreaData areaData, SfZoneFacilityRecord facilityRecord)
+        public void PayCostForBuildingFacility(SfArea areaData, SfZoneFacilityRecord facilityRecord)
         {
             foreach (var cost in facilityRecord.Costs)
             {
@@ -458,18 +369,18 @@ namespace sfproj
     /// <summary>
     /// 地域レコードテーブル管理
     /// </summary>
-    public class SfAreaDataTableManager : SfAreaDataTable
+    public class SfAreaTableManager : SfAreaTable
     {
-        private static SfAreaDataTableManager s_instance = null;
+        private static SfAreaTableManager s_instance = null;
 
-        public static SfAreaDataTableManager Instance {
+        public static SfAreaTableManager Instance {
 
             get
             {
                 if (s_instance != null)
                     return s_instance;
 
-                s_instance = new SfAreaDataTableManager();
+                s_instance = new SfAreaTableManager();
 
                 s_instance.Load();
 
@@ -482,9 +393,9 @@ namespace sfproj
         /// </summary>
         public void Load() {
 
-            var builder = new ESLoadBuilder<SfAreaData, SfAreaDataTable>("SfAreaDataTable");
+            var builder = new ESLoadBuilder<SfArea, SfAreaTable>("SfAreaDataTable");
 
-            var director = new RecordTableESDirector<SfAreaData>(builder);
+            var director = new RecordTableESDirector<SfArea>(builder);
 
             director.Construct();
 
@@ -499,9 +410,9 @@ namespace sfproj
         /// </summary>
         public void Save() {
 
-            var builder = new ESSaveBuilder<SfAreaData>("SfAreaDataTable", this);
+            var builder = new ESSaveBuilder<SfArea>("SfAreaDataTable", this);
 
-            var director = new RecordTableESDirector<SfAreaData>(builder);
+            var director = new RecordTableESDirector<SfArea>(builder);
 
             director.Construct();
         }

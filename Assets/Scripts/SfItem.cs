@@ -5,7 +5,7 @@ using System;
 
 namespace sfproj
 {
-    public class SfItemData : IJsonParser
+    public class SfItem : IJsonParser
     {
         // アイテム ID (ユニーク ID)
         public uint m_id = 0;
@@ -40,33 +40,33 @@ namespace sfproj
     /// プレイ中に生成されているすべての SfAreaData
     /// 保存時は別ファイルの別クラスに実装
     /// </summary>
-    public class SfItemDataTable : RecordTable<SfItemData>
+    public class SfItemTable : RecordTable<SfItem>
     {
         // ユニーク ID リスト
         public HashSet<uint> m_uniqueIdList = new HashSet<uint>();
 
         // 登録
-        public void Regist(SfItemData record) => RecordList.Add(record);
+        public void Regist(SfItem record) => RecordList.Add(record);
 
         // アイテムレコードの取得
-        public override SfItemData Get(uint id) => RecordList.Find(r => r.Id == id);
+        public override SfItem Get(uint id) => RecordList.Find(r => r.Id == id);
     }
 
     /// <summary>
     /// 地域レコードテーブル管理
     /// </summary>
-    public class SfItemDataTableManager : SfItemDataTable
+    public class SfItemTableManager : SfItemTable
     {
-        private static SfItemDataTableManager s_instance = null;
+        private static SfItemTableManager s_instance = null;
 
-        public static SfItemDataTableManager Instance
+        public static SfItemTableManager Instance
         {
             get
             {
                 if (s_instance != null)
                     return s_instance;
 
-                s_instance = new SfItemDataTableManager();
+                s_instance = new SfItemTableManager();
 
                 s_instance.Load();
 
@@ -80,9 +80,9 @@ namespace sfproj
         public void Load()
         {
 
-            var builder = new ESLoadBuilder<SfItemData, SfItemDataTable>("SfItemDataTable");
+            var builder = new ESLoadBuilder<SfItem, SfItemTable>("SfItemDataTable");
 
-            var director = new RecordTableESDirector<SfItemData>(builder);
+            var director = new RecordTableESDirector<SfItem>(builder);
 
             director.Construct();
 
@@ -98,9 +98,9 @@ namespace sfproj
         public void Save()
         {
 
-            var builder = new ESSaveBuilder<SfItemData>("SfItemDataTable", this);
+            var builder = new ESSaveBuilder<SfItem>("SfItemDataTable", this);
 
-            var director = new RecordTableESDirector<SfItemData>(builder);
+            var director = new RecordTableESDirector<SfItem>(builder);
 
             director.Construct();
         }

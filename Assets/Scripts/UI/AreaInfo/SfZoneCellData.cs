@@ -10,24 +10,32 @@ namespace sfproj
     [Serializable]
     public class SfZoneCellData
     {
-        // この区域セルの存在する地域 ID
+        // 親の区域ビュー
+        // SfZoneView から生成されるときにのみ取り付けを行う
+        public SfZoneView ZoneView { get; private set; } = null;
+        public void SetZoneView(SfZoneView zoneView) => ZoneView = zoneView;
+
+        // 区域施設(null == 建設されていない)
+        private SfZoneFacility m_zoneFacility = null;
+        public SfZoneFacility ZoneFacility { get => m_zoneFacility; set => m_zoneFacility = value; }
+
+        // 地域 ID
+        [ShowInInspector, ReadOnly]
         private uint m_areaId = 0;
         public uint AreaId => m_areaId;
 
-        // セルインデックス
+        // 区域セルインデックス
         [ShowInInspector, ReadOnly]
-        private int m_cellIndex = 0;
-        public int CellIndex { get => m_cellIndex; set => m_cellIndex = value; }
+        private int m_cellIndex = -1;
+        public int CellIndex => m_cellIndex;
 
         // 区域タイプ(None じゃない場合は Add アイコン解除)
         [ShowInInspector, ReadOnly]
-        private eZoneFacilityType m_zoneFacilityType = eZoneFacilityType.None;
-        public eZoneFacilityType ZoneFacilityType { get => m_zoneFacilityType; set => m_zoneFacilityType = value; }
+        public eZoneFacilityType ZoneFacilityType => m_zoneFacility != null ? m_zoneFacility.FacilityType : eZoneFacilityType.None;
 
         // 拡張数
         [ShowInInspector, ReadOnly]
-        private int m_expansionCount = 0;
-        public int ExpansionCount { get => m_expansionCount; set => m_expansionCount = value; }
+        public int ExpansionCount => m_zoneFacility != null ? m_zoneFacility.ExpantionCount : 0;
 
         // true...解放されている(鍵アイコン解除)
         private bool m_unlockFlag = false;
@@ -35,11 +43,27 @@ namespace sfproj
 
         public SfZoneCell Cell { get; set; } = null;
 
-        public SfZoneCellData(uint areaId, int index, eZoneFacilityType type, int exp) {
+        public SfZoneCellData(SfZoneFacility zoneFacility) {
+            Set(zoneFacility);
+        }
+
+        public SfZoneCellData(uint areaId, int cellIndex)
+        {
             m_areaId = areaId;
-            m_cellIndex = index;
-            m_zoneFacilityType = type;
-            m_expansionCount = exp;
+            m_cellIndex = cellIndex;
+        }
+
+        public void Set(SfZoneFacility zoneFacility)
+        {
+            m_areaId = zoneFacility.AreaId;
+            m_cellIndex = zoneFacility.CellIndex;
+            m_zoneFacility = zoneFacility;
+        }
+
+        public void Set(uint areaId, int cellIndex)
+        {
+            m_areaId = areaId;
+            m_cellIndex = cellIndex;
         }
 
         /// <summary>
@@ -47,8 +71,23 @@ namespace sfproj
         /// </summary>
         /// <param name="type"></param>
         public void ChangeFacilityType(eZoneFacilityType type) {
-            m_zoneFacilityType = type;
-            Cell.ChangeFacilityImage();
+
+            // 区域施設テーブルを変更
+            if (m_zoneFacility != null)
+            {
+                SfZoneFacilityTableManager.Instance.Table.ChangeZoneFacilityType(m_zoneFacility.AreaId, m_zoneFacility.CellIndex, type);
+                SfZoneFacilityTableManager.Instance.Table.SetZoneFacilityExpantion(m_zoneFacility.AreaId, m_zoneFacility.CellIndex, 1);
+            }
+            else
+            {
+                SfZoneFacilityTableManager.Instance.Table.BuildZoneFacilityType(m_areaId, m_cellIndex, type, 1);
+            }
+
+            // 変更した区域をこのデータに設定
+            m_zoneFacility = SfZoneFacilityTableManager.Instance.Table.Get(m_areaId, m_cellIndex);
+
+            // セルのボタン有効化の変更と施設画像を変更
+            Cell.SettingZoneButtonEnable();
         }
     }
 }
