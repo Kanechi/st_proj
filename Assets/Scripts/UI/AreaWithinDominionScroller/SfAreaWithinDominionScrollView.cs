@@ -90,7 +90,7 @@ namespace sfproj
         /// 領域 ID からデータリストを作成
         /// </summary>
         /// <param name="dominionId"></param>
-        private void CreateData(SfDominionRecord dominionRecord) {
+        private void CreateData(SfDominion dominionRecord) {
 
             m_dataList.Clear();
 
@@ -100,7 +100,7 @@ namespace sfproj
             // 地域 ID リストから地域レコードを取得しセルデータを作成していく
             foreach(uint areaId in areaIdList) {
 
-                var areaRecord = SfAreaTableManager.Instance.Get(areaId);
+                var areaRecord = SfAreaTableManager.Instance.Table.Get(areaId);
                 if (areaRecord == null)
                     continue;
 
@@ -110,7 +110,7 @@ namespace sfproj
 
 
         // 開示処理
-        public bool Open(SfDominionRecord dominionRecord, UnityAction opened = null)
+        public bool Open(SfDominion dominionRecord, UnityAction opened = null)
         {
             gameObject.SetActive(true);
 

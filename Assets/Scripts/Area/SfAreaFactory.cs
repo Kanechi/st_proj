@@ -35,7 +35,7 @@ namespace sfproj {
             data.AreaType = RandomSettingAreaType();
 
             // 隣接地形タイプの設定
-            data.ExistingTerrain = SettingExistingTerrain(SfDominionRecordTableManager.Instance.Get(dominionId));
+            data.ExistingTerrain = SettingExistingTerrain(SfDominionTableManager.Instance.Table.Get(dominionId));
 
             // 最大区域数の設定
             data.MaxZoneCount = CulcMaxZoneCount();
@@ -62,7 +62,7 @@ namespace sfproj {
         protected abstract eAreaType RandomSettingAreaType();
 
         // 隣接地形タイプの設定
-        protected abstract eExistingTerrain SettingExistingTerrain(SfDominionRecord dominion);
+        protected abstract eExistingTerrain SettingExistingTerrain(SfDominion dominion);
 
         // 最大区域数の計算
         protected abstract int CulcMaxZoneCount();
@@ -93,7 +93,7 @@ namespace sfproj {
         protected override eAreaType RandomSettingAreaType() { return eAreaType.Town; }
 
         // 存在する地形の設定
-        protected override eExistingTerrain SettingExistingTerrain(SfDominionRecord dominion)
+        protected override eExistingTerrain SettingExistingTerrain(SfDominion dominion)
         {
             eExistingTerrain terrain = 0;
 
@@ -164,7 +164,7 @@ namespace sfproj {
         protected override eAreaType RandomSettingAreaType() { return eAreaType.Remains; }
 
         // 存在する地形の設定 (遺跡は地形効果はきにしない)
-        protected override eExistingTerrain SettingExistingTerrain(SfDominionRecord dominion)
+        protected override eExistingTerrain SettingExistingTerrain(SfDominion dominion)
         {
             return 0;
         }
@@ -186,7 +186,7 @@ namespace sfproj {
         protected override eAreaType RandomSettingAreaType() { return eAreaType.Cave; }
 
         // 存在する地形の設定 (洞窟は地形効果はきにしない)
-        protected override eExistingTerrain SettingExistingTerrain(SfDominionRecord dominion)
+        protected override eExistingTerrain SettingExistingTerrain(SfDominion dominion)
         {
             return 0;
         }

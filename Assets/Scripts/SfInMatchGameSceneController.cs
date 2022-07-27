@@ -211,7 +211,7 @@ namespace sfproj
 
 
 			// テリトリインデックスから領域レコードを取得
-			var dominionRecord = SfDominionRecordTableManager.Instance.GetAtTerritoryIndex(territoryIndex);
+			var dominionRecord = SfDominionTableManager.Instance.Table.GetAtTerritoryIndex(territoryIndex);
 
 			if (dominionRecord == null)
 				return;
@@ -341,7 +341,7 @@ namespace sfproj
 				var dominionRecord = SfDominionFactoryManager.Instance.Create(tgs.TerritoryGetIndex(dispTerritoryList[i]));
 
 				// 生成した領域を領域管理にとりつけ
-				SfDominionRecordTableManager.Instance.Regist(dominionRecord);
+				SfDominionTableManager.Instance.Table.Regist(dominionRecord);
 			}
 		}
 
@@ -354,13 +354,13 @@ namespace sfproj
 		private void CreateAreaInWorld() {
 
 			// 領域数
-			int dominionRecordCount = SfDominionRecordTableManager.Instance.RecordList.Count;
+			int dominionRecordCount = SfDominionTableManager.Instance.Table.RecordList.Count;
 
 			// 生成した領域数分地域をランダムに生成
 			for (int i = 0; i < dominionRecordCount; ++i)
 			{
 				// 領域を取得
-				var dominionRecord = SfDominionRecordTableManager.Instance.RecordList[i];
+				var dominionRecord = SfDominionTableManager.Instance.Table.RecordList[i];
 
 				// ランダムな数を設定して地域を生成(最低値は設定可能で１以下は無し、最大値は設定可能)
 				int areaIncDec = Random.Range(0, SfConfigController.Instance.AreaIncDecValue + 1);
@@ -376,7 +376,7 @@ namespace sfproj
 					// 地域を生成
 					var areaRecord = SfAreaFactoryManager.Instance.RandomCreate(cellNo, dominionRecord.Id);
 
-					SfAreaTableManager.Instance.Regist(areaRecord);
+					SfAreaTableManager.Instance.Table.Regist(areaRecord);
 
 					// 生成した地域を領域に設定していく
 					dominionRecord.AreaIdList.Add(areaRecord.Id);
@@ -390,7 +390,7 @@ namespace sfproj
 				bool isOk = false;
 				foreach (var areaId in dominionRecord.AreaIdList) {
 
-					var areaRecord = SfAreaTableManager.Instance.Get(areaId);
+					var areaRecord = SfAreaTableManager.Instance.Table.Get(areaId);
 
 					if (areaRecord.AreaGroupType == eAreaGroupType.Plane) {
 						isOk = true;
@@ -403,7 +403,7 @@ namespace sfproj
 					// 平地を追加
 					var areaRecord = SfAreaFactoryManager.Instance.RandomCreate(cellNo, dominionRecord.Id, eAreaGroupType.Plane);
 
-					SfAreaTableManager.Instance.Regist(areaRecord);
+					SfAreaTableManager.Instance.Table.Regist(areaRecord);
 
 					// 生成した地域を領域に設定していく
 					dominionRecord.AreaIdList.Add(areaRecord.Id);
@@ -426,7 +426,7 @@ namespace sfproj
 			{
 				var kingdomRecord = SfKingdomFactoryManager.Instance.Create(true);
 
-				SfKingdomRecordTableManager.Instance.Regist(kingdomRecord);
+				SfKingdomTableManager.Instance.Table.Regist(kingdomRecord);
 
 				kingdomCount--;
 			}
@@ -436,13 +436,13 @@ namespace sfproj
 			{
 				var kingdomRecord = SfKingdomFactoryManager.Instance.Create(false);
 
-				SfKingdomRecordTableManager.Instance.Regist(kingdomRecord);
+				SfKingdomTableManager.Instance.Table.Regist(kingdomRecord);
 			}
 
 			// 生成した王国に領域を割り当てていく
 
 			// 領域リスト
-			var dominionRecordList = SfDominionRecordTableManager.Instance.RecordList.ToList();
+			var dominionRecordList = SfDominionTableManager.Instance.Table.RecordList.ToList();
 
 			// 領域の数
 			int dominionCount = dominionRecordList.Count;
@@ -465,7 +465,8 @@ namespace sfproj
 					tgs.CellSetColor(cell, color);
 
 				// 王国に領域 ID を設定
-				var kingdomRecord = SfKingdomRecordTableManager.Instance.Get((uint)i);
+				// この際に設定する王国はランダム設定なので Index 順で構わない
+				var kingdomRecord = SfKingdomTableManager.Instance.Table.RecordList[i];
 				kingdomRecord.m_sfDominionIdList.Add(dominionRecord.Id);
 
 				// 領域番号(領域を手に入れた順の番号)
@@ -492,21 +493,21 @@ namespace sfproj
 		private void StartInitializeDominion(int kingdomId, uint dominionId, int index) {
 
 			// 王国 ID を変更
-			SfDominionRecordTableManager.Instance.ChangeKingdomId(dominionId, kingdomId);
+			SfDominionTableManager.Instance.Table.ChangeKingdomId(dominionId, kingdomId);
 
 			// 占領フラグを設定
-			SfDominionRecordTableManager.Instance.ChangeRuleFlag(dominionId, true);
+			SfDominionTableManager.Instance.Table.ChangeRuleFlag(dominionId, true);
 
 			// 領域の０番を首都領域として設定
 			if (index == 0)
-				SfDominionRecordTableManager.Instance.ChangeCapitalFlag(dominionId, true);
+				SfDominionTableManager.Instance.Table.ChangeCapitalFlag(dominionId, true);
 
 			// 領域の地域を初期化
 
 
 
 			// インデックスの一番小さい平地の地域 IDを取得
-			var minimumPlaneAreaId = SfDominionRecordTableManager.Instance.GetMinimumCellIndexArea(dominionId, eAreaGroupType.Plane);
+			var minimumPlaneAreaId = SfDominionTableManager.Instance.Table.GetMinimumCellIndexArea(dominionId, eAreaGroupType.Plane);
 
 
 			// ==================================
@@ -515,7 +516,7 @@ namespace sfproj
 
 
 			// 地域レコードを取得
-			var areaRecord = SfAreaTableManager.Instance.Get(minimumPlaneAreaId);
+			var areaRecord = SfAreaTableManager.Instance.Table.Get(minimumPlaneAreaId);
 
 			// 地域をアンロック
 			areaRecord.AreaDevelopmentState = eAreaDevelopmentState.Completed;

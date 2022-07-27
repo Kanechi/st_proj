@@ -45,7 +45,7 @@ namespace sfproj
         /// </summary>
         public void CheckButtonEnable() 
         {
-            var area = SfAreaTableManager.Instance.Get(ZoneCellData.AreaId);
+            var area = SfAreaTableManager.Instance.Table.Get(ZoneCellData.AreaId);
 
             if (ZoneCellData.ZoneFacilityType == ZoneFacilityRecord.Type)
             {
@@ -53,7 +53,7 @@ namespace sfproj
 
                 if (ZoneCellData.ExpansionCount < SfConfigController.ZONE_MAX_EXPANTION_COUNT)
                 {
-                    if (SfAreaTableManager.Instance.CheckCostForBuildingFacility(area, ZoneFacilityRecord))
+                    if (SfAreaTableManager.Instance.Table.CheckCostForBuildingFacility(area, ZoneFacilityRecord))
                     {
                         // Šg’£‰Â”\
                         EnableBuildBtn = false;
@@ -85,7 +85,7 @@ namespace sfproj
             else if (ZoneCellData.ZoneFacilityType == eZoneFacilityType.None)
             {
                 // ‰½‚àŒšÝ‚³‚ê‚Ä‚¢‚È‚¢ê‡
-                if (SfAreaTableManager.Instance.CheckCostForBuildingFacility(area, ZoneFacilityRecord))
+                if (SfAreaTableManager.Instance.Table.CheckCostForBuildingFacility(area, ZoneFacilityRecord))
                 {
                     // ŒšÝ‰Â”\
                     EnableBuildBtn = true;
@@ -107,7 +107,7 @@ namespace sfproj
             else
             {
                 // ‰½‚©ŒšÝ‚³‚ê‚Ä‚¢‚é‚ª“¯‚¶Ž{Ý‚Å‚Í‚È‚¢ê‡‚ÍŽ{Ý‚Ì•ÏX‚É‚È‚é
-                if (SfAreaTableManager.Instance.CheckCostForBuildingFacility(area, ZoneFacilityRecord))
+                if (SfAreaTableManager.Instance.Table.CheckCostForBuildingFacility(area, ZoneFacilityRecord))
                 {
                     // ŒšÝ‰Â”\
                     EnableBuildBtn = true;

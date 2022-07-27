@@ -265,8 +265,7 @@ namespace sfproj
     /// </summary>
     public class SfAreaTable : RecordTable<SfArea>
     {
-        // ユニーク ID リスト
-        public HashSet<uint> m_uniqueIdList = new HashSet<uint>();
+
 
         // 登録
         public void Regist(SfArea record) => RecordList.Add(record);
@@ -369,51 +368,29 @@ namespace sfproj
     /// <summary>
     /// 地域レコードテーブル管理
     /// </summary>
-    public class SfAreaTableManager : SfAreaTable
+    public class SfAreaTableManager : Singleton<SfAreaTableManager>
     {
-        private static SfAreaTableManager s_instance = null;
+        // ユニーク ID リスト
+        public HashSet<uint> m_uniqueIdList = new HashSet<uint>();
 
-        public static SfAreaTableManager Instance {
-
-            get
-            {
-                if (s_instance != null)
-                    return s_instance;
-
-                s_instance = new SfAreaTableManager();
-
-                s_instance.Load();
-
-                return s_instance;
-            }
-        }
+        private SfAreaTable m_table = new SfAreaTable();
+        public SfAreaTable Table => m_table;
 
         /// <summary>
         /// 読み込み処理
         /// </summary>
         public void Load() {
-
-            var builder = new ESLoadBuilder<SfArea, SfAreaTable>("SfAreaDataTable");
-
-            var director = new RecordTableESDirector<SfArea>(builder);
-
+            var director = new RecordTableESDirector<SfArea>(new ESLoadBuilder<SfArea, SfAreaTable>("SfAreaDataTable"));
             director.Construct();
-
             if (director.GetResult() != null && director.GetResult().RecordList.Count > 0)
-            {
-                m_recordList.AddRange(director.GetResult().RecordList);
-            }
+                m_table.RecordList.AddRange(director.GetResult().RecordList);
         }
 
         /// <summary>
         /// 保存処理
         /// </summary>
         public void Save() {
-
-            var builder = new ESSaveBuilder<SfArea>("SfAreaDataTable", this);
-
-            var director = new RecordTableESDirector<SfArea>(builder);
-
+            var director = new RecordTableESDirector<SfArea>(new ESSaveBuilder<SfArea>("SfAreaDataTable", m_table));
             director.Construct();
         }
     }

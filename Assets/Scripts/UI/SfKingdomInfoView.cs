@@ -40,15 +40,15 @@ namespace sfproj
 
 
         // ©•ª‚Ì‰¤‘‚Ìƒf[ƒ^
-        private SfKingdomRecord m_record = null;
-        public SfKingdomRecord SelfKingdomRecord => m_record;
+        private SfKingdom m_record = null;
+        public SfKingdom SelfKingdomRecord => m_record;
 
 
         // Start is called before the first frame update
         void Start()
         {
             
-            m_record = SfKingdomRecordTableManager.Instance.GetSelfKingdom();
+            m_record = SfKingdomTableManager.Instance.Table.GetSelfKingdom();
 
             // Šç‰æ‘œ‚Ìİ’è
 
