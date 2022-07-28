@@ -5,6 +5,15 @@ using System;
 
 namespace sfproj
 {
+    public enum eRarity {
+        None = -1,
+        Common,
+        Uncommon,
+        Rare,
+        Epic,
+        Legendary,
+    }
+
     public class SfItem : IJsonParser
     {
         // アイテム ID (ユニーク ID)
@@ -13,15 +22,19 @@ namespace sfproj
 
         // 名称
         public string m_name = "";
-        public string Name => m_name;
+        public string Name { get => m_name; set => m_name = value; }
 
         // 基本となるアイテムカテゴリ(生産か加工か)
         public eFacilityItemGenCategory m_baseItemCategory = eFacilityItemGenCategory.None;
-        public eFacilityItemGenCategory BaseItemCategory => m_baseItemCategory;
+        public eFacilityItemGenCategory BaseItemCategory { get => m_baseItemCategory; set => m_baseItemCategory = value; }
 
         // 基本となるアイテム ID
         public uint m_baseItemId = 0;
-        public uint BaseItemId => m_baseItemId;
+        public uint BaseItemId { get => m_baseItemId; set => m_baseItemId = value; }
+
+        // レアリティ
+        public eRarity m_rarity = eRarity.None;
+        public eRarity Rarity { get => m_rarity; set => m_rarity = value; }
 
         public void Parse(IDictionary<string, object> data)
         {

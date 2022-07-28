@@ -43,5 +43,30 @@ namespace sfproj {
 
             return id;
         }
+
+        static public int WeightedPick(int[] list) {
+
+            int totalWeight = 0;
+            int pick = 0;
+
+            for (int i = 0; i < list.Length; ++i)
+            {
+                totalWeight += list[i];
+            }
+
+            int rnd = (int)(UnityEngine.Random.value * totalWeight);
+
+            for (int i = 0; i < list.Length; ++i)
+            {
+                if (rnd < list[i])
+                {
+                    pick = i;
+                    break;
+                }
+                rnd -= list[i];
+            }
+
+            return pick;
+        }
     }
 }

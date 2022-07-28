@@ -141,7 +141,40 @@ namespace sfproj {
         private int m_distributionRatioOcean = 75;
         public int DistributionRatioOcean => m_distributionRatioOcean;
 
+        [Title("アイテムレアリティ")]
+
+        // コモン
+        [SerializeField, Range(0, 100)]
+        private int m_itemRarityRateCommon = 57;
+        public int ItemRarityRateCommon => m_itemRarityRateCommon;
+
+        // アンコモン
+        [SerializeField, Range(0, 100)]
+        private int m_itemRarityRateUncommon = 28;
+        public int ItemRarityRateUncommmon => m_itemRarityRateUncommon;
+
+        // レア
+        [SerializeField, Range(0, 100)]
+        private int m_itemRarityRateRare = 10;
+        public int ItemRarityRateRare => m_itemRarityRateRare;
+
+        // エピック
+        [SerializeField, Range(0, 100)]
+        private int m_itemRarityRateEpic = 4;
+        public int ItemRarityRateEpic => m_itemRarityRateEpic;
+
+        // レジェンダリー
+        [SerializeField, Range(0, 100)]
+        private int m_itemRarityRateLegendary = 1;
+        public int ItemRarityRateLegendary => m_itemRarityRateLegendary;
+
         [Title("ゲーム上で設定不可")]
+
+        // 世界の名前
+        // ゲーム開始時に毎回決定(初回のみ)
+        [SerializeField]
+        private string m_worldName;
+        public string WorldName => m_worldName;
 
         // 国以外の土地の色
         [SerializeField]

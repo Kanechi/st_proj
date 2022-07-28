@@ -185,7 +185,7 @@ namespace sfproj
         public eZoneFacilityType Type => m_zoneFacilityType;
         
 
-        // コスト(生産資源ID,必要数)
+        // 建設コスト(生産資源ID,必要数)
         [SerializeField]
         private List<SfCost> m_costs = new List<SfCost>();
         public List<SfCost> Costs => m_costs;

@@ -46,11 +46,10 @@ namespace sfproj
     /// <summary>
     /// 区域テーブル
     /// 施設が立ったらここに取り付ける
+    /// 取り付けられている施設は定期的に資源を生産する
     /// </summary>
     public class SfZoneFacilityTable : RecordTable<SfZoneFacility>
     {
-
-
         // 登録
         public void Regist(SfZoneFacility record) => RecordList.Add(record);
 
@@ -134,6 +133,16 @@ namespace sfproj
                 return;
             zoneFacility.ExpantionCount = exp;
         }
+
+#if false
+        /// <summary>
+        /// 更新処理
+        /// 資源増加の施設が取り付けられていたらここで資源の増加を行う
+        /// </summary>
+        public void Update() { 
+        
+        }
+#endif
     }
 
     /// <summary>
