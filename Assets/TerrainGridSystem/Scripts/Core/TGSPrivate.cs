@@ -3993,7 +3993,7 @@ namespace TGS {
             leftButtonUp = input.GetMouseButtonUp(0);
             rightButtonUp = input.GetMouseButtonUp(1);
 
-            Debug.Log("ld" + leftButtonDown.ToString() + "rd" + rightButtonDown.ToString() + "lu" + leftButtonUp.ToString() + "ru" + rightButtonUp.ToString());
+            //Debug.Log("ld" + leftButtonDown.ToString() + "rd" + rightButtonDown.ToString() + "lu" + leftButtonUp.ToString() + "ru" + rightButtonUp.ToString());
 
             if (leftButtonUp || leftButtonDown) {
                 buttonIndex = 0;

@@ -97,7 +97,7 @@ namespace sfproj
         private async UniTaskVoid Start()
         {
 
-			Debug.Log("Start");
+			//Debug.Log("Start");
 
 			// ゲーム管理の初期化
 			SfGameManager.Instance.OnInitialize();
