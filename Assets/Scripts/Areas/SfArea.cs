@@ -126,9 +126,9 @@ namespace sfproj
         [EnumString("")]
         None = -1,
 
-        // 平地
+        // 通常
         [EnumString("area_town_bg_image")]
-        Plane,
+        Normal,
 
         // 遺跡
         [EnumString("area_remain_bg_image")]
@@ -210,7 +210,7 @@ namespace sfproj
         public eAreaType m_areaType = eAreaType.None;
         public eAreaType AreaType { get => m_areaType; set => m_areaType = value; }
 
-        // 地域に存在する地形
+        // 地形 (地域に存在する地形)
         public eExistingTerrain m_existingTerrain = 0;
         public eExistingTerrain ExistingTerrain { get => m_existingTerrain; set => m_existingTerrain = value; }
 
@@ -291,6 +291,10 @@ namespace sfproj
             Get(areaId).AreaDevelopmentState = state;
         }
 
+        // 地形の追加
+        public void AddTerrain(uint areaId, eExistingTerrain terrain) => Get(areaId).ExistingTerrain |= terrain;
+        // 地形の削除
+        public void RemoveTerrain(uint areaId, eExistingTerrain terrain) => Get(areaId).ExistingTerrain &= ~terrain;
 
         /// <summary>
         /// 生産アイテムの追加

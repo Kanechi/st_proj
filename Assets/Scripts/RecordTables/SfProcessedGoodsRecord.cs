@@ -9,14 +9,18 @@ namespace sfproj
     public enum eProcessdGoodsCategory
     {
         None = 0,
+
         // 食材(穀物、果実、野菜、肉から生成)
-        Food = 100,
-        // 装備(石、鉱物、木、皮から生成)
-        Equipment = 200,
-        // 武具(石、鉱物、木、皮から生成)
-        Arms = 300,
+        Food = 10000,
+
+        // 装備(鉱物、木、皮から生成)
+        Equipment = 20000,
+
+        // 武具(鉱物、木、皮から生成)
+        Arms = 30000,
+
         // ルーン(石から生成)
-        Rune = 400,
+        Rune = 40000,
     }
 
 

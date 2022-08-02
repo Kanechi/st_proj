@@ -82,12 +82,12 @@ namespace sfproj {
     /// <summary>
     /// 地域 平地 生成 工場
     /// </summary>
-    public class SfAreaFactoryPlane : SfAreaCreateFactory
+    public class SfAreaFactoryNormal : SfAreaCreateFactory
     {
         protected override string CreateRandomAreaName() { return "test_plane"; }
 
         // 地域種タイプを設定
-        protected override eAreaGroupType SettingRandomAreaGroupType() { return eAreaGroupType.Plane; }
+        protected override eAreaGroupType SettingRandomAreaGroupType() { return eAreaGroupType.Normal; }
 
         // 地域タイプをランダムに設定
         protected override eAreaType RandomSettingAreaType() { return eAreaType.Town; }
@@ -206,7 +206,7 @@ namespace sfproj {
 
             factoryList = new List<SfAreaFactoryBase>()
             {
-                new SfAreaFactoryPlane(),
+                new SfAreaFactoryNormal(),
                 new SfAreaFactoryRemains(),
                 new SfAreaFactoryCave(),
             };
@@ -226,11 +226,11 @@ namespace sfproj {
 
             if (factoryType == eAreaGroupType.None)
             {
-                // 町 (rate が 80 以下なら町)
+                // 通常 (rate が 80 以下なら町)
                 if (SfConfigController.Instance.AreaTownRate > rate)
                 {
-                    // 町
-                    factoryType = eAreaGroupType.Plane;
+                    // 通常
+                    factoryType = eAreaGroupType.Normal;
                 }
                 // 遺跡 (rate が 80 から 90 なら遺跡)
                 else if (SfConfigController.Instance.AreaTownRate <= rate && (SfConfigController.Instance.AreaTownRate + SfConfigController.Instance.AreaRemainsRate) > rate)

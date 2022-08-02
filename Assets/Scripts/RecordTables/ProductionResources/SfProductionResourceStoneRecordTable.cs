@@ -10,6 +10,14 @@ using Sirenix.OdinInspector;
 
 namespace sfproj
 {
+    public enum eProductionResouceStoneCategory
+    {
+        None = 0,
+
+        // •’Ê‚ÌÎ
+        Stone = 30000,
+    }
+
     /// <summary>
     /// ¶Y‘Œ¹(Î)
     /// </summary>

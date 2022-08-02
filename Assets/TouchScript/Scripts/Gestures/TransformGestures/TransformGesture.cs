@@ -115,7 +115,7 @@ namespace TouchScript.Gestures.TransformGestures
         }
 
         /// <summary>
-        /// Plane where transformation occured.
+        /// Normal where transformation occured.
         /// </summary>
         public Plane TransformPlane
         {

@@ -10,6 +10,17 @@ using Sirenix.OdinInspector;
 
 namespace sfproj
 {
+    public enum eProductionResouceWoodCategory
+    {
+        None = 0,
+
+        // ÉXÉMÇÃñÿ
+        CedarWood = 20000,
+        
+        // ä~ÇÃñÿ
+        OrcWood,
+    }
+
     /// <summary>
     /// ê∂éYéëåπ(ñÿçﬁ)
     /// </summary>

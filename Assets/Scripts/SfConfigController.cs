@@ -91,7 +91,7 @@ namespace sfproj {
         [Title("’¬‚ÆˆâÕ‚Æ“´ŒAA‡‚í‚¹‚Ä100%", horizontalLine: false)]
         // —Ìˆæ‚Ì’nˆæ‚Éİ’è‚³‚ê‚é’¬‚ÌŠ„‡
         [SerializeField, Range(0, 100)]
-        private int m_areaTownRate = 80;
+        private int m_areaTownRate = 70;
         public int AreaTownRate => m_areaTownRate;
 
         // —Ìˆæ‚Ì’nˆæ‚Éİ’è‚³‚ê‚éˆâÕ‚ÌŠ„‡

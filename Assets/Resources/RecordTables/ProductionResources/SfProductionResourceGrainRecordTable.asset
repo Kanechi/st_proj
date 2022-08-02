@@ -22,8 +22,8 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   m_recordList:
-  - m_icon: {fileID: -825254912808381985, guid: cf1028e4293088e44a22a3fa8427e561, type: 3}
+  - m_icon: {fileID: -1761796051703448711, guid: ed98311f3a4d37d4fb72b9d3739eb6eb, type: 3}
     m_id: 110000
-    m_category: 400
+    m_category: 10000
     m_baseName: "\u9EA6"
     m_desc: "\u4E00\u822C\u7684\u306A\u7A40\u7269"

@@ -10,10 +10,18 @@ using Sirenix.OdinInspector;
 
 namespace sfproj
 {
+    public enum eProcessedGoodsFoodCategory
+    {
+        None = 0,
+
+        // ÉpÉì
+        Bread = 10000,
+    }
+
     /// <summary>
     /// â¡çHïi(êHóø)
     /// </summary>
-    [CreateAssetMenu(menuName = "RecordTables/Create SfProcessedGoodsFoodRecordTable", fileName = "SfProcessedGoodsRecord", order = 12000)]
+    [CreateAssetMenu(menuName = "RecordTables/Create SfProcessedGoodsFoodRecordTable", fileName = "SfProcessedGoodsRecord", order = 12001)]
     public class SfProcessedGoodsFoodRecordTable : EditorRecordTable<SfProcessedGoodsRecord>
     {
         // assets path

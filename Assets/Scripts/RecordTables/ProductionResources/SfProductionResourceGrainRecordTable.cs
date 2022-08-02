@@ -10,6 +10,16 @@ using Sirenix.OdinInspector;
 
 namespace sfproj
 {
+    public enum eProductionResouceGrainCategory
+    { 
+        None = 0,
+
+        /// <summary>
+        /// ”
+        /// </summary>
+        Mugi = 10000,
+    }
+
     /// <summary>
     /// ¶Y‘Œ¹(’•¨)
     /// </summary>
