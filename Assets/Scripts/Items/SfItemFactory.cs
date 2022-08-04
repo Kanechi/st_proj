@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace sfproj
 {
+#if false
     /// <summary>
     /// アイテム初回生成ビルダー (基底)
     /// </summary>
@@ -126,6 +127,7 @@ namespace sfproj
         public override string GetBaseName() => m_record.BaseName;
     }
 
+
     /// <summary>
     /// アイテム初回作成用ディレクタ
     /// アイテムが初回作成されるときにのみ呼び出す
@@ -158,4 +160,5 @@ namespace sfproj
             m_builder.SettingItemName(zoneFacility);
         }
     }
+#endif
 }

@@ -24,10 +24,6 @@ namespace sfproj
         public string m_name = "";
         public string Name { get => m_name; set => m_name = value; }
 
-        // 基本となるアイテムカテゴリ(生産か加工か)
-        public eFacilityItemGenCategory m_baseItemCategory = eFacilityItemGenCategory.None;
-        public eFacilityItemGenCategory BaseItemCategory { get => m_baseItemCategory; set => m_baseItemCategory = value; }
-
         // 基本となるアイテム ID
         public uint m_baseItemId = 0;
         public uint BaseItemId { get => m_baseItemId; set => m_baseItemId = value; }
@@ -36,18 +32,166 @@ namespace sfproj
         public eRarity m_rarity = eRarity.None;
         public eRarity Rarity { get => m_rarity; set => m_rarity = value; }
 
-        public void Parse(IDictionary<string, object> data)
+        public virtual void Parse(IDictionary<string, object> data)
         {
             data.Get(nameof(m_id), out m_id);
 
             data.Get(nameof(m_name), out m_name);
 
-            data.GetEnum(nameof(m_baseItemCategory), out m_baseItemCategory);
-
             data.Get(nameof(m_baseItemId), out m_baseItemId);
+
+            data.GetEnum(nameof(m_rarity), out m_rarity);
         }
     }
 
+    /// <summary>
+    /// 生産資源アイテム (コモン、アンコモン)
+    /// </summary>
+    public class SfProductionResourceItem : SfItem 
+    {
+        public override void Parse(IDictionary<string, object> data)
+        {
+            base.Parse(data);
+        }
+    }
+
+    /// <summary>
+    /// 領域原産の生産資源アイテム (レア、エピック)
+    /// </summary>
+    public class SfDominionProductionResourceItem : SfProductionResourceItem
+    {
+        // 原産地 ID
+        public uint m_placeOriginId = 0;
+        public uint PlaceOriginId { get => m_placeOriginId; set => m_placeOriginId = value; }
+
+        public override void Parse(IDictionary<string, object> data)
+        {
+            base.Parse(data);
+
+            data.Get(nameof(m_placeOriginId), out m_placeOriginId);
+        }
+    }
+
+    /// <summary>
+    /// 地域原産の生産資源アイテム (レジェンダリー)
+    /// </summary>
+    public class SfAreaProductionResourceItem : SfProductionResourceItem
+    {
+        // 原産地 ID
+        public uint m_placeOriginId = 0;
+        public uint PlaceOriginId { get => m_placeOriginId; set => m_placeOriginId = value; }
+
+        public override void Parse(IDictionary<string, object> data)
+        {
+            base.Parse(data);
+
+            data.Get(nameof(m_placeOriginId), out m_placeOriginId);
+        }
+    }
+
+    /// <summary>
+    /// 加工品アイテム
+    /// </summary>
+    public class SfProcessedGoodsItem : SfItem
+    {
+        public override void Parse(IDictionary<string, object> data)
+        {
+            base.Parse(data);
+        }
+    }
+
+    /// <summary>
+    /// 領域原産の加工品アイテム
+    /// </summary>
+    public class SfDominionProcessedGoodsItem : SfProcessedGoodsItem
+    {
+        // 原産地 ID
+        public uint m_placeOriginId = 0;
+        public uint PlaceOriginId { get => m_placeOriginId; set => m_placeOriginId = value; }
+
+        public override void Parse(IDictionary<string, object> data)
+        {
+            base.Parse(data);
+
+            data.Get(nameof(m_placeOriginId), out m_placeOriginId);
+        }
+    }
+
+    /// <summary>
+    /// 地域原産の加工品アイテム
+    /// </summary>
+    public class SfAreaProcessedGoodsItem : SfProcessedGoodsItem
+    {
+        // 原産地 ID
+        public uint m_placeOriginId = 0;
+        public uint PlaceOriginId { get => m_placeOriginId; set => m_placeOriginId = value; }
+
+        public override void Parse(IDictionary<string, object> data)
+        {
+            base.Parse(data);
+
+            data.Get(nameof(m_placeOriginId), out m_placeOriginId);
+        }
+    }
+
+    /// <summary>
+    /// 生産資源アイテムテーブル
+    /// </summary>
+    public class SfProductionResourceItemTable : RecordTable<SfItem>
+    {
+        // 登録
+        public void Regist(SfItem record) => RecordList.Add(record);
+
+        // アイテムレコードの取得
+        public override SfItem Get(uint id) => RecordList.Find(r => r.Id == id);
+
+        /// <summary>
+        /// コモンとアンコモンのアイテムがすでに存在する
+        /// </summary>
+        /// <param name="baseId"></param>
+        /// <param name="rarity"></param>
+        /// <returns>true...重複する</returns>
+        public bool CheckExistCommonAndUncommon(uint baseId, eRarity rarity)
+        {
+            return RecordList.Find(r => r.Rarity == rarity && r.BaseItemId == baseId) != null;
+        }
+
+        /// <summary>
+        /// レアとエピックのアイテムがすでに存在する
+        /// 領域 ID の一致まで確認
+        /// </summary>
+        /// <param name="baseId"></param>
+        /// <param name="rarity"></param>
+        /// <param name="dominion"></param>
+        /// <returns>true...重複する</returns>
+        public bool CheckExistRareAndEpic(uint baseId, eRarity rarity, SfDominion dominion)
+        {
+            var record = RecordList.Find(r => r.Rarity == rarity && r.BaseItemId == baseId);
+            if (record == null)
+                return true;
+            var dominionItemRecord = record as SfDominionProductionResourceItem;
+            return dominionItemRecord.PlaceOriginId == dominion.Id;
+        }
+
+        /// <summary>
+        /// レジェンダリのアイテムがすでに存在する
+        /// 地域 ID の一致まで確認
+        /// </summary>
+        /// <param name="baseId"></param>
+        /// <param name="rarity"></param>
+        /// <param name="area"></param>
+        /// <returns></returns>
+        public bool CheckExistLegendary(uint baseId, eRarity rarity, SfArea area)
+        {
+            var record = RecordList.Find(r => r.Rarity == rarity && r.BaseItemId == baseId);
+            if (record == null)
+                return true;
+            var areaItemRecord = record as SfAreaProductionResourceItem;
+            return areaItemRecord.PlaceOriginId == area.Id;
+        }
+    }
+
+#if false
     /// <summary>
     /// 地域 管理
     /// プレイ中に生成されているすべての SfAreaData
@@ -114,4 +258,5 @@ namespace sfproj
             director.Construct();
         }
     }
+#endif
 }
