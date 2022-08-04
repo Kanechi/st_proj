@@ -14,16 +14,18 @@ namespace sfproj
     { 
         None = 0,
 
-        /// <summary>
-        /// 麦
-        /// </summary>
-        Mugi = 10000,
+        // 麦
+        Wheat = 110000,
+        // トウモロコシ
+        Corn,
+        // イネ
+        Rice,
     }
 
     /// <summary>
     /// 生産資源(穀物)
     /// </summary>
-    [CreateAssetMenu(menuName = "RecordTables/Create SfProductionResourceGrainRecordTable", fileName = "SfProductionResourceRecord", order = 11000)]
+    [CreateAssetMenu(menuName = "RecordTables/Create SfProductionResourceGrainRecordTable", fileName = "SfProductionResourceRecord", order = 11001)]
     public class SfProductionResourceGrainRecordTable : EditorRecordTable<SfProductionResourceRecord>
     {
         // assets path

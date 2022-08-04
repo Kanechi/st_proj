@@ -93,8 +93,12 @@ namespace sfproj
         // 基本アイテムの設定
         public override void SettingBaseItemID() => m_createdItem.BaseItemId = m_record.Id;
 
-        // 基本アイテムの基本名を取得
-        public override string GetBaseName() => m_record.BaseName;
+        // 基本アイテムの基本名をランダムに取得
+        public override string GetBaseName()
+        {
+            int index = UnityEngine.Random.Range(0, m_record.BaseNameList.Count);
+            return m_record.BaseNameList[index];
+        }
     }
 
     /// <summary>

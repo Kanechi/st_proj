@@ -23,7 +23,31 @@ MonoBehaviour:
     SerializationNodes: []
   m_recordList:
   - m_icon: {fileID: -4327694568792152261, guid: cf1028e4293088e44a22a3fa8427e561, type: 3}
-    m_id: 0
-    m_category: 0
-    m_baseName: 
-    m_desc: 
+    m_id: 120000
+    m_category: 120000
+    m_baseNameList:
+    - "\u9285"
+    - "\u30AB\u30C3\u30D1\u30FC"
+    - "\u9752\u9285"
+    - "\u30D6\u30ED\u30F3\u30BA"
+  - m_icon: {fileID: -189930140207418067, guid: cf1028e4293088e44a22a3fa8427e561, type: 3}
+    m_id: 120001
+    m_category: 120000
+    m_baseNameList:
+    - "\u9244"
+    - "\u30A2\u30A4\u30A2\u30F3"
+  - m_icon: {fileID: 4869684058630344164, guid: cf1028e4293088e44a22a3fa8427e561, type: 3}
+    m_id: 120002
+    m_category: 120000
+    m_baseNameList:
+    - "\u9B54\u6CD5\u9280"
+    - "\u30DF\u30B9\u30EA\u30EB"
+    - "\u92FC"
+    - "\u30B9\u30C1\u30FC\u30EB"
+  - m_icon: {fileID: -5392618886030578354, guid: cf1028e4293088e44a22a3fa8427e561, type: 3}
+    m_id: 120003
+    m_category: 120000
+    m_baseNameList:
+    - "\u9B54\u6CD5\u91D1"
+    - "\u30AA\u30EA\u30CF\u30EB\u30B3\u30F3"
+    - "\u30FB\u30AA\u30EC\u30A4\u30FB\u30AB\u30EB\u30B3\u30B9"

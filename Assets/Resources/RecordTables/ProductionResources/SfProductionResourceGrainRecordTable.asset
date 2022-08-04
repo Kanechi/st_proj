@@ -24,6 +24,22 @@ MonoBehaviour:
   m_recordList:
   - m_icon: {fileID: -1761796051703448711, guid: ed98311f3a4d37d4fb72b9d3739eb6eb, type: 3}
     m_id: 110000
-    m_category: 10000
-    m_baseName: "\u9EA6"
-    m_desc: "\u4E00\u822C\u7684\u306A\u7A40\u7269"
+    m_category: 110000
+    m_baseNameList:
+    - "\u9EA6"
+    - "\u30E0\u30AE"
+    - "\u30A6\u30A3\u30FC\u30C8"
+  - m_icon: {fileID: -6154761541959078976, guid: ed98311f3a4d37d4fb72b9d3739eb6eb, type: 3}
+    m_id: 110001
+    m_category: 110000
+    m_baseNameList:
+    - "\u30C8\u30A6\u30E2\u30ED\u30B3\u30B7"
+    - "\u30C8\u30A6\u30AD\u30D3"
+    - "\u30B3\u30FC\u30F3"
+  - m_icon: {fileID: 4066785696936617003, guid: ed98311f3a4d37d4fb72b9d3739eb6eb, type: 3}
+    m_id: 110002
+    m_category: 110000
+    m_baseNameList:
+    - "\u7A32"
+    - "\u30A4\u30CD"
+    - "\u30E9\u30A4\u30B9"

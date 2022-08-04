@@ -10,10 +10,24 @@ using Sirenix.OdinInspector;
 
 namespace sfproj
 {
+    public enum eProductionResouceMineralCategory
+    {
+        None = 0,
+
+        // 銅
+        Copper = 120000,
+        // 鉄
+        Iron,
+        // ミスリル
+        Mithril,
+        // オリハルコン
+        Orihurcon
+    }
+
     /// <summary>
     /// 生産資源(鉱物)
     /// </summary>
-    [CreateAssetMenu(menuName = "RecordTables/Create SfProductionResourceMineralRecordTable", fileName = "SfProductionResourceRecord", order = 11001)]
+    [CreateAssetMenu(menuName = "RecordTables/Create SfProductionResourceMineralRecordTable", fileName = "SfProductionResourceRecord", order = 11002)]
     public class SfProductionResourceMineralRecordTable : EditorRecordTable<SfProductionResourceRecord>
     {
         // assets path

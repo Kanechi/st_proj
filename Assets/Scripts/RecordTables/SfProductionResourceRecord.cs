@@ -10,27 +10,19 @@ namespace sfproj
     /// <summary>
     /// 生産資源カテゴリ
     /// </summary>
-    public enum eProductionResouceCategory
+    public enum eProductionResouceCategory : uint
     {
         None        = 0,
-        // 穀物
-        Grain       = 10000,
-        // 木
-        Wood        = 20000,
-
-
-        // 石
-        Stone       = 30000,
-        // 鉱物
-        Mineral     = 40000,
-        // 果実
-        Fruit       = 50000,
-        // 野菜
-        Vegetable   = 60000,
-        // 肉
-        Meat        = 70000,
-        // 皮、皮膚、肌、表皮、毛皮
-        Skin        = 80000,
+        // 穀物(イネ、トウモロコシ、麦など)
+        Grain       = 110000,
+        // 鉱物(石、銅、鉄など)
+        Mineral     = 120000,
+        // モンスター素材(皮、皮膚、肌、表皮、毛皮、肉、爪など)
+        Monster     = 130000,
+        // 植物素材(野菜、果実など)
+        Plant       = 140000,
+        // 木(スギの木、樫の木など)
+        Wood        = 150000,
     }
 
 
@@ -65,14 +57,8 @@ namespace sfproj
         /// マーケットを建設するとライラックパン、もしくはライラックパスタが生産される
         /// </summary>
         [SerializeField]
-        private string m_baseName;
-        public string BaseName => m_baseName;
-
-        // 説明文
-        [SerializeField, Multiline(3)]
-        private string m_desc = null;
-        public string Desc => m_desc;
-
+        private List<string> m_baseNameList;
+        public List<string> BaseNameList => m_baseNameList;
     }
 
 
@@ -99,6 +85,30 @@ namespace sfproj
 
     public class SfProductionResourceTableManager : Singleton<SfProductionResourceTableManager>
     {
-        
+        public SfProductionResourceRecord Get(uint id) {
+
+            if (id >= (uint)eProductionResouceCategory.Grain && id < (uint)eProductionResouceCategory.Mineral)
+            {
+                return SfProductionResourceGrainRecordTable.Instance.Get(id);
+            }
+            else if (id >= (uint)eProductionResouceCategory.Mineral && id < (uint)eProductionResouceCategory.Monster)
+            {
+                return SfProductionResourceMineralRecordTable.Instance.Get(id);
+            }
+            else if (id >= (uint)eProductionResouceCategory.Monster && id < (uint)eProductionResouceCategory.Plant)
+            {
+                return SfProductionResourceMonsterRecordTable.Instance.Get(id);
+            }
+            else if (id >= (uint)eProductionResouceCategory.Plant && id < (uint)eProductionResouceCategory.Wood)
+            {
+                return SfProductionResourcePlantRecordTable.Instance.Get(id);
+            }
+            else if (id >= (uint)eProductionResouceCategory.Wood)
+            {
+                return SfProductionResourceWoodRecordTable.Instance.Get(id);
+            }
+
+            return null;
+        }
     }
 }

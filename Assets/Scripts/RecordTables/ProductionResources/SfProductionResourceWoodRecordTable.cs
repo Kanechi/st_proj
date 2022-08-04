@@ -15,7 +15,7 @@ namespace sfproj
         None = 0,
 
         // ÉXÉMÇÃñÿ
-        CedarWood = 20000,
+        CedarWood = 150000,
         
         // ä~ÇÃñÿ
         OrcWood,
@@ -24,7 +24,7 @@ namespace sfproj
     /// <summary>
     /// ê∂éYéëåπ(ñÿçﬁ)
     /// </summary>
-    [CreateAssetMenu(menuName = "RecordTables/Create SfProductionResourceWoodRecordTable", fileName = "SfProductionResourceRecord", order = 11004)]
+    [CreateAssetMenu(menuName = "RecordTables/Create SfProductionResourceWoodRecordTable", fileName = "SfProductionResourceRecord", order = 11005)]
     public class SfProductionResourceWoodRecordTable : EditorRecordTable<SfProductionResourceRecord>
     {
         // assets path
