@@ -223,9 +223,10 @@ namespace sfproj
         public int m_maxZoneCount = -1;
         public int MaxZoneCount { get => m_maxZoneCount; set => m_maxZoneCount = value; }
 
+        public List<uint> m_productionResourceItemIdList = new List<uint>();
+        public List<uint> ProductionResourceItemIdList { get => m_productionResourceItemIdList; set => m_productionResourceItemIdList = value; }
 
-
-
+#if false
         // 保管されているアイテム ID と総数
         public class StragedProductSet : IJsonParser {
 
@@ -246,6 +247,7 @@ namespace sfproj
 
         public List<StragedProductSet> m_storagedProductList = new List<StragedProductSet>();
         public List<StragedProductSet> StoragedProductList => m_storagedProductList;
+#endif
 
         // 割り当てられている武将 ID
         public List<uint> m_troopList = new List<uint>();
@@ -296,6 +298,8 @@ namespace sfproj
         // 地形の削除
         public void RemoveTerrain(uint areaId, eExistingTerrain terrain) => Get(areaId).ExistingTerrain &= ~terrain;
 
+
+#if false
         /// <summary>
         /// 生産アイテムの追加
         /// </summary>
@@ -315,6 +319,7 @@ namespace sfproj
                 areaData.StoragedProductList.Add(new SfArea.StragedProductSet(itemId, count));
             }
         }
+#endif
 
         /// <summary>
         /// 区域施設の建設に必要なコストのチェック
@@ -354,8 +359,13 @@ namespace sfproj
 #endif
         }
 
+
+#if false
         /// <summary>
         /// 区域施設の建設に必要なコストを支払う
+        /// 
+        /// 区域施設に必要なコストは Warehouse である倉庫から
+        /// 倉庫は地域とは別にクラスを作成
         /// </summary>
         /// <param name="areaRecord"></param>
         /// <param name="facilityRecord"></param>
@@ -367,6 +377,7 @@ namespace sfproj
                 set.Count -= cost.Count;
             }
         }
+#endif
     }
 
     /// <summary>

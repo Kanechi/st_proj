@@ -5,7 +5,8 @@ using Sirenix.OdinInspector;
 using System.Collections.Generic;
 
 namespace sfproj
-{ 
+{
+
 
     /// <summary>
     /// 生産資源カテゴリ
@@ -25,7 +26,17 @@ namespace sfproj
         Wood        = 150000,
     }
 
-
+    /// <summary>
+    /// 生産資源カテゴリフラグ
+    /// </summary>
+    public enum eProductionResourceCategoryFlag : ulong
+    {
+        Grain = 1ul << 0,
+        Mineral = 1ul << 1,
+        Monster = 1ul << 2,
+        Plant = 1ul << 3,
+        Wood = 1ul << 4,
+    }
 
     /// <summary>
     /// 生産資源
@@ -85,6 +96,35 @@ namespace sfproj
 
     public class SfProductionResourceTableManager : Singleton<SfProductionResourceTableManager>
     {
+        public List<SfProductionResourceRecord> GetAllProductionResourceList() {
+
+            var list = new List<SfProductionResourceRecord>();
+
+            list.AddRange(SfProductionResourceGrainRecordTable.Instance.RecordList);
+            list.AddRange(SfProductionResourceMineralRecordTable.Instance.RecordList);
+            list.AddRange(SfProductionResourceMonsterRecordTable.Instance.RecordList);
+            list.AddRange(SfProductionResourcePlantRecordTable.Instance.RecordList);
+            list.AddRange(SfProductionResourceWoodRecordTable.Instance.RecordList);
+
+            return list;
+        }
+
+        /// <summary>
+        /// カテゴリ別の生産資源レコードリストを取得「
+        /// </summary>
+        /// <returns></returns>
+        public List<SfProductionResourceRecord> GetProductionResourceListByCategory(eProductionResouceCategory category) {
+            switch (category)
+            {
+                case eProductionResouceCategory.Grain: return SfProductionResourceGrainRecordTable.Instance.RecordList;
+                case eProductionResouceCategory.Mineral: return SfProductionResourceMineralRecordTable.Instance.RecordList;
+                case eProductionResouceCategory.Monster: return SfProductionResourceMonsterRecordTable.Instance.RecordList;
+                case eProductionResouceCategory.Plant: return SfProductionResourcePlantRecordTable.Instance.RecordList;
+                case eProductionResouceCategory.Wood: return SfProductionResourceWoodRecordTable.Instance.RecordList;
+            }
+            return null;
+        }
+
         public SfProductionResourceRecord Get(uint id) {
 
             if (id >= (uint)eProductionResouceCategory.Grain && id < (uint)eProductionResouceCategory.Mineral)

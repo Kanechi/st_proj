@@ -104,6 +104,11 @@ namespace sfproj {
         private int m_areaCaveRate = 10;
         public int AreaCaveRate => m_areaCaveRate;
 
+        // 地域に設定される生産資源アイテムの最大値
+        [SerializeField, Range(1, 5)]
+        private int m_maxAreaProductionResourceItem = 3;
+        public int MaxAreaProductionResourceItem => m_maxAreaProductionResourceItem;
+
         // 地域に設定される区域の最低値
         [SerializeField, Range(1, 9)]
         private int m_minZoneValue = 5;

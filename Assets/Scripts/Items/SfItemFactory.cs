@@ -4,23 +4,259 @@ using UnityEngine;
 
 namespace sfproj
 {
-#if false
     /// <summary>
-    /// アイテム初回生成ビルダー (基底)
+    /// ワールドに存在するアイテムの基本アイテム IDをチェックし生成するアイテムの基本アイテム ID を決定する
     /// </summary>
-    public abstract class SfItemFactoryBuilderBase
+    public class SfProductionResourceListChecker
     {
-        // 作成されたアイテム
-        protected SfItem m_createdItem = null;
-        public SfItem GetCreatedItem() => m_createdItem;
-
-        public abstract void CreateItem(uint itemId);
-
-        /// <summary>
-        /// アイテムのレアリティをランダムに設定
-        /// </summary>
-        public void RandomSettingItemRarity()
+        private void CheckAndAddList(eProductionResourceCategoryFlag checkFlag, eProductionResouceCategory addCategory, ref eProductionResourceCategoryFlag flag, ref List<SfProductionResourceRecord> baseItemList)
         {
+            if ((checkFlag & flag) != 0)
+            {
+                baseItemList.AddRange(SfProductionResourceTableManager.Instance.GetProductionResourceListByCategory(addCategory));
+                flag |= eProductionResourceCategoryFlag.Grain;
+            }
+        }
+
+        public List<SfProductionResourceRecord> GetRecordByTerrain(eExistingTerrain terrain)
+        {
+            var baseItemList = new List<SfProductionResourceRecord>();
+
+            eProductionResourceCategoryFlag flag = 0;
+
+            if ((eExistingTerrain.Plane & terrain) != 0)
+            {
+                CheckAndAddList(eProductionResourceCategoryFlag.Grain, eProductionResouceCategory.Grain, ref flag, ref baseItemList);
+            }
+
+            if ((eExistingTerrain.Mountain & terrain) != 0)
+            {
+                if ((eProductionResourceCategoryFlag.Monster & flag) != 0)
+                {
+                    baseItemList.AddRange(SfProductionResourceTableManager.Instance.GetProductionResourceListByCategory(eProductionResouceCategory.Monster));
+                    flag |= eProductionResourceCategoryFlag.Monster;
+                }
+
+                if ((eProductionResourceCategoryFlag.Plant & flag) != 0)
+                {
+                    baseItemList.AddRange(SfProductionResourceTableManager.Instance.GetProductionResourceListByCategory(eProductionResouceCategory.Plant));
+                    flag |= eProductionResourceCategoryFlag.Plant;
+                }
+
+                if ((eProductionResourceCategoryFlag.Wood & flag) != 0)
+                {
+                    baseItemList.AddRange(SfProductionResourceTableManager.Instance.GetProductionResourceListByCategory(eProductionResouceCategory.Wood));
+                    flag |= eProductionResourceCategoryFlag.Wood;
+                }
+
+            }
+
+            if ((eExistingTerrain.Forest & terrain) != 0)
+            {
+                if ((eProductionResourceCategoryFlag.Grain & flag) != 0)
+                {
+                    baseItemList.AddRange(SfProductionResourceTableManager.Instance.GetProductionResourceListByCategory(eProductionResouceCategory.Grain));
+                    flag |= eProductionResourceCategoryFlag.Grain;
+                }
+                if ((eProductionResourceCategoryFlag.Mineral & flag) != 0)
+                {
+                    baseItemList.AddRange(SfProductionResourceTableManager.Instance.GetProductionResourceListByCategory(eProductionResouceCategory.Mineral));
+                    flag |= eProductionResourceCategoryFlag.Mineral;
+                }
+                if ((eProductionResourceCategoryFlag.Monster & flag) != 0)
+                {
+                    baseItemList.AddRange(SfProductionResourceTableManager.Instance.GetProductionResourceListByCategory(eProductionResouceCategory.Monster));
+                    flag |= eProductionResourceCategoryFlag.Monster;
+                }
+            }
+
+            if ((eExistingTerrain.River & terrain) != 0)
+            {
+                if ((eProductionResourceCategoryFlag.Monster & flag) != 0)
+                {
+                    baseItemList.AddRange(SfProductionResourceTableManager.Instance.GetProductionResourceListByCategory(eProductionResouceCategory.Monster));
+                    flag |= eProductionResourceCategoryFlag.Monster;
+                }
+
+                if ((eProductionResourceCategoryFlag.Plant & flag) != 0)
+                {
+                    baseItemList.AddRange(SfProductionResourceTableManager.Instance.GetProductionResourceListByCategory(eProductionResouceCategory.Plant));
+                    flag |= eProductionResourceCategoryFlag.Plant;
+                }
+            }
+
+            if ((eExistingTerrain.Ocean & terrain) != 0)
+            {
+                baseItemList.AddRange(SfProductionResourceTableManager.Instance.GetProductionResourceListByCategory(eProductionResouceCategory.Monster));
+            }
+
+            return baseItemList;
+        }
+
+
+#if false
+        /// <summary>
+        /// 既に生成されている基本アイテム ID をチェックし生成されていないものから順に生成を行う
+        /// 生成されていないものから順に生成すると地形に対してバラバラに配置されてしまいあ。
+        /// 同じものが生成されなくなってしまう・・・
+        /// やはり同じものをいくつか生成した方がよいかも・・・
+        /// </summary>
+        /// <returns></returns>
+        public uint CheckAndGenRandomBaseId() {
+
+            // 全ての基本アイテムを取得
+            var baseItemList = SfProductionResourceTableManager.Instance.GetAllProductionResourceList();
+
+            // 現状生成されている基本アイテム ID を取得
+            var genItemList = SfProductionResourceItemTableManager.Instance.Table.RecordList;
+
+            // 現状生成されている基本アイテム ID を調べ生成されていない基本アイテムアイテム ID をリスト化
+            var noGenBaseItemList = new List<SfProductionResourceRecord>();
+            for (int i = 0; i < baseItemList.Count; ++i)
+            {
+                // false...使われていない
+                bool isUse = false;
+
+                for (int j = 0; j < genItemList.Count; ++j)
+                {
+                    // 生成されたアイテムに使用されている基本アイテム ID がレコードの基本アイテム ID 
+                    if (baseItemList[i].Id == genItemList[j].BaseItemId)
+                    {
+                        isUse = true;
+                    }
+                }
+
+                if (isUse == false)
+                {
+                    // 使用されていなければ取り付ける
+                    noGenBaseItemList.Add(baseItemList[i]);
+                }
+            }
+
+            // ランダムに基本アイテム ID を算出
+            int index = UnityEngine.Random.Range(0, noGenBaseItemList.Count);
+            return noGenBaseItemList[index].Id;
+        }
+    
+#endif
+    }
+
+    /// <summary>
+    /// 最終的に生成したアイテムを領域か地域どちらに取り付けるかは外部でレアリティを調べて取り付ける
+    /// </summary>
+    public abstract class SfItemFactoryBase
+    {
+        public SfItem Create(uint id, uint baseId, eRarity rarity)
+        {
+            var item = CreateItem();
+
+            item.Id = id;
+
+            item.BaseItemId = baseId;
+
+            item.Rarity = rarity;
+
+            item.Name = CreateItemName(baseId, rarity);
+
+            return item;
+        }
+
+        public abstract SfItem CreateItem();
+
+        // アイテムの名前を生成
+        public abstract string CreateItemName(uint baseId, eRarity rarity);
+    }
+
+    /// <summary>
+    /// 生産資源アイテムの生成
+    /// 生産資源アイテムと加工品アイテムでクラスを分けるか考え中
+    /// </summary>
+    public abstract class SfProductionResourceItemCreateFactory : SfItemFactoryBase
+    {
+        public override SfItem CreateItem()
+        {
+            var item = new SfItem();
+
+            return item;
+        }
+    }
+
+    /// <summary>
+    /// 生産資源アイテム工場
+    /// </summary>
+    public class SfProductionResourceItemFactory : SfProductionResourceItemCreateFactory {
+
+        // アイテムの名前を生成
+        public override string CreateItemName(uint baseId, eRarity rarity)
+        {
+            // 基本アイテム名リストを取得
+            var record = SfProductionResourceTableManager.Instance.Get(baseId);
+
+            // ランダムに１つ選択
+            int index = UnityEngine.Random.Range(0, record.BaseNameList.Count);
+            string baseName = record.BaseNameList[index];
+
+            // レアリティがレアかエピックならランダム名を取り付け
+            if (rarity == eRarity.Rare || rarity == eRarity.Epic)
+            {
+                baseName = "希少な" + baseName; 
+            }
+
+            return baseName;
+        }
+    }
+
+    /// <summary>
+    /// アイテム生成用ビルダー
+    /// </summary>
+    public abstract class SfItemBuilderBase {
+
+        // 生成されたアイテム、もしくはすでに生成されているアイテム
+        protected SfItem m_createdItem = null;
+        public SfItem GetResult() => m_createdItem;
+
+        // 基本アイテム ID を地形ごとにランダムに生成
+        public abstract uint GenBaseItemId();
+
+        // アイテムのレア度を決定
+        public abstract eRarity GenItemRarity();
+
+        // true...生成した基本アイテム ID と レア度が設定されているアイテムがすでに存在している
+        public abstract bool CheckExist(uint baseItemId, eRarity rarity);
+
+        // 生成されるアイテムのユニーク ID を生成
+        protected abstract uint GenUniqueItemId();
+
+        // アイテムの生成
+        public abstract void CreateItem(uint baseItemId, eRarity rarity);
+    }
+
+    /// <summary>
+    /// アイテム生成用ビルダー
+    /// </summary>
+    public class SfProductionResourceItemBuilder : SfItemBuilderBase
+    {
+        // 原産地域
+        private SfArea m_placeOriginArea = null;
+
+        // constructor
+        public SfProductionResourceItemBuilder(SfArea placeOriginArea) => m_placeOriginArea = placeOriginArea;
+
+        // 基本アイテム ID を地形ごとにランダムに生成
+        public override uint GenBaseItemId()
+        {
+            var checker = new SfProductionResourceListChecker();
+
+            var baseItemList = checker.GetRecordByTerrain(m_placeOriginArea.ExistingTerrain);
+
+            int index = UnityEngine.Random.Range(0, baseItemList.Count);
+
+            return baseItemList[index].Id;
+        }
+
+        // アイテムのレア度を決定
+        public override eRarity GenItemRarity() {
+
             // コモン、アンコモンならそのままの名前が使われ
             // レア、エピックなら領域名が使われ
             // レジェンダリーなら地域名が使われる
@@ -29,136 +265,57 @@ namespace sfproj
                 SfConfigController.Instance.ItemRarityRateUncommmon,
                 SfConfigController.Instance.ItemRarityRateRare,
                 SfConfigController.Instance.ItemRarityRateEpic,
-                SfConfigController.Instance.ItemRarityRateLegendary
             };
 
             int rarity = SfConstant.WeightedPick(m_rarityList);
 
-            m_createdItem.Rarity = (eRarity)rarity;
+            return (eRarity)rarity;
         }
 
-        // 基本アイテムの設定
-        public abstract void SettingBaseItemID();
-
-        // 基本アイテムの基本名を取得
-        public abstract string GetBaseName();
-
-        // アイテムの名称の設定
-        // アイテムの名称の設定
-        public void SettingItemName(SfZoneFacility zoneFacility)
+        // true...生成した基本アイテム ID と レア度が設定されているアイテムがすでに存在している
+        public override bool CheckExist(uint baseItemId, eRarity rarity)
         {
-            string uniqueName = "";
+            m_createdItem = SfProductionResourceItemTableManager.Instance.Table.Get(baseItemId, rarity);
 
-            if (m_createdItem.Rarity == eRarity.Common || m_createdItem.Rarity == eRarity.Uncommon)
-            {
-                // 世界の名前から
-                uniqueName = SfConfigController.Instance.WorldName;
-            }
-            else if (m_createdItem.Rarity == eRarity.Rare || m_createdItem.Rarity == eRarity.Epic)
-            {
-                // 領域から
-                var area = SfAreaTableManager.Instance.Table.Get(zoneFacility.AreaId);
-                var dominion = SfDominionTableManager.Instance.Table.Get(area.DominionId);
+            return m_createdItem != null;
+        }
 
-                uniqueName = dominion.Name;
-            }
-            else if (m_createdItem.Rarity == eRarity.Legendary)
-            {
-                // 地域から
-                var area = SfAreaTableManager.Instance.Table.Get(zoneFacility.AreaId);
+        // 生成されるアイテムのユニーク ID を生成
+        protected override uint GenUniqueItemId() => SfConstant.CreateUniqueId(ref SfProductionResourceItemTableManager.Instance.m_uniqueIdList);
 
-                uniqueName = area.Name;
-            }
+        // アイテムの生成
+        public override void CreateItem(uint baseItemId, eRarity rarity) {
 
-            m_createdItem.Name = uniqueName + GetBaseName();
+            var factory = new SfProductionResourceItemFactory();
+
+            uint uniqueId = GenUniqueItemId();
+
+            m_createdItem = factory.Create(uniqueId, baseItemId, rarity);
         }
     }
 
     /// <summary>
-    /// 生産資源アイテム初回作成用ビルダー (基底)
+    /// アイテム生成用ディレクター
     /// </summary>
-    public class SfProductionResourceItemFactoryBuilder : SfItemFactoryBuilderBase
+    public class SfItemGenDirector
     {
-        // アイテムの基準となる生産資源レコード
-        private SfProductionResourceRecord m_record = null;
+        private SfItemBuilderBase m_builder = null;
 
-        // constructor
-        public SfProductionResourceItemFactoryBuilder(SfProductionResourceRecord record) => m_record = record;
+        public SfItemGenDirector(SfItemBuilderBase builder) => m_builder = builder;
 
-        public override void CreateItem(uint itemId) {
-            m_createdItem = new SfItem();
-            m_createdItem.Id = itemId;
-            m_createdItem.BaseItemCategory = eFacilityItemGenCategory.Production;
-        }
+        public SfItem GetResult() => m_builder.GetResult();
 
-        // 基本アイテムの設定
-        public override void SettingBaseItemID() => m_createdItem.BaseItemId = m_record.Id;
+        public void Construct() {
 
-        // 基本アイテムの基本名をランダムに取得
-        public override string GetBaseName()
-        {
-            int index = UnityEngine.Random.Range(0, m_record.BaseNameList.Count);
-            return m_record.BaseNameList[index];
+            uint baseItemId = m_builder.GenBaseItemId();
+
+            eRarity rarity = m_builder.GenItemRarity();
+
+            // 生成した基本アイテム ID と レア度のアイテムがすでに存在したらそれを使う
+            if (m_builder.CheckExist(baseItemId, rarity) == false)
+            {
+                m_builder.CreateItem(baseItemId, rarity);
+            }
         }
     }
-
-    /// <summary>
-    /// 加工品アイテム初回作成用ビルダー (基底)
-    /// </summary>
-    public class SfProcessGoodsItemFactoryBuilder : SfItemFactoryBuilderBase
-    {
-        // アイテムの基準となる加工品レコード
-        private SfProcessedGoodsRecord m_record = null;
-
-        // constructor
-        public SfProcessGoodsItemFactoryBuilder(SfProcessedGoodsRecord record) => m_record = record;
-
-        public override void CreateItem(uint itemId)
-        {
-            m_createdItem = new SfItem();
-            m_createdItem.Id = itemId;
-            m_createdItem.BaseItemCategory = eFacilityItemGenCategory.Processed;
-        }
-
-        // 基本アイテムの設定
-        public override void SettingBaseItemID() => m_createdItem.BaseItemId = m_record.Id;
-
-        // 基本アイテムの基本名を取得
-        public override string GetBaseName() => m_record.BaseName;
-    }
-
-
-    /// <summary>
-    /// アイテム初回作成用ディレクタ
-    /// アイテムが初回作成されるときにのみ呼び出す
-    /// </summary>
-    public class SfItemFactoryDirector
-    {
-        private SfItemFactoryBuilderBase m_builder = null;
-
-        public SfItemFactoryDirector(SfItemFactoryBuilderBase builder) => m_builder = builder;
-
-        public SfItem GetCreatedItem() => m_builder.GetCreatedItem();
-
-        /// <summary>
-        /// 初回作成のみ
-        /// </summary>
-        /// <param name="zoneFacility">アイテムの初回作成が行われる施設データ</param>
-        public void Construct(SfZoneFacility zoneFacility)
-        {
-            m_builder.CreateItem(SfConstant.CreateUniqueId(ref SfItemTableManager.Instance.m_uniqueIdList));
-
-            // 基準となるアイテムのアイテム ID を設定
-            m_builder.SettingBaseItemID();
-
-            // アイテムのレアリティをランダムに設定する
-            m_builder.RandomSettingItemRarity();
-
-            // 名称はレアリティで決定されるのでレアリティの後に名称を設定する
-
-            // アイテムの名称を設定する
-            m_builder.SettingItemName(zoneFacility);
-        }
-    }
-#endif
 }
