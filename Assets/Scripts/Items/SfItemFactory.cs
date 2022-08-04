@@ -229,6 +229,9 @@ namespace sfproj
 
         // アイテムの生成
         public abstract void CreateItem(uint baseItemId, eRarity rarity);
+
+        // アイテムの登録
+        public abstract void RegistItem();
     }
 
     /// <summary>
@@ -292,6 +295,12 @@ namespace sfproj
 
             m_createdItem = factory.Create(uniqueId, baseItemId, rarity);
         }
+
+        // アイテムの登録
+        public override void RegistItem()
+        {
+            SfProductionResourceItemTableManager.Instance.Table.Regist(m_createdItem as SfProductionResourceItem);
+        }
     }
 
     /// <summary>
@@ -315,6 +324,9 @@ namespace sfproj
             if (m_builder.CheckExist(baseItemId, rarity) == false)
             {
                 m_builder.CreateItem(baseItemId, rarity);
+
+                // 新規で生成したらアイテムテーブルに登録
+                m_builder.RegistItem();
             }
         }
     }

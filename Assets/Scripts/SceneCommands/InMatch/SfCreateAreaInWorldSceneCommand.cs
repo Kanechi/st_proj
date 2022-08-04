@@ -78,7 +78,7 @@ namespace sfproj {
 				}
 			}
 
-			scene.Invoker.ChangeSceneState(eSceneState.CreateKingdomInWorld);
+			scene.Invoker.ChangeSceneState(eSceneState.GenAndScatterProductionResInCreatedArea);
 		}
 	}
 

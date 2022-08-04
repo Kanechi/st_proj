@@ -23,6 +23,7 @@ namespace sfproj
 		CreateAreaInWorld,
 
 		// 作成した地域に生産資源を生成して設定
+		GenAndScatterProductionResInCreatedArea,
 
 		// 世界に王国を作成
 		CreateKingdomInWorld,
