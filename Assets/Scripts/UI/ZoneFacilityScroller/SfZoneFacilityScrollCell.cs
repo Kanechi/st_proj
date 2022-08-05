@@ -122,16 +122,10 @@ namespace sfproj
             // 区域セルの施設を変更、建設されていない場合は新規で建設
             Data.ZoneCellData.ChangeFacilityType(Data.ZoneFacilityRecord.TypeId, Data.ZoneFacilityRecord.Category);
 
-            //Data.ZoneCellData.Cell.SettingZoneButtonEnable();
-
             // 区域施設建設スクロールビューにあるセルのボタンの更新を行うために再オープンする
             SfGameManager.Instance.ZoneFacilityScrollView.Open(Data.ZoneCellData);
 
-            // 区域施設建設にあるボタンの表示非表示再チェック
-            //Data.CheckButtonEnable();
 
-            // ボタンの再表示非表示
-            //CheckBtnDisp();
         }
 
         /// <summary>

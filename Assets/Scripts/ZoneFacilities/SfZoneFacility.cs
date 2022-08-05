@@ -141,15 +141,18 @@ namespace sfproj
             zoneFacility.ExpantionCount = exp;
         }
 
-#if false
         /// <summary>
         /// 更新処理
         /// 資源増加の施設が取り付けられていたらここで資源の増加を行う
         /// </summary>
         public void Update() { 
         
+            // 施設ごとの処理を行う、どの地域に対して何を行うか
+
+            // 生産資源施設であれば地域にある生産資源を増加し、施設が建設されている地域の倉庫に保管する
+            
+            // 必要なら区域インデックスに生産カウントダウンを表示する
         }
-#endif
     }
 
     /// <summary>
