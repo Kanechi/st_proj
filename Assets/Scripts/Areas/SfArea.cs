@@ -181,6 +181,13 @@ namespace sfproj
         public string m_name = "";
         public string Name { get => m_name; set => m_name = value; }
 
+#if false
+        // 地域レベル
+        // 倉庫は地域に属するものにして施設ではなくす
+        // 地域レベルを上げる事で 倉庫の数 = ページ数を増やす ＋ 人口の数を増やしたりできるようにする
+        public int m_lv = 1;
+        public int Lv { get => m_lv; set => m_lv = value; }
+#endif
         // 属している領域 ID
         public uint m_dominionId = 0;
         public uint DominionId { get => m_dominionId; set => m_dominionId = value; }
@@ -223,6 +230,7 @@ namespace sfproj
         public int m_maxZoneCount = -1;
         public int MaxZoneCount { get => m_maxZoneCount; set => m_maxZoneCount = value; }
 
+        // この地域で生成される生産資源アイテム ID リスト
         public List<uint> m_productionResourceItemIdList = new List<uint>();
         public List<uint> ProductionResourceItemIdList { get => m_productionResourceItemIdList; set => m_productionResourceItemIdList = value; }
 
@@ -267,8 +275,6 @@ namespace sfproj
     /// </summary>
     public class SfAreaTable : RecordTable<SfArea>
     {
-
-
         // 登録
         public void Regist(SfArea record) => RecordList.Add(record);
 

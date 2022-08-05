@@ -13,13 +13,14 @@ namespace sfproj
 
 
     /// <summary>
-    /// 区域タイプ = ID
-    /// stellaris は電気、工業、農業、産業区域を別枠で振り分けれるようになっているが
-    /// それをすべて専門枠として扱うような感じ
-    /// 利用できる土地があってそこに区域を振り分けるという考えかた
+    /// 区域施設カテゴリ
     /// </summary>
-    public enum eZoneFacilityType
+    public enum eZoneFacilityCategory
     {
+        None = 0,
+        ProductionResource,
+        ProcessedGoods,
+#if false
         /// <summary>
         /// 何も設定されていない
         /// 破壊した際もこれに設定
@@ -132,21 +133,7 @@ namespace sfproj
         /// 防衛時、魔法防御力が上昇
         /// </summary>
         Witchcrafty_MagicBarrier = 5100,
-    }
-
-    /// <summary>
-    /// 施設アイテム生成カテゴリ
-    /// 生産タイプは設定されているアイテム ID が生産品の ID となる
-    /// 加工品タイプは設定されているアイテム ID が加工品の ID となる
-    /// 加工品である場合は、定期的に時間が来たら生産品を消費して加工品が生成される
-    /// 消費される生産品の数はそれぞれの加工品によって定められていて
-    /// 時間が来た際に使用すべき生産品があったら加工品が生成される
-    /// </summary>
-    public enum eFacilityItemGenCategory
-    {
-        None = -1,
-        Production,     // 生産
-        Processed,      // 加工
+#endif
     }
 
     /// <summary>
@@ -179,12 +166,16 @@ namespace sfproj
         [SerializeField]
         private string m_name;
 
+        // 区域施設 ID (生産資源施設タイプ、加工品施設タイプ)
+        [SerializeField]
+        private uint m_zoneFacilityId = 0;
+        public uint TypeId => m_zoneFacilityId;
+
         // 区域施設タイプ
         [SerializeField]
-        private eZoneFacilityType m_zoneFacilityType = eZoneFacilityType.None;
-        public eZoneFacilityType Type => m_zoneFacilityType;
+        private eZoneFacilityCategory m_zoneFacilityCategory = eZoneFacilityCategory.None;
+        public eZoneFacilityCategory Category => m_zoneFacilityCategory;
         
-
         // 建設コスト(生産資源ID,必要数)
         [SerializeField]
         private List<SfCost> m_costs = new List<SfCost>();
@@ -195,28 +186,9 @@ namespace sfproj
         private string m_desc = "";
         public string Description => m_desc;
 
-        // 施設のアイテム生成カテゴリ
+        // 生成できる基本アイテムのカテゴリ
         [SerializeField]
-        private eFacilityItemGenCategory m_itemGenCategory = eFacilityItemGenCategory.None;
-        public eFacilityItemGenCategory ItemGenCategory => m_itemGenCategory;
-
-        // 生成するアイテムの ID
-        [SerializeField]
-        private uint m_genItemId = 0;
-        public uint GenItemId => m_genItemId;
-    }
-
-    [CreateAssetMenu(menuName = "RecordTables/Create SfZoneFacilityRecordTable", fileName = "SfZoneFacilityRecordTable", order = 10000)]
-    public class SfZoneFacilityRecordTable : EditorRecordTable<SfZoneFacilityRecord>
-    {
-        // assets path
-        static private readonly string ResourcePath = "RecordTables/SfZoneFacilityRecordTable";
-        // singleton instance
-        protected static SfZoneFacilityRecordTable s_instance = null;
-        // singleton getter 
-        public static SfZoneFacilityRecordTable Instance => (s_instance != null ? s_instance : s_instance = Resources.Load(ResourcePath) as SfZoneFacilityRecordTable);
-        // get record
-        public override SfZoneFacilityRecord Get(uint id) => m_recordList.Find(r => r.Type == (eZoneFacilityType)id);
-        public SfZoneFacilityRecord Get(eZoneFacilityType id) => m_recordList.Find(r => r.Type == id);
+        private uint m_genBaseItemCategory = 0;
+        public uint GenBaseItemCategory => m_genBaseItemCategory;
     }
 }

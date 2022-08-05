@@ -23,6 +23,10 @@ namespace sfproj
         [SerializeField]
         private TextMeshProUGUI m_areaPopulation = null;
 
+        // 地域で生成される生産資源のリストビュー
+        [SerializeField]
+        private SfProductionResourceView m_productionResourceView = null;
+
         // 地域画像
         [SerializeField]
         private Image m_areaImage = null;
@@ -66,16 +70,18 @@ namespace sfproj
             if (m_openFlag == true)
                 return false;
 
-            var record = SfAreaTableManager.Instance.Table.Get(areaId);
+            var area = SfAreaTableManager.Instance.Table.Get(areaId);
 
-            m_areaName.text = record.Name;
+            m_areaName.text = area.Name;
 
-            m_areaPopulation.text = record.Population.ToString();
+            m_areaPopulation.text = area.Population.ToString();
+
+            m_productionResourceView.SetData(area);
 
             // 画像は画像テンプレートから設定
             //m_areaImage.sprite = Random.Range();
 
-            m_zoneView.SetData(record);
+            m_zoneView.SetData(area);
 
             gameObject.SetActive(true);
 

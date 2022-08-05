@@ -120,7 +120,7 @@ namespace sfproj
         private void OnBuildBtn() {
 
             // 区域セルの施設を変更、建設されていない場合は新規で建設
-            Data.ZoneCellData.ChangeFacilityType(Data.ZoneFacilityRecord.Type);
+            Data.ZoneCellData.ChangeFacilityType(Data.ZoneFacilityRecord.TypeId, Data.ZoneFacilityRecord.Category);
 
             //Data.ZoneCellData.Cell.SettingZoneButtonEnable();
 

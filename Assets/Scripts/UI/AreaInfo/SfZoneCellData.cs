@@ -31,7 +31,7 @@ namespace sfproj
 
         // 区域タイプ(None じゃない場合は Add アイコン解除)
         [ShowInInspector, ReadOnly]
-        public eZoneFacilityType ZoneFacilityType => m_zoneFacility != null ? m_zoneFacility.FacilityType : eZoneFacilityType.None;
+        public uint ZoneFacilityTypeId => m_zoneFacility != null ? m_zoneFacility.FacilityTypeId : 0;
 
         // 拡張数
         [ShowInInspector, ReadOnly]
@@ -70,17 +70,17 @@ namespace sfproj
         /// 施設タイプの変更
         /// </summary>
         /// <param name="type"></param>
-        public void ChangeFacilityType(eZoneFacilityType type) {
+        public void ChangeFacilityType(uint typeId, eZoneFacilityCategory category) {
 
             // 区域施設テーブルを変更
             if (m_zoneFacility != null)
             {
-                SfZoneFacilityTableManager.Instance.Table.ChangeZoneFacilityType(m_zoneFacility.AreaId, m_zoneFacility.CellIndex, type);
+                SfZoneFacilityTableManager.Instance.Table.ChangeZoneFacilityType(m_zoneFacility.AreaId, m_zoneFacility.CellIndex, typeId, category);
                 SfZoneFacilityTableManager.Instance.Table.SetZoneFacilityExpantion(m_zoneFacility.AreaId, m_zoneFacility.CellIndex, 1);
             }
             else
             {
-                SfZoneFacilityTableManager.Instance.Table.BuildZoneFacilityType(m_areaId, m_cellIndex, type, 1);
+                SfZoneFacilityTableManager.Instance.Table.BuildZoneFacilityType(m_areaId, m_cellIndex, typeId, category, 1);
             }
 
             // 変更した区域をこのデータに設定

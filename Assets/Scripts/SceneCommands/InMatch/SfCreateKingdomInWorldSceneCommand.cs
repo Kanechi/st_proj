@@ -132,22 +132,23 @@ namespace sfproj {
 			if ((areaRecord.ExistingTerrain & eExistingTerrain.Plane) != 0)
 			{
 				// アンロックした地域が平地に面していたら田畑を新規で建設
-				SfZoneFacilityTableManager.Instance.Table.BuildZoneFacilityType(minimumPlaneAreaId, 0, eZoneFacilityType.Production_Farm, 1);
+				SfZoneFacilityTableManager.Instance.Table.BuildZoneFacilityType(minimumPlaneAreaId, 0, (uint)eProductionResourceZoneFacilityType.Farm, eZoneFacilityCategory.ProductionResource, 1);
 			}
 			else if ((areaRecord.ExistingTerrain & eExistingTerrain.Forest) != 0)
 			{
 				// アンロックした地域が森に面していたら伐採所を新規で建設
-				SfZoneFacilityTableManager.Instance.Table.BuildZoneFacilityType(minimumPlaneAreaId, 0, eZoneFacilityType.Production_LoggingArea, 1);
+				SfZoneFacilityTableManager.Instance.Table.BuildZoneFacilityType(minimumPlaneAreaId, 0, (uint)eProductionResourceZoneFacilityType.LoggingArea, eZoneFacilityCategory.ProductionResource, 1);
 			}
 			else if ((areaRecord.ExistingTerrain & eExistingTerrain.Mountain) != 0)
 			{
 				// アンロックした地域が山に面していたら採掘所を新規で建設
-				SfZoneFacilityTableManager.Instance.Table.BuildZoneFacilityType(minimumPlaneAreaId, 0, eZoneFacilityType.Production_Mining, 1);
+				SfZoneFacilityTableManager.Instance.Table.BuildZoneFacilityType(minimumPlaneAreaId, 0, (uint)eProductionResourceZoneFacilityType.Mining, eZoneFacilityCategory.ProductionResource, 1);
 			}
 			else if ((areaRecord.ExistingTerrain & eExistingTerrain.Ocean) != 0)
 			{
 				// アンロックした地域が海に面していたら港を新規で建設
-				SfZoneFacilityTableManager.Instance.Table.BuildZoneFacilityType(minimumPlaneAreaId, 0, eZoneFacilityType.Commercial_Harbor, 1);
+				// TODO: ひとまずデバッグで解体所を設置している。港の画像が現状ないので
+				SfZoneFacilityTableManager.Instance.Table.BuildZoneFacilityType(minimumPlaneAreaId, 0, (uint)eProductionResourceZoneFacilityType.DismantlingPlace, eZoneFacilityCategory.ProductionResource, 1);
 			}
 		}
 	}

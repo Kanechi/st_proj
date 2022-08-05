@@ -7,6 +7,9 @@ using UniRx;
 
 namespace sfproj
 {
+    /// <summary>
+    /// 区域施設建設選択スクロールビュー
+    /// </summary>
     public class SfZoneFacilityScrollView : WindowBase, IEnhancedScrollerDelegate
     {
         // セルサイズ(単位ベクトル)
@@ -84,11 +87,16 @@ namespace sfproj
             m_openedReloadDataEvent?.Invoke();
         }
 
+        /// <summary>
+        /// タグで切り替えれるようにしないといけないかも
+        /// 生産資源アイテム施設
+        /// 加工品アイテム施設
+        /// </summary>
         private void CreateData() {
 
             m_dataList.Clear();
 
-            var list = SfZoneFacilityRecordTable.Instance.RecordList;
+            var list = SfProductionResourceZoneFacilityRecordTable.Instance.RecordList;
 
             foreach (var record in list)
             {

@@ -7,11 +7,25 @@ namespace sfproj
 {
     public enum eRarity {
         None = -1,
+
+        [EnumString("C")]
         Common,
-        Uncommon,
+
+        [EnumString("R")]
         Rare,
+        
+        [EnumString("EP")]
         Epic,
+
+        [EnumString("LG")]
         Legendary,
+    }
+
+    static class eRarityExtention
+    {
+        static readonly private Dictionary<eRarity, string> s_dic_ = new Dictionary<eRarity, string>();
+        static eRarityExtention() => EnumStringUtility.ForeachEnumAttribute<eRarity, EnumStringAttribute>((e, attr) => { s_dic_.Add(e, attr.Value); });
+        static public string ToEnumString(this eRarity e) => s_dic_[e];
     }
 
     public class SfItem : IJsonParser

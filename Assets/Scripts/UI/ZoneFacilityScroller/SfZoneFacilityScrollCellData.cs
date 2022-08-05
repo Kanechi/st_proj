@@ -47,7 +47,7 @@ namespace sfproj
         {
             var area = SfAreaTableManager.Instance.Table.Get(ZoneCellData.AreaId);
 
-            if (ZoneCellData.ZoneFacilityType == ZoneFacilityRecord.Type)
+            if (ZoneCellData.ZoneFacilityTypeId == ZoneFacilityRecord.TypeId)
             {
                 // 地域に建設されている施設とセルの施設が同じ場合は拡張ボタン
 
@@ -82,7 +82,7 @@ namespace sfproj
                     MaxExpantionImage = true;
                 }
             }
-            else if (ZoneCellData.ZoneFacilityType == eZoneFacilityType.None)
+            else if (ZoneCellData.ZoneFacilityTypeId == 0)
             {
                 // 何も建設されていない場合
                 if (SfAreaTableManager.Instance.Table.CheckCostForBuildingFacility(area, ZoneFacilityRecord))

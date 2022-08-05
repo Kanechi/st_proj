@@ -104,9 +104,14 @@ namespace sfproj {
         private int m_areaCaveRate = 10;
         public int AreaCaveRate => m_areaCaveRate;
 
+        // 地域に設定される生産資源アイテムの最小値
+        [SerializeField, Range(1, 5)]
+        private int m_minAreaProductionResourceItemCt = 1;
+        public int MinAreaProductionResourceItemCt => m_minAreaProductionResourceItemCt;
+
         // 地域に設定される生産資源アイテムの最大値
         [SerializeField, Range(1, 5)]
-        private int m_maxAreaProductionResourceItemCt = 3;
+        private int m_maxAreaProductionResourceItemCt = 2;
         public int MaxAreaProductionResourceItemCt => m_maxAreaProductionResourceItemCt;
 
         // 地域に設定される区域の最低値
@@ -150,12 +155,12 @@ namespace sfproj {
 
         // コモン
         [SerializeField, Range(0, 100)]
-        private int m_itemRarityRateCommon = 97;
+        private int m_itemRarityRateCommon = 98;
         public int ItemRarityRateCommon => m_itemRarityRateCommon;
 
         // レア
         [SerializeField, Range(0, 100)]
-        private int m_itemRarityRateRare = 3;
+        private int m_itemRarityRateRare = 2;
         public int ItemRarityRateRare => m_itemRarityRateRare;
 
         // エピック

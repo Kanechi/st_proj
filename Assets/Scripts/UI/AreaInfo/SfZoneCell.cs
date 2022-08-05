@@ -91,7 +91,7 @@ namespace sfproj
             }
 
             // プラスボタン表示チェック
-            if (m_data.ZoneFacilityType != eZoneFacilityType.None)
+            if (m_data.ZoneFacilityTypeId != 0)
             {
                 m_addObj.SetActive(false);
                 m_zoneFacilityObj.SetActive(true);
@@ -109,7 +109,7 @@ namespace sfproj
         /// 区域施設画像の設定
         /// </summary>
         public void SettingFacilityImage() {
-            var record = SfZoneFacilityRecordTable.Instance.Get(m_data.ZoneFacilityType);
+            var record = SfProductionResourceZoneFacilityRecordTable.Instance.Get(m_data.ZoneFacilityTypeId);
             m_zoneFacilityImage.sprite = record.FacilitySprite;
         }
 

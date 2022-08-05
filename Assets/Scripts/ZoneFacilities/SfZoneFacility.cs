@@ -25,9 +25,12 @@ namespace sfproj
         public int m_cellIndex = -1;
         public int CellIndex { get => m_cellIndex; set => m_cellIndex = value; }
 
+        public uint m_facilityTypeId = 0;
+        public uint FacilityTypeId { get => m_facilityTypeId; set => m_facilityTypeId = value; }
+
         // 区域施設のタイプ
-        public eZoneFacilityType m_facilityType = eZoneFacilityType.None;
-        public eZoneFacilityType FacilityType { get => m_facilityType; set => m_facilityType = value; }
+        public eZoneFacilityCategory m_facilityType = eZoneFacilityCategory.None;
+        public eZoneFacilityCategory FacilityType { get => m_facilityType; set => m_facilityType = value; }
 
         // 拡張数
         public int m_expantionCount = 0;
@@ -38,6 +41,7 @@ namespace sfproj
             data.Get(nameof(m_id), out m_id);
             data.Get(nameof(m_areaId), out m_areaId);
             data.Get(nameof(m_cellIndex), out m_cellIndex);
+            data.Get(nameof(m_facilityTypeId), out m_facilityTypeId);
             data.GetEnum(nameof(m_facilityType), out m_facilityType);
             data.Get(nameof(m_expantionCount), out m_expantionCount);
         }
@@ -69,13 +73,14 @@ namespace sfproj
         /// <param name="cellIndex">区域セルインデックス番号</param>
         /// <param name="type">建設する区域施設タイプ</param>
         /// <param name="exp">拡張数</param>
-        public void BuildZoneFacilityType(uint areaId, int cellIndex, eZoneFacilityType type, int exp)
+        public void BuildZoneFacilityType(uint areaId, int cellIndex, uint typeId, eZoneFacilityCategory category, int exp)
         {
             var zoneFacility = new SfZoneFacility();
             zoneFacility.Id = SfConstant.CreateUniqueId(ref SfZoneFacilityTableManager.Instance.m_uniqueIdList);
             zoneFacility.AreaId = areaId;
             zoneFacility.CellIndex = cellIndex;
-            zoneFacility.FacilityType = type;
+            zoneFacility.m_facilityTypeId = typeId;
+            zoneFacility.FacilityType = category;
             zoneFacility.ExpantionCount = exp;
 
             Regist(zoneFacility);
@@ -87,9 +92,11 @@ namespace sfproj
         /// <param name="areaId"></param>
         /// <param name="cellIndex"></param>
         /// <param name="type"></param>
-        public void ChangeZoneFacilityType(uint areaId, int cellIndex, eZoneFacilityType type)
+        public void ChangeZoneFacilityType(uint areaId, int cellIndex, uint typeId, eZoneFacilityCategory category)
         {
-            Get(areaId, cellIndex).FacilityType = type;
+            var facility = Get(areaId, cellIndex);
+            facility.m_facilityTypeId = typeId;
+            facility.FacilityType = category;
         }
 
         /// <summary>
@@ -101,7 +108,7 @@ namespace sfproj
         /// <param name="cellIndex"></param>
         public void DestroyZonefacilityType(uint areaId, int cellIndex)
         {
-            Get(areaId, cellIndex).FacilityType = eZoneFacilityType.None;
+            Get(areaId, cellIndex).FacilityType = eZoneFacilityCategory.None;
         }
 
         /// <summary>
