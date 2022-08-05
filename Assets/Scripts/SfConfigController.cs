@@ -150,22 +150,17 @@ namespace sfproj {
 
         // コモン
         [SerializeField, Range(0, 100)]
-        private int m_itemRarityRateCommon = 57;
+        private int m_itemRarityRateCommon = 97;
         public int ItemRarityRateCommon => m_itemRarityRateCommon;
-
-        // アンコモン
-        [SerializeField, Range(0, 100)]
-        private int m_itemRarityRateUncommon = 28;
-        public int ItemRarityRateUncommmon => m_itemRarityRateUncommon;
 
         // レア
         [SerializeField, Range(0, 100)]
-        private int m_itemRarityRateRare = 10;
+        private int m_itemRarityRateRare = 3;
         public int ItemRarityRateRare => m_itemRarityRateRare;
 
         // エピック
         [SerializeField, Range(0, 100)]
-        private int m_itemRarityRateEpic = 4;
+        private int m_itemRarityRateEpic = 1;
         public int ItemRarityRateEpic => m_itemRarityRateEpic;
 
         // レジェンダリー

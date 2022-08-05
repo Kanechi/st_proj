@@ -25,6 +25,4 @@ MonoBehaviour:
   - m_icon: {fileID: 2206951038954006045, guid: cf1028e4293088e44a22a3fa8427e561, type: 3}
     m_id: 130000
     m_category: 130000
-    m_baseNameList:
-    - "\u76AE"
-    - "\u30EC\u30B6\u30FC"
+    m_baseName: "\u76AE"

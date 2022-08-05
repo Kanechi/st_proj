@@ -26,24 +26,29 @@ namespace sfproj
 
             if ((eExistingTerrain.Plane & terrain) != 0)
             {
-                CheckAndAddList(eProductionResourceCategoryFlag.Grain, eProductionResouceCategory.Grain, ref flag, ref baseItemList);
+                if ((eProductionResourceCategoryFlag.Monster & flag) == 0)
+                {
+                    baseItemList.AddRange(SfProductionResourceTableManager.Instance.GetProductionResourceListByCategory(eProductionResouceCategory.Grain));
+                    flag |= eProductionResourceCategoryFlag.Grain;
+                }
+
             }
 
             if ((eExistingTerrain.Mountain & terrain) != 0)
             {
-                if ((eProductionResourceCategoryFlag.Monster & flag) != 0)
+                if ((eProductionResourceCategoryFlag.Monster & flag) == 0)
                 {
                     baseItemList.AddRange(SfProductionResourceTableManager.Instance.GetProductionResourceListByCategory(eProductionResouceCategory.Monster));
                     flag |= eProductionResourceCategoryFlag.Monster;
                 }
 
-                if ((eProductionResourceCategoryFlag.Plant & flag) != 0)
+                if ((eProductionResourceCategoryFlag.Plant & flag) == 0)
                 {
                     baseItemList.AddRange(SfProductionResourceTableManager.Instance.GetProductionResourceListByCategory(eProductionResouceCategory.Plant));
                     flag |= eProductionResourceCategoryFlag.Plant;
                 }
 
-                if ((eProductionResourceCategoryFlag.Wood & flag) != 0)
+                if ((eProductionResourceCategoryFlag.Wood & flag) == 0)
                 {
                     baseItemList.AddRange(SfProductionResourceTableManager.Instance.GetProductionResourceListByCategory(eProductionResouceCategory.Wood));
                     flag |= eProductionResourceCategoryFlag.Wood;
@@ -53,17 +58,17 @@ namespace sfproj
 
             if ((eExistingTerrain.Forest & terrain) != 0)
             {
-                if ((eProductionResourceCategoryFlag.Grain & flag) != 0)
+                if ((eProductionResourceCategoryFlag.Grain & flag) == 0)
                 {
                     baseItemList.AddRange(SfProductionResourceTableManager.Instance.GetProductionResourceListByCategory(eProductionResouceCategory.Grain));
                     flag |= eProductionResourceCategoryFlag.Grain;
                 }
-                if ((eProductionResourceCategoryFlag.Mineral & flag) != 0)
+                if ((eProductionResourceCategoryFlag.Mineral & flag) == 0)
                 {
                     baseItemList.AddRange(SfProductionResourceTableManager.Instance.GetProductionResourceListByCategory(eProductionResouceCategory.Mineral));
                     flag |= eProductionResourceCategoryFlag.Mineral;
                 }
-                if ((eProductionResourceCategoryFlag.Monster & flag) != 0)
+                if ((eProductionResourceCategoryFlag.Monster & flag) == 0)
                 {
                     baseItemList.AddRange(SfProductionResourceTableManager.Instance.GetProductionResourceListByCategory(eProductionResouceCategory.Monster));
                     flag |= eProductionResourceCategoryFlag.Monster;
@@ -72,13 +77,13 @@ namespace sfproj
 
             if ((eExistingTerrain.River & terrain) != 0)
             {
-                if ((eProductionResourceCategoryFlag.Monster & flag) != 0)
+                if ((eProductionResourceCategoryFlag.Monster & flag) == 0)
                 {
                     baseItemList.AddRange(SfProductionResourceTableManager.Instance.GetProductionResourceListByCategory(eProductionResouceCategory.Monster));
                     flag |= eProductionResourceCategoryFlag.Monster;
                 }
 
-                if ((eProductionResourceCategoryFlag.Plant & flag) != 0)
+                if ((eProductionResourceCategoryFlag.Plant & flag) == 0)
                 {
                     baseItemList.AddRange(SfProductionResourceTableManager.Instance.GetProductionResourceListByCategory(eProductionResouceCategory.Plant));
                     flag |= eProductionResourceCategoryFlag.Plant;
@@ -87,7 +92,17 @@ namespace sfproj
 
             if ((eExistingTerrain.Ocean & terrain) != 0)
             {
-                baseItemList.AddRange(SfProductionResourceTableManager.Instance.GetProductionResourceListByCategory(eProductionResouceCategory.Monster));
+                if ((eProductionResourceCategoryFlag.Monster & flag) == 0)
+                {
+                    baseItemList.AddRange(SfProductionResourceTableManager.Instance.GetProductionResourceListByCategory(eProductionResouceCategory.Monster));
+                    flag |= eProductionResourceCategoryFlag.Monster;
+                }
+            }
+
+            if (baseItemList.Count == 0)
+            {
+                int a;
+                a = 0;
             }
 
             return baseItemList;
@@ -144,24 +159,16 @@ namespace sfproj
     /// <summary>
     /// 最終的に生成したアイテムを領域か地域どちらに取り付けるかは外部でレアリティを調べて取り付ける
     /// </summary>
-    public abstract class SfItemFactoryBase
+    public abstract class SfItemFactoryBase<Ty>
     {
-        public SfItem Create(uint id, uint baseId, eRarity rarity)
+        public Ty Create(uint id, uint baseId, eRarity rarity)
         {
-            var item = CreateItem();
-
-            item.Id = id;
-
-            item.BaseItemId = baseId;
-
-            item.Rarity = rarity;
-
-            item.Name = CreateItemName(baseId, rarity);
+            var item = CreateItem(id, baseId, rarity);
 
             return item;
         }
 
-        public abstract SfItem CreateItem();
+        public abstract Ty CreateItem(uint id, uint baseId, eRarity rarity);
 
         // アイテムの名前を生成
         public abstract string CreateItemName(uint baseId, eRarity rarity);
@@ -171,11 +178,19 @@ namespace sfproj
     /// 生産資源アイテムの生成
     /// 生産資源アイテムと加工品アイテムでクラスを分けるか考え中
     /// </summary>
-    public abstract class SfProductionResourceItemCreateFactory : SfItemFactoryBase
+    public abstract class SfProductionResourceItemCreateFactory : SfItemFactoryBase<SfProductionResourceItem>
     {
-        public override SfItem CreateItem()
+        public override SfProductionResourceItem CreateItem(uint id, uint baseId, eRarity rarity)
         {
-            var item = new SfItem();
+            var item = new SfProductionResourceItem();
+
+            item.Id = id;
+
+            item.BaseItemId = baseId;
+
+            item.Rarity = rarity;
+
+            item.Name = CreateItemName(baseId, rarity);
 
             return item;
         }
@@ -192,12 +207,10 @@ namespace sfproj
             // 基本アイテム名リストを取得
             var record = SfProductionResourceTableManager.Instance.Get(baseId);
 
-            // ランダムに１つ選択
-            int index = UnityEngine.Random.Range(0, record.BaseNameList.Count);
-            string baseName = record.BaseNameList[index];
+            string baseName = record.BaseName;
 
-            // レアリティがレアかエピックならランダム名を取り付け
-            if (rarity == eRarity.Rare || rarity == eRarity.Epic)
+            // レアリティがレアならランダム名を取り付け
+            if (rarity == eRarity.Rare)
             {
                 baseName = "希少な" + baseName; 
             }
@@ -206,14 +219,15 @@ namespace sfproj
         }
     }
 
+
     /// <summary>
     /// アイテム生成用ビルダー
     /// </summary>
-    public abstract class SfItemBuilderBase {
+    public abstract class SfItemBuilderBase<Ty> {
 
         // 生成されたアイテム、もしくはすでに生成されているアイテム
-        protected SfItem m_createdItem = null;
-        public SfItem GetResult() => m_createdItem;
+        protected Ty m_createdItem;
+        public Ty GetResult() => m_createdItem;
 
         // 基本アイテム ID を地形ごとにランダムに生成
         public abstract uint GenBaseItemId();
@@ -237,7 +251,7 @@ namespace sfproj
     /// <summary>
     /// アイテム生成用ビルダー
     /// </summary>
-    public class SfProductionResourceItemBuilder : SfItemBuilderBase
+    public class SfProductionResourceItemBuilder : SfItemBuilderBase<SfProductionResourceItem>
     {
         // 原産地域
         private SfArea m_placeOriginArea = null;
@@ -260,14 +274,11 @@ namespace sfproj
         // アイテムのレア度を決定
         public override eRarity GenItemRarity() {
 
-            // コモン、アンコモンならそのままの名前が使われ
-            // レア、エピックなら領域名が使われ
-            // レジェンダリーなら地域名が使われる
+            // コモンならそのままの名前が使われ
+            // レアならランダム名が利用される
             int[] m_rarityList = new int[] {
                 SfConfigController.Instance.ItemRarityRateCommon,
-                SfConfigController.Instance.ItemRarityRateUncommmon,
                 SfConfigController.Instance.ItemRarityRateRare,
-                SfConfigController.Instance.ItemRarityRateEpic,
             };
 
             int rarity = SfConstant.WeightedPick(m_rarityList);
@@ -278,6 +289,10 @@ namespace sfproj
         // true...生成した基本アイテム ID と レア度が設定されているアイテムがすでに存在している
         public override bool CheckExist(uint baseItemId, eRarity rarity)
         {
+            // 初回は０なので検索できない
+            if (SfProductionResourceItemTableManager.Instance.Table.RecordList.Count == 0)
+                return false;
+
             m_createdItem = SfProductionResourceItemTableManager.Instance.Table.Get(baseItemId, rarity);
 
             return m_createdItem != null;
@@ -299,20 +314,20 @@ namespace sfproj
         // アイテムの登録
         public override void RegistItem()
         {
-            SfProductionResourceItemTableManager.Instance.Table.Regist(m_createdItem as SfProductionResourceItem);
+            SfProductionResourceItemTableManager.Instance.Table.Regist(m_createdItem);
         }
     }
 
     /// <summary>
     /// アイテム生成用ディレクター
     /// </summary>
-    public class SfItemGenDirector
+    public class SfItemGenDirector<Ty>
     {
-        private SfItemBuilderBase m_builder = null;
+        private SfItemBuilderBase<Ty> m_builder = null;
 
-        public SfItemGenDirector(SfItemBuilderBase builder) => m_builder = builder;
+        public SfItemGenDirector(SfItemBuilderBase<Ty> builder) => m_builder = builder;
 
-        public SfItem GetResult() => m_builder.GetResult();
+        public Ty GetResult() => m_builder.GetResult();
 
         public void Construct() {
 

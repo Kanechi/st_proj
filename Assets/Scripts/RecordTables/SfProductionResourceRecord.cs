@@ -4,6 +4,9 @@ using System;
 using Sirenix.OdinInspector;
 using System.Collections.Generic;
 
+using UniRx;
+using System.Linq;
+
 namespace sfproj
 {
 
@@ -29,13 +32,13 @@ namespace sfproj
     /// <summary>
     /// 生産資源カテゴリフラグ
     /// </summary>
-    public enum eProductionResourceCategoryFlag : ulong
+    public enum eProductionResourceCategoryFlag : uint
     {
-        Grain = 1ul << 0,
-        Mineral = 1ul << 1,
-        Monster = 1ul << 2,
-        Plant = 1ul << 3,
-        Wood = 1ul << 4,
+        Grain = 1u << 0,
+        Mineral = 1u << 1,
+        Monster = 1u << 2,
+        Plant = 1u << 3,
+        Wood = 1u << 4,
     }
 
     /// <summary>
@@ -68,8 +71,8 @@ namespace sfproj
         /// マーケットを建設するとライラックパン、もしくはライラックパスタが生産される
         /// </summary>
         [SerializeField]
-        private List<string> m_baseNameList;
-        public List<string> BaseNameList => m_baseNameList;
+        private string m_baseName;
+        public string BaseName => m_baseName;
     }
 
 

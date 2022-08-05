@@ -53,6 +53,8 @@ namespace sfproj
         {
             base.Parse(data);
         }
+
+        public SfProductionResourceItem Clone() => (SfProductionResourceItem)MemberwiseClone();
     }
 
     /// <summary>
@@ -70,6 +72,8 @@ namespace sfproj
         {
             base.Parse(data);
         }
+
+        public SfProcessedGoodsItem Clone() => (SfProcessedGoodsItem)MemberwiseClone();
     }
 
     /// <summary>

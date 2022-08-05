@@ -111,6 +111,7 @@ namespace sfproj
 				{ eSceneState.InitializeTGSTerritory, new SfInitializeTGSTerritorySceneCommand() },
 				{ eSceneState.CreateDominionInWorld, new SfCreateDominionInWorldSceneCommand() },
 				{ eSceneState.CreateAreaInWorld, new SfCreateAreaInWorldSceneCommand() },
+				{ eSceneState.GenAndScatterProductionResInCreatedArea, new SfGenAndScatterProductionResInCreatedAreaSceneCommnad() },
 				{ eSceneState.CreateKingdomInWorld, new SfCreateKingdomInWorldSceneCommand() },
 				{ eSceneState.MainUpdate, new SfeMainUpdateSceneCommand() },
 			});

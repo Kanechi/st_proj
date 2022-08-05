@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace sfproj
 {
+    /// <summary>
+    /// çÏê¨Ç≥ÇÍÇΩínàÊÇ…ê∂éYéëåπÇê∂ê¨ÇµéUïzÇ∑ÇÈ
+    /// </summary>
     public class SfGenAndScatterProductionResInCreatedAreaSceneCommnad : SfInMatchSceneCommandBase
     {
         public override void Update(SfInMatchGameSceneController scene)
@@ -19,7 +22,7 @@ namespace sfproj
                 int count = UnityEngine.Random.Range(1, SfConfigController.Instance.MaxAreaProductionResourceItemCt);
 
                 var builder = new SfProductionResourceItemBuilder(area);
-                var director = new SfItemGenDirector(builder);
+                var director = new SfItemGenDirector<SfProductionResourceItem>(builder);
 
                 for (int i = 0; i < count; ++i)
                 {
@@ -31,6 +34,8 @@ namespace sfproj
                     area.ProductionResourceItemIdList.Add(item.Id);
                 }
             }
+
+            var list = SfProductionResourceItemTableManager.Instance.Table.RecordList;
 
             scene.Invoker.ChangeSceneState(eSceneState.CreateKingdomInWorld);
         }

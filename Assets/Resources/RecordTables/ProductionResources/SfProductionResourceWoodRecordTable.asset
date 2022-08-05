@@ -23,7 +23,10 @@ MonoBehaviour:
     SerializationNodes: []
   m_recordList:
   - m_icon: {fileID: 5666977471999005531, guid: cf1028e4293088e44a22a3fa8427e561, type: 3}
-    m_id: 120000
-    m_category: 20000
+    m_id: 150000
+    m_category: 150000
     m_baseName: "\u30B7\u30C0\u30FC\u30A6\u30C3\u30C9"
-    m_desc: "\u4E00\u822C\u7684\u306A\u6728\u6750"
+  - m_icon: {fileID: 6433444877594101237, guid: cf1028e4293088e44a22a3fa8427e561, type: 3}
+    m_id: 150001
+    m_category: 150000
+    m_baseName: "\u30AA\u30FC\u30AF\u30A6\u30C3\u30C9"

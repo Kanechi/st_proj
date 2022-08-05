@@ -25,20 +25,12 @@ MonoBehaviour:
   - m_icon: {fileID: -2377804990116268614, guid: ed98311f3a4d37d4fb72b9d3739eb6eb, type: 3}
     m_id: 140000
     m_category: 140000
-    m_baseNameList:
-    - "\u5B9F"
-    - "\u30D9\u30EA\u30FC"
+    m_baseName: "\u30D9\u30EA\u30FC"
   - m_icon: {fileID: 7481759293337918882, guid: ed98311f3a4d37d4fb72b9d3739eb6eb, type: 3}
     m_id: 140001
     m_category: 140000
-    m_baseNameList:
-    - "\u679C\u5B9F"
-    - "\u30EA\u30F3\u30B4"
-    - "\u30A2\u30C3\u30D7\u30EB"
+    m_baseName: "\u679C\u5B9F"
   - m_icon: {fileID: -7657857044662152255, guid: ed98311f3a4d37d4fb72b9d3739eb6eb, type: 3}
     m_id: 141000
     m_category: 140000
-    m_baseNameList:
-    - "\u828B"
-    - "\u30A4\u30E2"
-    - "\u30DD\u30C6\u30C8"
+    m_baseName: "\u30A4\u30E2"
