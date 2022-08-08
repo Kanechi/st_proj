@@ -101,6 +101,7 @@ namespace sfproj
             }
         }
 
+#if false
         /// <summary>
         /// 減少はチェックが必要かも
         /// 輸送する際とかも・・・０以下は０になるで停止しておけば問題ない？
@@ -108,7 +109,7 @@ namespace sfproj
         /// 使用される際に０以下になることで起こるデメリットが発生するような行動が起こらなければ問題ないかも
         /// 例えば施設建設なんかは建設ボタンを押そうとして押せなくするとかで対処
         /// 
-        /// ひとまず放置
+        /// TODO:ひとまず放置
         /// </summary>
         /// <param name="areaid"></param>
         /// <param name="itemId"></param>
@@ -130,6 +131,7 @@ namespace sfproj
         {
             
         }
+#endif
     }
 
     public class SfStoragedItemTableManager : Singleton<SfStoragedItemTableManager>

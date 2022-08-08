@@ -75,11 +75,13 @@ namespace sfproj
             // 区域施設テーブルを変更
             if (m_zoneFacility != null)
             {
+                // 既に建設されている状態の施設を変更
                 SfZoneFacilityTableManager.Instance.Table.ChangeZoneFacilityType(m_zoneFacility.AreaId, m_zoneFacility.CellIndex, typeId, category);
                 SfZoneFacilityTableManager.Instance.Table.SetZoneFacilityExpantion(m_zoneFacility.AreaId, m_zoneFacility.CellIndex, 1);
             }
             else
             {
+                // 解放はされていて＋ の状態からの変更
                 SfZoneFacilityTableManager.Instance.Table.BuildZoneFacilityType(m_areaId, m_cellIndex, typeId, category, 1);
             }
 

@@ -26,11 +26,11 @@ namespace sfproj
         public int CellIndex { get => m_cellIndex; set => m_cellIndex = value; }
 
         public uint m_facilityTypeId = 0;
-        public uint FacilityTypeId { get => m_facilityTypeId; set => m_facilityTypeId = value; }
+        public uint FacilityTypeId { get => m_facilityTypeId; }
 
         // 区域施設のタイプ
-        public eZoneFacilityCategory m_facilityType = eZoneFacilityCategory.None;
-        public eZoneFacilityCategory FacilityType { get => m_facilityType; set => m_facilityType = value; }
+        public eZoneFacilityCategory m_facilityCategory = eZoneFacilityCategory.None;
+        public eZoneFacilityCategory FacilityCategory { get => m_facilityCategory; }
 
         // 拡張数
         public int m_expantionCount = 0;
@@ -42,8 +42,61 @@ namespace sfproj
             data.Get(nameof(m_areaId), out m_areaId);
             data.Get(nameof(m_cellIndex), out m_cellIndex);
             data.Get(nameof(m_facilityTypeId), out m_facilityTypeId);
-            data.GetEnum(nameof(m_facilityType), out m_facilityType);
+            data.GetEnum(nameof(m_facilityCategory), out m_facilityCategory);
             data.Get(nameof(m_expantionCount), out m_expantionCount);
+
+
+            // 施設の機能をここでタイプを調べて生成する
+            SetFacilityData(m_facilityTypeId, m_facilityCategory);
+        }
+
+        // 施設の機能
+        public SfZoneFacilityAbility Ability { get; private set; } = null;
+        public SfZoneFacilityAbility NextAbility { get; private set; } = null;
+
+        /// <summary>
+        /// 施設データの設定
+        /// 設定と同時に施設機能も設定
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="category"></param>
+        public void SetFacilityData(uint id, eZoneFacilityCategory category)
+        {
+            m_facilityTypeId = id;
+            m_facilityCategory = category;
+
+            NextAbility = SfZoneFacilityActiveAbilityTableManager.Instance.Table.Get(m_facilityTypeId, m_facilityCategory);
+
+            if (NextAbility == null)
+            {
+                // 施設を破壊した際にここに入ってくるのでエラーではない
+                // ID があるにも関わらずここに入ってきたらエラー
+                if (m_facilityTypeId != 0)
+                {
+                    Debug.LogWarning("id != 0. Ability == null !!!");
+                }
+                else
+                {
+                    // 破壊処理
+                    Ability = null;
+                }
+            }
+        }
+
+        public void Update()
+        {
+            if (NextAbility != null)
+            {
+                Ability?.OnRemove(this);
+
+                Ability = NextAbility;
+
+                NextAbility = null;
+
+                Ability?.OnSetup(this);
+            }
+
+            Ability?.OnUpdate(0.0f, this);
         }
     }
 
@@ -68,6 +121,7 @@ namespace sfproj
 
         /// <summary>
         /// 区域施設の初回建設
+        /// 
         /// </summary>
         /// <param name="areaId">地域 ID</param>
         /// <param name="cellIndex">区域セルインデックス番号</param>
@@ -79,8 +133,7 @@ namespace sfproj
             zoneFacility.Id = SfConstant.CreateUniqueId(ref SfZoneFacilityTableManager.Instance.m_uniqueIdList);
             zoneFacility.AreaId = areaId;
             zoneFacility.CellIndex = cellIndex;
-            zoneFacility.m_facilityTypeId = typeId;
-            zoneFacility.FacilityType = category;
+            zoneFacility.SetFacilityData(typeId, category);
             zoneFacility.ExpantionCount = exp;
 
             Regist(zoneFacility);
@@ -95,8 +148,7 @@ namespace sfproj
         public void ChangeZoneFacilityType(uint areaId, int cellIndex, uint typeId, eZoneFacilityCategory category)
         {
             var facility = Get(areaId, cellIndex);
-            facility.m_facilityTypeId = typeId;
-            facility.FacilityType = category;
+            facility.SetFacilityData(typeId, category);
         }
 
         /// <summary>
@@ -108,7 +160,7 @@ namespace sfproj
         /// <param name="cellIndex"></param>
         public void DestroyZonefacilityType(uint areaId, int cellIndex)
         {
-            Get(areaId, cellIndex).FacilityType = eZoneFacilityCategory.None;
+            Get(areaId, cellIndex).SetFacilityData(0, eZoneFacilityCategory.None);
         }
 
         /// <summary>
@@ -145,13 +197,29 @@ namespace sfproj
         /// 更新処理
         /// 資源増加の施設が取り付けられていたらここで資源の増加を行う
         /// </summary>
-        public void Update() { 
-        
+        public void Update() {
+
             // 施設ごとの処理を行う、どの地域に対して何を行うか
 
             // 生産資源施設であれば地域にある生産資源を増加し、施設が建設されている地域の倉庫に保管する
-            
+
             // 必要なら区域インデックスに生産カウントダウンを表示する
+
+            // 一旦 switch でやってみるか
+
+            if (RecordList.Count == 0)
+                return;
+
+            foreach (var facility in RecordList)
+            {
+                if (facility.FacilityTypeId != 0)
+                {
+
+                    // 時間設定が必要
+                    facility.Update();
+                }
+            }
+
         }
     }
 

@@ -69,6 +69,8 @@ namespace sfproj
         }
 
         public SfProductionResourceItem Clone() => (SfProductionResourceItem)MemberwiseClone();
+
+        public SfProductionResourceRecord GetBaseItem() => SfProductionResourceTableManager.Instance.Get(BaseItemId);
     }
 
     /// <summary>
@@ -88,6 +90,8 @@ namespace sfproj
         }
 
         public SfProcessedGoodsItem Clone() => (SfProcessedGoodsItem)MemberwiseClone();
+
+
     }
 
     /// <summary>
